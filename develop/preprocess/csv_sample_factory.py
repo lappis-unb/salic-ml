@@ -1,7 +1,9 @@
 import sys
 from getopt import getopt, GetoptError
 
-class MakeCsvSample():
+import pandas as pd
+
+class CsvSampleFactory():
 
     _short_options = 'o:l:'
     _long_options = ['output=', 'lines=']
@@ -39,7 +41,7 @@ class MakeCsvSample():
             print(err)
             sys.exit(1)
 
-    def parse_and_execute_commands(self):
+    def get_parsed_commands(self):
         opts = self.parse_command_line_options()
         number_of_output_rows = 10
         output_file_name = self.input_csv[:-4] + '_small.csv'
@@ -49,7 +51,14 @@ class MakeCsvSample():
                 output_file_name = argument
             elif command in ['-l', '--lines']:
                 number_of_output_rows = argument
+        return {'rows': int(number_of_output_rows), 'output': output_file_name}
+
+    def parse_and_execute_commands(self):
+        commands = self.get_parsed_commands()
+        input_csv = pd.read_csv(self.input_csv)
+        output_csv = input_csv.sample(commands['rows'])
+        output_csv.to_csv(commands['output'])
 
 if __name__ == '__main__':
-    make_csv_sample = MakeCsvSample()
+    make_csv_sample = CsvSampleFactory()
     make_csv_sample.parse_and_execute_commands()
