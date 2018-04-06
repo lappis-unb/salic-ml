@@ -1,2 +1,5 @@
-### Big csvs
+# Big csvs
 BIG*.csv
+
+# Jupyter notebook files
+*/.ipynb_checkpoints/*
