@@ -1,12 +1,10 @@
-### Pesquisa
-
 **Links rápidos**
 > [Questões de pesquisa](#sobre-a-pesquisa)
 >
 > [Pacotes do python para pesquisa](#bibliotecas-do-python-utilizadas)
 
 
-#### Sobre a pesquisa
+# Sobre a pesquisa
 
 As questões de pesquisa estão sempre relacionadas aos nossos objetivos maiores, dentro do Salic:
   - Automatizar subprocessos da fase de admissão de projetos
@@ -27,6 +25,17 @@ Questões de pesquisa na fase de admissão:
 
 **Categorização de projetos**
 
-#### Bibliotecas do python utilizadas
+# Dependências do python
 
-aqui
+**Versão do python e bibliotcas utilizadas**
+
+Recomendamos utilizar o `python3` (python 3.3 ou superior).
+As bibliotecas do python utilizadas para fazer estão disponíves no arquivo [requirements.txt](link)
+
+**Instalando biblitecas**
+
+Recomendamos utilizar o `pip3` como gerenciador de pacotes python.
+
+1. `$ git clone https://github.com/lappis-unb/salic-ml` (caso ainda não tenha clonado o repositório)
+2. `$ cd research/` (diretório de pesquisa)
+3. `$ pip3 install -f requirements.txt`
