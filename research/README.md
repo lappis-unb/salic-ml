@@ -1,7 +1,7 @@
 **Links rápidos**
 > [Questões de pesquisa](#sobre-a-pesquisa)
 >
-> [Pacotes do python para pesquisa](#bibliotecas-do-python-utilizadas)
+> [Pacotes do python para pesquisa](#dependências-do-python)
 
 
 # Sobre a pesquisa
@@ -30,7 +30,7 @@ Questões de pesquisa na fase de admissão:
 **Versão do python e bibliotcas utilizadas**
 
 Recomendamos utilizar o `python3` (python 3.3 ou superior).
-As bibliotecas do python utilizadas para fazer estão disponíves no arquivo [requirements.txt](link)
+As bibliotecas do python utilizadas para fazer estão disponíves no arquivo [requirements.txt](https://github.com/lappis-unb/salic-ml/blob/master/research/requirements.txt).
 
 **Instalando biblitecas**
 
