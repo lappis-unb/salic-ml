@@ -1,5 +1,13 @@
 ### Pesquisa
 
+**Links rápidos**
+> [Questões de pesquisa](#sobre-a-pesquisa)
+>
+> [Pacotes do python para pesquisa](#bibliotecas-do-python-utilizadas)
+
+
+#### Sobre a pesquisa
+
 As questões de pesquisa estão sempre relacionadas aos nossos objetivos maiores, dentro do Salic:
   - Automatizar subprocessos da fase de admissão de projetos
   - Automatizar subprocessos da fase de prestação de contas
@@ -7,7 +15,7 @@ As questões de pesquisa estão sempre relacionadas aos nossos objetivos maiores
 
 O processo para investigar as questões de pesquisa geralmente envolve: identificar um conjunto significativo de dados, coletá-los, visualização dos dados (por meio de gráficos, por exemplo), cálculo de estatísticas (média, mediana, desvio padrão por ex.), elicitar e investigar hipóteses e enfim propor alguma solução/aplicação e calcular sua eficácia.
 
-**Fase de admissibilidade dos projeto**
+**Fase de admissibilidade dos projetos**
 
 Questões de pesquisa na fase de admissão:
 - O que faz o preço unitário de um item ser aprovado?
@@ -18,3 +26,7 @@ Questões de pesquisa na fase de admissão:
 **Fase de prestação de contas**
 
 **Categorização de projetos**
+
+#### Bibliotecas do python utilizadas
+
+aqui
