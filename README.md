@@ -3,6 +3,7 @@ Salic - Machine Learning
 
 Time atual:
 * Prof. Felipe Duerno
+* Luciano Prestes
 * Marlon Mendes
 * Alexandre Torres
 
@@ -53,18 +54,4 @@ Próximos passos
 Novas demandas
 --------------
 
-Expandir o escopo do Salic-ML para englobar não só a análise de propostas submetidas ao Salic, como também a investigação de insights para servirem de insumo ao Ver-Salic.
-
-Perguntas
-_________
-
-Sobre o problema atual:
-* Quais variáveis investigar?
-* 
-
-Sobre o objetivo atual:
-* Quais outros aspectos com relação às propostas, é plausível de se automatizar?
-
-Sobre as novas demandas:
-* Quais novos insights podemos investigar/implementar?
-
+Expandir o escopo do Salic-ML para englobar não só a análise de propostas submetidas ao Salic, como também a análise de resultados de projetos já executados e a investigação de insights para servirem de insumo ao Ver-Salic.
