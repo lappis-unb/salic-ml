@@ -1,4 +1,6 @@
 from datetime import datetime
+import numpy as np
+import pandas as pd
 import matplotlib
 
 class Dates:
@@ -9,8 +11,15 @@ class Dates:
 
     @staticmethod
     def get_date_axis_from_column(data, column = 'Data'):
-        dates = data[column].values
-        dates_date_time = [datetime.strptime(d, Dates.DATE_INPUT_FORMAT) for d in dates]
+        dates = data[column]
+        dates_date_time = None
+        date_cell_type = dates.dtype
+        if date_cell_type == 'str':
+            dates_date_time = [datetime.strptime(d, Dates.DATE_INPUT_FORMAT) for d in dates]
+        elif np.issubdtype(date_cell_type, np.datetime64):
+            dates_date_time = dates
+        else:
+            raise TypeError('Date type not supported')
         dates_axis = matplotlib.dates.date2num(dates_date_time)
         return dates_axis
         
