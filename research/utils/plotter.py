@@ -45,17 +45,18 @@ class Plotter:
         plt.scatter(x_axis, y_axis, s = 50, c = color, alpha = 0.50, marker = marker)
 
 
-#    def plot_log_along_time(self, x_axis, y_axis, format, x_label = '', y_label = '',
-#                 title = '', subplot = 111, figure = None):
-#        if figure is None:
-#            figure = plt.figure()
-#        
-#        hfmt = matplotlib.dates.DateFormatter(Dates.DATE_GRAPH_FORMAT)    
-#        ax = figure.add_subplot(subplot)
-#        ax.xaxis.set_major_formatter(hfmt)
-#        plt.setp(ax.get_xticklabels(), rotation=15)
-#        plt.semilogy(x_axis, y_axis, format)
-#        self.set_plot_style(x_label, y_label, title)
+    @staticmethod
+    def plot_log_along_time(x_axis, y_axis, format = 'g.', x_label = '', y_label = '',
+                 title = '', subplot = 111, figure = None):
+        if figure is None:
+            figure = plt.figure()
+        
+        hfmt = matplotlib.dates.DateFormatter(Dates.DATE_GRAPH_FORMAT)    
+        ax = figure.add_subplot(subplot)
+        ax.xaxis.set_major_formatter(hfmt)
+        plt.setp(ax.get_xticklabels(), rotation=15)
+        plt.semilogy(x_axis, y_axis, format)
+        Plotter.set_plot_style(x_label, y_label, title)
 #    
 #    def plot_scatter_log_along_time(self, x_axis, y_axis, x_label = '',
 #                                    y_label = '', title = ''):
