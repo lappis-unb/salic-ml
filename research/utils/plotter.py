@@ -12,15 +12,16 @@ from utils.dates import Dates
 #warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 #
 class Plotter:
-#
-#    def plot_histogram(self, y_axis, x_label = '', y_label = '', title = ''):
-#        fig = plt.figure()
-#        self.set_plot_style(x_label, y_label, title)
-#        
-#        result = plt.hist(y_axis, bins = 'fd', color = 'blue',
-#                          edgecolor = 'black', alpha = .75)
-#        return result
-#    
+
+    @staticmethod
+    def plot_histogram(y_axis, x_label = '', y_label = '', title = ''):
+        fig = plt.figure()
+        Plotter.set_plot_style(x_label, y_label, title)
+        
+        result = plt.hist(y_axis, bins = 'fd', color = 'blue',
+                          edgecolor = 'black', alpha = .75)
+        return result
+    
     @staticmethod
     def set_plot_style(x_label, y_label, title):
         plt.xlabel(x_label)
@@ -70,5 +71,5 @@ class Plotter:
 #
 #
 #        
-#    def show(self):
-#        plt.show()
+    def show():
+        plt.show()
