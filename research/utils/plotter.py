@@ -39,7 +39,7 @@ class Plotter:
         ax = figure.add_subplot(subplot)
         ax.xaxis.set_major_formatter(hfmt)
         ax.xaxis_date()
-        plt.setp(ax.get_xticklabels(), rotation=15)
+        plt.setp(ax.get_xticklabels(), rotation=45)
         Plotter.set_plot_style(x_label, y_label, title)
 
         plt.scatter(x_axis, y_axis, s = 50, c = color, alpha = 0.50, marker = marker)
@@ -54,7 +54,7 @@ class Plotter:
         hfmt = matplotlib.dates.DateFormatter(Dates.DATE_GRAPH_FORMAT)    
         ax = figure.add_subplot(subplot)
         ax.xaxis.set_major_formatter(hfmt)
-        plt.setp(ax.get_xticklabels(), rotation=15)
+        plt.setp(ax.get_xticklabels(), rotation=45)
         plt.semilogy(x_axis, y_axis, format)
         Plotter.set_plot_style(x_label, y_label, title)
 #    
