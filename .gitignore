@@ -1,5 +1,22 @@
-# Big csvs
+### Big csvs
 BIG*.csv
 
-# Jupyter notebook files
+### Jupyter notebook files
 */.ipynb_checkpoints/*
+
+### Folder structure
+/data/
+/reports/
+/models/
+
+### Vim
+# swap
+.sw[a-p]
+.*.sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
