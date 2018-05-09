@@ -30,9 +30,31 @@ Quando quiser sair do virtualenv 'salic-ml' execute o seguinte comando
 
     $ deactivate
 
-Instale as dependencias do projeto, certifique-se de estar no virtualenv 'salic-ml'
+Instale as dependencias do projeto, certifique-se de estar no virtualenv
+'salic-ml'
 
     $ pip3 install -r requirements.txt
+
+
+Executar um Notebook
+--------------------
+
+Execute o comando 'make' para ver as opções disponíveis
+
+    $ make
+
+Na lista de ações disponíveis escolha a que prepara o notebook selecionado,
+por exemplo
+
+    $ make notebook_diligencies_metrics
+
+Aguarde o download e o processamento necessário para a execução do notebook,
+então execute o jupyter-notebook
+
+    $ jupyter-notebook
+
+No jupter-notebook que foi aberto no navegador entre no diretório 'notebooks'
+e abra o notebook desejado
 
 
 Objetivos
