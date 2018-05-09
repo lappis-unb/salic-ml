@@ -24,14 +24,24 @@ clean:
 
 
 ###############################################################################
+# NOTEBOOKS                                                                   #
+###############################################################################
+
+## Prepare diligencies_metrics notebook data
+notebook_diligencies_metrics: data/raw/projetos.csv data/raw/tb_diligencia.csv
+
+###############################################################################
 # DOWNLOAD DATA                                                               #
 ###############################################################################
 
 PROJETOS_URL = "https://www.dropbox.com/s/4xboie28xzyln6x/Projetos.csv?dl=1"
+DILIGENCIAS_URL = "https://www.dropbox.com/s/3l6ggi9xqmrzpzo/tbDiligencia.csv?dl=1"
 
-## Download Projetos.csv to ./data/raw
 data/raw/projetos.csv:
 	$(PYTHON_INTERPRETER) src/data/download.py $(PROJETOS_URL) $@
+
+data/raw/tb_diligencia.csv:
+	$(PYTHON_INTERPRETER) src/data/download.py $(DILIGENCIAS_URL) $@
 
 
 ###############################################################################
