@@ -8,6 +8,7 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROFILE = default
 PROJECT_NAME = salic-ml
 PYTHON_INTERPRETER = python3
+PIP = pip3
 
 
 ###############################################################################
@@ -23,6 +24,10 @@ clean:
 	rm -f models/*.model
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+
+## Install all project dependencies
+install:
+	$(PIP) install -r requirements.txt
 
 
 ###############################################################################
