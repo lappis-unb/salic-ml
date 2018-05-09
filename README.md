@@ -7,6 +7,34 @@ Time atual:
 * Marlon Mendes
 * Alexandre Torres
 
+Instalação
+----------
+Clone o repositório
+
+    $ git clone https://github.com/lappis-unb/salic-ml.git
+
+Instale o python e o pip
+
+    $ sudo apt install python3 python3-dev python3-pip
+
+Instale o virtualenvwrapper e crie um virtualenv para o projeto
+
+    $ pip install virtualenvwrapper
+    $ mkvirtualenv -p /usr/bin/python3 salic-ml
+
+Execute o seguinte comando para usar o virtualenv 'salic-ml'
+
+    $ workon salic-ml
+
+Quando quiser sair do virtualenv 'salic-ml' execute o seguinte comando
+
+    $ deactivate
+
+Instale as dependencias do projeto, certifique-se de estar no virtualenv 'salic-ml'
+
+    $ pip3 install -r requirements.txt
+
+
 Objetivos
 ---------
 
