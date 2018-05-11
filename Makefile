@@ -34,8 +34,11 @@ install:
 # NOTEBOOKS                                                                   #
 ###############################################################################
 
-## Prepare diligencies_metrics notebook data
+## Prepare notebook data
 notebook_diligencies_metrics: data/raw/projetos.csv data/raw/tb_diligencia.csv
+
+## Prepare notebook data
+notebook_created_vs_finished_projects_by_year: data/raw/projetos.csv
 
 ###############################################################################
 # DOWNLOAD DATA                                                               #
