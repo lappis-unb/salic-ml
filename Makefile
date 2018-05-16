@@ -35,7 +35,7 @@ install:
 ###############################################################################
 
 ## Prepare notebook data
-notebook_diligencies_metrics: data/raw/projetos.csv data/raw/tb_diligencia.csv
+notebook_diligencies_metrics: data/raw/area.csv data/raw/projetos.csv data/raw/segmento.csv data/raw/tb_diligencia.csv
 
 ## Prepare notebook data
 notebook_created_vs_finished_projects_by_year: data/raw/projetos.csv
@@ -44,11 +44,19 @@ notebook_created_vs_finished_projects_by_year: data/raw/projetos.csv
 # DOWNLOAD DATA                                                               #
 ###############################################################################
 
+AREAS_URL = "https://www.dropbox.com/s/z4rygyu5cryvvkl/Area.csv?dl=1"
 PROJETOS_URL = "https://www.dropbox.com/s/4xboie28xzyln6x/Projetos.csv?dl=1"
+SEGMENTOS_URL = "https://www.dropbox.com/s/z4rygyu5cryvvkl/Segmento.csv?dl=1"
 DILIGENCIAS_URL = "https://www.dropbox.com/s/3l6ggi9xqmrzpzo/tbDiligencia.csv?dl=1"
+
+data/raw/area.csv:
+	$(PYTHON_INTERPRETER) src/data/download.py $(AREAS_URL) $@
 
 data/raw/projetos.csv:
 	$(PYTHON_INTERPRETER) src/data/download.py $(PROJETOS_URL) $@
+
+data/raw/segmento.csv:
+	$(PYTHON_INTERPRETER) src/data/download.py $(SEGMENTOS_URL) $@
 
 data/raw/tb_diligencia.csv:
 	$(PYTHON_INTERPRETER) src/data/download.py $(DILIGENCIAS_URL) $@
