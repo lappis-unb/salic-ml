@@ -36,6 +36,18 @@ Instale as dependencias do projeto, certifique-se de estar no virtualenv
     $ pip3 install -r requirements.txt
 
 
+Baixar os dados
+---------------
+
+Para versionar os dados utilizados em nossas pesquisas, estamos utilizando o [Git Large Files Storage](https://git-lfs.github.com/).
+
+Para baixar os dados que utilizamos, instale o pacote `git-lfs` e então execute o comando
+
+    $ git-lfs pull
+
+A partir do diretório raiz do repositório.
+
+
 Executar um Notebook
 --------------------
 
@@ -48,26 +60,13 @@ por exemplo
 
     $ make notebook_diligencies_metrics
 
-Aguarde o download e o processamento necessário para a execução do notebook,
-então execute o jupyter-notebook
+Aguarde o processamento necessário para a execução do notebook, então execute o
+jupyter-notebook:
 
     $ jupyter-notebook
 
 No jupter-notebook que foi aberto no navegador entre no diretório 'notebooks'
 e abra o notebook desejado
-
-
-Estrutura da pasta Notebook
----------------------------
-
-A pasta notebook foi dividido em 3 subpastas:
-
-* **Doing:** notebooks que estão sendo desenvolvidos.
-
-* **Exploratory:** notebooks usados para exploração. Pode conter "rascunhos", notebooks não finalizados ou finalizados mas com pouca relevância. 
-Seguem o formato <Descrição do Notebook>-<Versão>.
-
-* **Report:** Notebooks com os resultados das pesquisas. Esta pasta contém as versões de notebooks estáveis e atualizados das pesquisas realizadas. 
 
 
 Objetivos
