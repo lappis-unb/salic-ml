@@ -69,6 +69,19 @@ No jupter-notebook que foi aberto no navegador entre no diretório 'notebooks'
 e abra o notebook desejado
 
 
+Estrutura da pasta Notebook
+---------------------------
+
+A pasta notebook foi dividido em 3 subpastas:
+
+* **Doing:** notebooks que estão sendo desenvolvidos.
+
+* **Exploratory:** notebooks usados para exploração. Pode conter "rascunhos", notebooks não finalizados ou finalizados mas com pouca relevância.
+Seguem o formato <Descrição do Notebook>-<Versão>.
+
+* **Report:** Notebooks com os resultados das pesquisas. Esta pasta contém as versões de notebooks estáveis e atualizados das pesquisas realizadas.
+
+
 Objetivos
 ---------
 
