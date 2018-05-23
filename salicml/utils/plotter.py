@@ -5,7 +5,7 @@ import warnings
 import matplotlib.cbook
 
 
-from utils.dates import Dates
+from salicml.utils.dates import Dates
 
 #
 #
