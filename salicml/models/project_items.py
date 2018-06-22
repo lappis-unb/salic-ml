@@ -1,5 +1,6 @@
 import pandas as pd
-
+import numpy as np
+from salicml.utils.utils import debug
 
 
 class ProjectItems:
@@ -7,15 +8,47 @@ class ProjectItems:
     ID_PRONAC = 'idPronac'
     ID_ITEM = 'idPlanilhaItens'
     ITEM = 'Item'
+    AREA = 'Area'
+    SEGMENTO = 'Segmento'
 
 
     def __init__(self, data):
         self.dt = data
 
-    def get_rows_by_column_value(self, column, value):
-        return self.dt[self.dt[column] == value]
+    def get_rows_by_column_value(self, column, value, dt = None):
+        if dt is None:
+            return self.dt[self.dt[column] == value]
+        else:
+            return dt[dt[column] == value]
 
-    def items(self, id_pronac):
+    def items(self, id_pronac, dt = None):
+        data = self.get_rows_by_column_value(ProjectItems.ID_PRONAC,
+                                                 id_pronac, dt=dt)
+        return data[ProjectItems.ID_ITEM].unique()
+
+    def areas_id(self, id_pronac):
         data = self.get_rows_by_column_value(ProjectItems.ID_PRONAC,
                 id_pronac)
-        return data[ProjectItems.ITEM].values
+        res = (data.iloc[0].Area, data.iloc[0].Segmento)
+        return res
+
+    def all_areas(self):
+        return self.unique_in_column(ProjectItems.AREA)
+
+    def all_segments(self):
+        return self.unique_in_column(ProjectItems.SEGMENTO)
+
+    def unique_in_column(self, column, dt = None):
+        if dt is None:
+            return self.dt[column].unique()
+        else:
+            return dt[column].unique()
+
+    def projects_similarity(self, id1, id2, dt = None):
+        itens_a = self.items(id1, dt)
+        itens_b = self.items(id2, dt)
+
+        union_size = np.union1d(itens_a, itens_b).size
+        intersction_size = np.intersect1d(itens_a, itens_b, assume_unique=True)
+
+        return intersction_size / union_size
