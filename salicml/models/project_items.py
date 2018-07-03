@@ -55,8 +55,7 @@ class ProjectItems:
     def projects_similarity_min(self, itens_a, itens_b):
         union_size = np.union1d(itens_a, itens_b).size
 
-        intersction_size = np.intersect1d(itens_a, itens_b,
-        assume_unique=True).size
+        intersction_size = np.intersect1d(itens_a, itens_b).size
 
         size = min(itens_a.size, itens_b.size)
         return intersction_size / size
