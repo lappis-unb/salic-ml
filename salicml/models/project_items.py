@@ -1,6 +1,12 @@
+import os
+from datetime import datetime
+from operator import itemgetter
+
 import pandas as pd
 import numpy as np
+
 from salicml.utils.utils import debug
+from salicml.utils.dates import Dates
 
 
 class ProjectItems:
@@ -59,3 +65,60 @@ class ProjectItems:
 
         size = min(itens_a.size, itens_b.size)
         return intersction_size / size
+
+
+class Projects:
+
+    PROJECT_ROOT = os.path.abspath(os.path.join(os.pardir, os.pardir))
+    DATA_FOLDER = os.path.join(PROJECT_ROOT, 'data', 'raw')
+
+    DATE = 'DtProtocolo'
+    AREA = 'Area'
+    SEGMENTO = 'Segmento'
+
+    def __init__(self, dt = None):
+        self.__set_dt(dt)
+        self.__filter_dt()
+
+    def __set_dt(self, dt):
+        if dt is not None:
+            self.dt = dt
+        else:
+            self.__init_dt_from_csv()
+            pass
+
+    def __init_dt_from_csv(self):
+        projetos_csv_name = 'projetos.csv'
+        projects_csv = os.path.join(Projects.DATA_FOLDER, projetos_csv_name)
+
+        self.dt = pd.read_csv(projects_csv, low_memory=False)
+
+    def __filter_dt(self):
+        assert self.dt is not None
+
+        START_DATE = datetime(day=1, month=1, year=2013)
+
+        date_column = Projects.DATE
+        self.dt[date_column] = pd.to_datetime(self.dt[date_column], format = Dates.DATE_INPUT_FORMAT)
+        self.dt = self.dt[self.dt.loc[:, date_column] >= START_DATE]
+
+    def most_frequent_areas(self):
+        assert self.dt is not None
+
+        from collections import Counter
+
+        areas = Counter(self.dt[Projects.AREA].values)
+        items = areas.items()
+        items = sorted(items, key=itemgetter(1), reverse=True)
+        return items
+
+    def most_frequent_segments(self):
+        assert self.dt is not None
+
+        from collections import Counter
+
+        segments = Counter(self.dt[Projects.SEGMENTO].values)
+        items = segments.items()
+        items = sorted(items, key=itemgetter(1), reverse=True)
+        return items
+
