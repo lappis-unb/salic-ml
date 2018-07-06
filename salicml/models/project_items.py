@@ -122,3 +122,10 @@ class Projects:
         items = sorted(items, key=itemgetter(1), reverse=True)
         return items
 
+    def most_frequent_area_segment(self):
+        assert self.dt is not None
+        res = self.dt.groupby([Projects.AREA,
+            Projects.SEGMENTO]).size().reset_index(name='Frequency')
+        res.sort_values(by='Frequency', ascending=False, inplace=True)
+        return res
+
