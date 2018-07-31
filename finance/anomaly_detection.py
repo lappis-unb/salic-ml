@@ -15,10 +15,10 @@ planilha_captacao_file_name  = 'planilha_captacao.csv'
 planilha_captacao = read_csv(planilha_captacao_file_name)
 
 
-def is_project_num_items_outlier(pronac):
-    projectList = ProjectsList(planilha_orcamentaria, planilha_comprovacao,
-    planilha_captacao)
+projectList = ProjectsList(planilha_orcamentaria, planilha_comprovacao,
+                           planilha_captacao)
 
+def is_project_num_items_outlier(pronac):
     project = projectList.loadSingleProject(pronac)
     segment, segment_id = project.segment
     project_num_items = project.items.get_number_of_items()
@@ -37,9 +37,6 @@ def is_project_num_items_outlier(pronac):
 
 
 def is_project_total_raised_outlier(pronac):
-    projectList = ProjectsList(planilha_orcamentaria, planilha_comprovacao,
-                               planilha_captacao)
-
     project = projectList.loadSingleProject(pronac)
     segment, segment_id = project.segment
 
@@ -57,4 +54,72 @@ def is_project_total_raised_outlier(pronac):
     std = np.std(projects_raised_funds)
 
     is_outlier = gaussian_outlier.is_outlier(total_raised, mean, std, 1.5)
+    return is_outlier
+
+
+def is_project_total_verified_outlier(pronac):
+    project = projectList.loadSingleProject(pronac)
+    segment, segment_id = project.segment
+
+    total_verified = project.receipts.get_total_verified_cost()
+
+    projectList.loadFilteredProjects([('idSegmento', segment_id)])
+    pronacs = projectList.pronac_list
+
+    projects_verified_funds = np.array(
+        [projectList.loaded_projects[pronac].receipts.get_total_verified_cost()
+         for pronac in pronacs])
+    projects_verified_funds = projects_verified_funds[
+        projects_verified_funds != 0]
+
+    mean = np.mean(projects_verified_funds)
+    std = np.std(projects_verified_funds)
+
+    is_outlier = gaussian_outlier.is_outlier(total_verified, mean, std, 1.5)
+    return is_outlier
+
+
+def is_project_total_approved_funds_outlier(pronac):
+    project = projectList.loadSingleProject(pronac)
+    segment, segment_id = project.segment
+
+    total_approved = project.items.get_total_approved_cost()
+
+    projectList.loadFilteredProjects([('idSegmento', segment_id)])
+    pronacs = projectList.pronac_list
+
+    projects_approved_funds = np.array(
+        [projectList.loaded_projects[pronac].items.get_total_approved_cost()
+         for pronac in pronacs])
+    projects_approved_funds = projects_approved_funds[
+        projects_approved_funds != 0]
+
+    mean = np.mean(projects_approved_funds)
+    std = np.std(projects_approved_funds)
+
+    is_outlier = gaussian_outlier.is_outlier(total_approved, mean, std, 1.5)
+    return is_outlier
+
+
+def is_project_receipts_number_outlier(pronac):
+    project = projectList.loadSingleProject(pronac)
+    segment, segment_id = project.segment
+
+    total_receipts = project.receipts.get_number_of_receipts()
+    print('total receipts = {}'.format(total_receipts))
+
+    projectList.loadFilteredProjects([('idSegmento', segment_id)])
+    pronacs = projectList.pronac_list
+
+    projects_receipts = np.array(
+        [projectList.loaded_projects[pronac].receipts.get_number_of_receipts()
+         for pronac in pronacs])
+    projects_receipts = projects_receipts[projects_receipts != 0]
+    if projects_receipts.shape[0] == 0:
+        projects_receipts = [0]
+
+    mean = np.mean(projects_receipts)
+    std = np.std(projects_receipts)
+
+    is_outlier = gaussian_outlier.is_outlier(total_receipts, mean, std, 1.5)
     return is_outlier
