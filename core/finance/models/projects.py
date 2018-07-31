@@ -1,7 +1,6 @@
 from finance.models.finances import Items, Captacoes, Receipts
 
 
-
 class Project:
     def __init__(self, raw_project, raw_receipts, raw_captacoes):
         self.raw_project      = raw_project
