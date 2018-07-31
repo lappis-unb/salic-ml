@@ -2,7 +2,8 @@ import pandas as pd
 import os
 
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.pardir, os.pardir))
+FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+PROJECT_ROOT = os.path.join(FILE_PATH, os.pardir, os.pardir)
 DATA_FOLDER = os.path.join(PROJECT_ROOT, 'data', 'raw')
 
 
