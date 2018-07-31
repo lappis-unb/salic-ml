@@ -17,24 +17,23 @@ class ProjectItems:
     AREA = 'Area'
     SEGMENTO = 'Segmento'
 
-
     def __init__(self, data):
         self.dt = data
 
-    def get_rows_by_column_value(self, column, value, dt = None):
+    def get_rows_by_column_value(self, column, value, dt=None):
         if dt is None:
             return self.dt[self.dt[column] == value]
         else:
             return dt[dt[column] == value]
 
-    def items(self, id_pronac, dt = None):
+    def items(self, id_pronac, dt=None):
         data = self.get_rows_by_column_value(ProjectItems.ID_PRONAC,
-                                                 id_pronac, dt=dt)
+                                             id_pronac, dt=dt)
         return data[ProjectItems.ID_ITEM].unique()
 
     def areas_id(self, id_pronac):
         data = self.get_rows_by_column_value(ProjectItems.ID_PRONAC,
-                id_pronac)
+                                             id_pronac)
         res = (data.iloc[0].Area, data.iloc[0].Segmento)
         return res
 
@@ -44,7 +43,7 @@ class ProjectItems:
     def all_segments(self):
         return self.unique_in_column(ProjectItems.SEGMENTO)
 
-    def unique_in_column(self, column, dt = None):
+    def unique_in_column(self, column, dt=None):
         if dt is None:
             return self.dt[column].unique()
         else:
@@ -54,7 +53,7 @@ class ProjectItems:
         union_size = np.union1d(itens_a, itens_b).size
 
         intersction_size = np.intersect1d(itens_a, itens_b,
-        assume_unique=True).size
+                                          assume_unique=True).size
 
         return intersction_size / union_size
 
@@ -76,7 +75,7 @@ class Projects:
     AREA = 'Area'
     SEGMENTO = 'Segmento'
 
-    def __init__(self, dt = None):
+    def __init__(self, dt=None):
         self.__set_dt(dt)
         self.__filter_dt()
 
@@ -99,7 +98,8 @@ class Projects:
         START_DATE = datetime(day=1, month=1, year=2013)
 
         date_column = Projects.DATE
-        self.dt[date_column] = pd.to_datetime(self.dt[date_column], format = Dates.DATE_INPUT_FORMAT)
+        self.dt[date_column] = pd.to_datetime(
+            self.dt[date_column], format=Dates.DATE_INPUT_FORMAT)
         self.dt = self.dt[self.dt.loc[:, date_column] >= START_DATE]
 
     def most_frequent_areas(self):
@@ -125,7 +125,6 @@ class Projects:
     def most_frequent_area_segment(self):
         assert self.dt is not None
         res = self.dt.groupby([Projects.AREA,
-            Projects.SEGMENTO]).size().reset_index(name='Frequency')
+                               Projects.SEGMENTO]).size().reset_index(name='Frequency')
         res.sort_values(by='Frequency', ascending=False, inplace=True)
         return res
-
