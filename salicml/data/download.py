@@ -9,13 +9,13 @@ import requests
 def download_file(url, filename):
     print('Downloading from {} to {}'.format(url, filename))
 
-    response = requests.get(url, stream = True)
+    response = requests.get(url, stream=True)
     file_size = int(response.headers.get('content-length'))
 
     with open(filename, 'wb') as output_file:
         data_loaded = 0
 
-        for data in response.iter_content(chunk_size = 4096):
+        for data in response.iter_content(chunk_size=4096):
             data_loaded += len(data)
             output_file.write(data)
 

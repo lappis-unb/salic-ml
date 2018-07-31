@@ -1,6 +1,5 @@
 ### Ignoring .csv files 
 data/raw/*
-*.csv
 
 ### Jupyter notebook files
 */.ipynb_checkpoints/*
