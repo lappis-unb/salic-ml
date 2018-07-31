@@ -3,15 +3,13 @@ import pandas as pd
 
 class Projects:
 
-
     def __init__(self, csv_file_path):
         self.csv_file_path = csv_file_path
 
-        self.data_frame = pd.read_csv(csv_file_path, low_memory = False)
+        self.data_frame = pd.read_csv(csv_file_path, low_memory=False)
 
     def get_data_frame_columns(self, cols):
-        return self.data_frame.filter(items = cols)
-
+        return self.data_frame.filter(items=cols)
 
     SITUATIONS = {
         "A01": "Projeto cultural cadastrado pelo sistema",
@@ -26,7 +24,8 @@ class Projects:
         "A11": "Diligência  Documental",
         "A12": "Aguarda complementação de documentos",
         "A13": "Arquivado - solicitação de desistência do proponente",
-        "A14": "Indeferido - não enquadramento nos objetivos e fins da Lei 8313/91 ou do Decreto 5761/06",
+        "A14": "Indeferido - não enquadramento nos objetivos e fins da Lei"
+        "8313/91 ou do Decreto 5761/06",
         "A16": "Indeferido - Projeto já realizado.",
         "A17": "Indeferido - não atendimento à diligência",
         "A18": "Arquivado/Insuficiência de recursos",
@@ -34,8 +33,10 @@ class Projects:
         "A20": "Indeferido - projeto em duplicidade",
         "A21": "Carta de arquivamento",
         "A22": "Aguardando cadastro de proponente/Teto de valores",
-        "A23": "Indeferido - somatório dos projetos apresentados excede o limite permitiddo para pessoa física",
-        "A24": "Indeferido - somatório dos projetos apresentados excede o limite permitiddo para pessoa jurídica",
+        "A23": "Indeferido - somatório dos projetos apresentados excede o "
+        "limite permitiddo para pessoa física",
+        "A24": "Indeferido - somatório dos projetos apresentados excede"
+        "o limite permitiddo para pessoa jurídica",
         "A25": "Alteração de valor",
         "A26": "Arquivado/Não enquadramento no âmbito da SMAC",
         "A27": "Carta circular/Contextualização do projeto",
@@ -73,7 +74,8 @@ class Projects:
         "C10": "Projeto incluído em pauta para avaliação da CNIC",
         "C11": "Projeto incluído em pauta extraordinária da CNIC",
         "C12": "Análise Técnica - FNC",
-        "C13": "Projeto incluído na pauta de complementação para avaliação da CNIC",
+        "C13": "Projeto incluído na pauta de complementação para"
+        "avaliação da CNIC",
         "C14": "Projeto incluído na pauta de prorrogação da CNIC",
         "C15": "Parecer Desfavorável",
         "C16": "Parecer Favorável",
@@ -86,10 +88,13 @@ class Projects:
         "C23": "Pauta FNC/Processo seletivo",
         "C24": "Extra Pauta do FNC",
         "C25": "Parecer Técnico desfavorável",
-        "C26": "Projeto incluído na pauta da CNIC para reanálise/análise complementar",
-        "C30": "Diligenciado - Comissão Nacional de Incentivo à Cultura - CNIC",
+        "C26": "Projeto incluído na pauta da CNIC para reanálise/análise"
+        "complementar",
+        "C30": "Diligenciado - Comissão Nacional de Incentivo à Cultura -"
+        "CNIC",
         "D01": "Projeto aprovado e aguardando ajuste sugerido pela plenária",
-        "D02": "Readequação do projeto aprovada. Aguardando análise documental",
+        "D02": "Readequação do projeto aprovada. Aguardando análise "
+        "documental",
         "D03": "Projeto aprovado - aguardando análise documental",
         "D04": "Retornou da  CNIC/Em análise",
         "D05": "Em tramites de aprovação",
@@ -111,7 +116,8 @@ class Projects:
         "D21": "Aguarda Portaria VI",
         "D22": "Aguardando elaboração de portaria de Prorrogação",
         "D23": "Aguarda portaria de redução",
-        "D24": "Projeto em análise documental para publicação de portaria de captação",
+        "D24": "Projeto em análise documental para publicação de portaria"
+        "de captação",
         "D25": "Diligenciado - Projeto aprovado - (Solicitação de Documentos)",
         "D26": "Pedido de Prorrogação Excepcional",
         "D27": "Encaminhado para inclusão em portaria",
@@ -128,7 +134,8 @@ class Projects:
         "D38": "CADIN - Inadimplente",
         "D40": "Análise de recurso prestação de contas",
         "D41": "Diligenciado - Análise de Recurso",
-        "D50": "Projeto apreciado pela Comissão Nacional de Incentivo à Cultura - CNIC",
+        "D50": "Projeto apreciado pela Comissão Nacional de Incentivo à"
+        "Cultura - CNIC",
         "D51": "Projeto apreciado pela CNIC - Aguardando análise documental",
         "D52": "Projeto Homologado",
         "D60": "Projeto enquadrado na exceção de execução imediata",
@@ -152,7 +159,8 @@ class Projects:
         "E17": "Diligenciado - Prestação de Contas",
         "E18": "Avaliação Técnica do Relatório Final - P.C.",
         "E19": "Prestação de Contas Aprovada",
-        "E20": "Inadimplente - não respondeu a diligência da Prestação de Contas",
+        "E20": "Inadimplente - não respondeu a diligência da Prestação de"
+        "Contas",
         "E21": "Inadimplência Suspensa - Mecenato",
         "E22": "Instaurada Tomada de Contas Especial",
         "E23": "Inadimplente",
@@ -194,26 +202,33 @@ class Projects:
         "E59": "Diligenciado - Readequação",
         "E60": "Diligenciado - fiscalização",
         "E61": "Diligenciado - na avaliação do relatório trimestral",
-        "E62": "Diligenciado - na avaliação do relatório cumprimento de objeto",
+        "E62": "Diligenciado - na avaliação do relatório cumprimento de"
+        "objeto",
         "E63": "Projeto arquivado - por excesso de prazo sem captação",
         "E64": "Projeto arquivado - captação/execução encerradas",
         "E65": "Projeto arquivado - solicitação de arquivamento",
-        "E66": "Inadimplente - por não responder diligência na avaliação do relatório cumprimento de objeto",
+        "E66": "Inadimplente - por não responder diligência na avaliação"
+        "do relatório cumprimento de objeto",
         "E67": "Indicação para tomada de contas especial",
         "E68": "Aguarda análise financeira",
         "E69": "Inadimplente - por não responder a diligência de fiscalização",
         "E70": "Relatório final enviado ao MinC",
-        "E71": "Inadimplente - por não responder diligência solicitando o envio do relatório trimestral",
+        "E71": "Inadimplente - por não responder diligência solicitando o"
+        "envio do relatório trimestral",
         "E72": "Execução Suspensa de Forma Cautelar",
         "E73": "TCE julgada pelo TCU",
-        "E74": "Prazo prorrogado para a inserção da prestação de contas no sistema",
+        "E74": "Prazo prorrogado para a inserção da prestação de contas no"
+        "sistema",
         "E75": "Expirado o prazo de execução do projeto",
         "E76": "Encaminhado para inclusão em portaria - Prestação de Contas",
         "E77": "Aguarda laudo final",
         "E78": "Débito inferior ao valor mínimo para TCE",
-        "E79": "Projeto não executado por insuficiência de captação de recursos",
-        "E80": "Inadimplente - Proponente notificado a apresentar prestação de contas",
-        "E81": "Inadimplente - Não atendeu a notificação para apresentar prestação de contas",
+        "E79": "Projeto não executado por insuficiência de captação de"
+        "recursos",
+        "E80": "Inadimplente - Proponente notificado a apresentar"
+        "prestação de contas",
+        "E81": "Inadimplente - Não atendeu a notificação para apresentar"
+        "prestação de contas",
         "E90": "Projeto liberado para adequação à realidade de execução",
         "F00": "Projeto prorrogado",
         "G01": "Aguarda descontingenciar orçamento/limite Financ.",
@@ -235,7 +250,8 @@ class Projects:
         "G17": "Solicitação de arquivamento feito pelo proponente",
         "G18": "Diligência na prestação de contas do convênio",
         "G19": "Prestação de contas de convênio aprovada",
-        "G20": "Inadimplente - não respondeu a diligência da Prestação de Contas (FNC)",
+        "G20": "Inadimplente - não respondeu a diligência da Prestação de"
+        "Contas (FNC)",
         "G21": "Análise Técnica do Relatório Final P.C. - convênio",
         "G22": "Analisando prestação de contas - convênio",
         "G23": "Convênio irregular - Conveniado inadimplente",
@@ -284,12 +300,18 @@ class Projects:
         "K06": "Bolsa Virtuose/Prorrogação Aprovada",
         "K07": "Bolsa Virtuose/Prorrogação Negada",
         "K10": "Encaminhado para a ANCINE",
-        "L01": "Prestação de contas aprovada com certificação de qualidade-gestão",
-        "L02": "Prestação de contas aprovada sem certificação de qualidade-gestão",
-        "L03": "Prestação de contas aprovada com ressalva formal e sem prejuízo",
-        "L04": "Prestação de contas aprovada com ressalva material ou prejuízo",
-        "L05": "Prestação de contas desaprovada com notificação de cobrança",
-        "L06": "Prestação de contas desaprovada com INDICATIVO para Tomada de Contas Especial",
+        "L01": "Prestação de contas aprovada com certificação de"
+        "qualidade-gestão",
+        "L02": "Prestação de contas aprovada sem certificação de"
+        "qualidade-gestão",
+        "L03": "Prestação de contas aprovada com ressalva formal e"
+        "sem prejuízo",
+        "L04": "Prestação de contas aprovada com ressalva material ou"
+        "prejuízo",
+        "L05": "Prestação de contas desaprovada com notificação de"
+        "cobrança",
+        "L06": "Prestação de contas desaprovada com INDICATIVO para Tomada"
+        "de Contas Especial",
         "L07": "Recolhimento integral dos recursos",
         "L08": "Prestação de contas aprovada após ressarcimento ao erário.",
         "L09": "Débito Parcelado",
@@ -297,5 +319,5 @@ class Projects:
         "L11": "Prestação de contas reprovada – Inabilitação suspensa"
     }
 
-    DF_SITUATIONS = pd.DataFrame(data = {'Code': list(SITUATIONS.keys()),
-                                         'Description': list(SITUATIONS.values())})
+    DF_SITUATIONS = pd.DataFrame(data={'Code': list(SITUATIONS.keys()),
+                    'Description': list(SITUATIONS.values())})

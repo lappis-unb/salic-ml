@@ -3,6 +3,7 @@ from getopt import getopt, GetoptError
 
 import pandas as pd
 
+
 class CsvSampleFactory():
 
     _short_options = 'o:l:'
@@ -29,7 +30,8 @@ class CsvSampleFactory():
 
     def parse_command_line_options(self):
         try:
-            opts, args = getopt(self.options_list, self._short_options, self._long_options)
+            opts, args = getopt(self.options_list,
+                                self._short_options, self._long_options)
 
             if len(args) > 0:
                 print('Invalid option -- unknown commands.')
@@ -58,6 +60,7 @@ class CsvSampleFactory():
         input_csv = pd.read_csv(self.input_csv)
         output_csv = input_csv.sample(commands['rows'])
         output_csv.to_csv(commands['output'])
+
 
 if __name__ == '__main__':
     make_csv_sample = CsvSampleFactory()

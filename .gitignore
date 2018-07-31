@@ -1,3 +1,6 @@
+### Ignoring .csv files 
+data/raw/*
+
 ### Jupyter notebook files
 */.ipynb_checkpoints/*
 
@@ -121,4 +124,3 @@ tags
 
 ### PyCharm
 .idea
-
