@@ -1,5 +1,12 @@
-### Ignoring .csv files 
+### Data files maintained by FTP server
+data/external/*
+!data/external/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
 data/raw/*
+!data/raw/.gitkeep
 
 ### Jupyter notebook files
 */.ipynb_checkpoints/*

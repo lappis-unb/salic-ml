@@ -1,90 +1,53 @@
 Salic - Machine Learning
 ========================
 
-Time atual:
-* Prof. Felipe Duerno
-* Luciano Prestes
-* Marlon Mendes
-* Alexandre Torres
+O salic-ml é um projeto aberto que utiliza inteligência artificial para otimizar e automatizar o ciclo de vida de projetos culturais viabilizados pela [Lei Rouanet](http://rouanet.cultura.gov.br/) e acompanhados pelo sistema [Salic](http://salic.cultura.gov.br/).
 
-Instalação
-----------
-Instale o Git Large File Storage (git-lfs) pelo link a baixo ou pela linha de
-comando
+O projeto se iniciou em março de 2018, em uma parceria entre o [LAPPIS](https://fga.unb.br/lappis) e o Ministério da Cultura (MinC). A primeira fase do projeto teve foco no levantamento do ciclo de vida de projetos culturais e em seus principais pontos de melhoria. Em julho de 2018 foi iniciada a [Fase 2](https://github.com/lappis-unb/salic-ml/wiki/2018.07.17-Revisão-e-Planejamento) do projeto e foram definidas as primeiras metas e entregas de curto e médio prazo. Detalhes de pesquisa e planejamento estão disponíveis da seção [Wiki](https://github.com/lappis-unb/salic-ml/wiki) e discussões e principais ideias podem ser encontradas na seção [Issues](https://github.com/lappis-unb/salic-ml/issues).
 
-https://git-lfs.github.com/
+A parceria contou com a contribuição de diversos funcionários do MinC e do LAPPIS e entre os idealizadores e principais contribuidores, é possível citar: [Carla Rocha](https://github.com/RochaCarla) e
+[Fábio Mendes](https://github.com/fabiommendes) (coordenadores do LAPPIS) e
+[Joênio Costa](https://github.com/joenio),
+[Luciano Prestes](https://github.com/LucianoPC),
+[Victor Moura](https://github.com/victorcmoura),
+[Daniel Guerreiro](https://github.com/danielgs83),
+[Felipe Duerno](https://github.com/Duerno),
+[Alexandre Torres](https://github.com/AlexandreTK),
+[Marlon Mendes](https://github.com/marlonbymendes),
+[Ricardo Poppi](https://github.com/ricardopoppi) e
+[Rodrigo Maia](https://github.com/rodmaia2099).
 
-    $ apt install git-lfs
-
-Após instalar o pacote é necessário executar o comando de instalação do git-lfs
-
-    $ git lfs install
-
-Clone o repositório
-
-    $ GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/lappis-unb/salic-ml.git
-
-É necessário definir o valor do GIT\_LFS\_SKIP\_SMUDGE como 1, para que ao
-clonar o repositório o git não baixe automaticamente todos os arquivos grandes
-
-Atualizar uma branch, quando for usar o comando "git pull" e não quiser baixar
-todos os arquivos grandes, também é necessário definir o valor do
-GIT\_LFS\_SKIP\_SMUDGE como 1
-
-    $ GIT_LFS_SKIP_SMUDGE=1 git pull
-
-Instale o python e o pip
-
-    $ sudo apt install python3 python3-dev python3-pip
-
-Instale o virtualenvwrapper e crie um virtualenv para o projeto
-
-    $ pip install virtualenvwrapper
-    $ mkvirtualenv -p /usr/bin/python3 salic-ml
-
-Execute o seguinte comando para usar o virtualenv 'salic-ml'
-
-    $ workon salic-ml
-
-Quando quiser sair do virtualenv 'salic-ml' execute o seguinte comando
-
-    $ deactivate
-
-Instale as dependencias do projeto, certifique-se de estar no virtualenv
-'salic-ml'
-
-    $ pip3 install -e .
+O salic-ml desenvolve uma API para fornecer dados relevantes a respeito de projetos culturais a partir de seus dados abertos. O projeto conta com dois repositórios disponíveis na plataforma [GitHub](https://github.com/lappis-unb/) e um [servidor FTP](ftp://178.128.12.141/). Este é o repositório principal, onde são mantidas as pesquisas, tarefas e planejamento do time. O repositório [salic-ml-web](https://github.com/lappis-unb/salic-ml-web) é o repositório utilizado para desenvolver a API para a disponibilização dos dados encontrados através das pesquisas. Por fim, o servidor FTP fornece os dados brutos do Salic, utilizados para realizar todas as pesquisas do grupo.
 
 
-Baixar os dados
----------------
+Contribuição
+------------
 
-Para versionar os dados utilizados em nossas pesquisas, estamos utilizando o
-[Git Large Files Storage](https://git-lfs.github.com/).
+Antes de mais nada, sinta-se à vontade para nos contactar sempre que precisar. Nosso grupo de comunicação no [RocketChat](https://chat.lappis.rocks/channel/salic-ml) está sempre aberto para discussões. Para acompanhar nosso _roadmap_, instale o plugin [ZenHub](https://www.zenhub.com/) para o GitHub.
 
-Para baixar os dados que utilizamos, instale o pacote `git-lfs` e então execute
-o comando
+#### Instalação
 
-    $ git-lfs pull
+As pesquisas deste repositório são realizadas em notebooks do [Jupyter Notebook](http://jupyter.org/). Para reproduzir nossas pesquisas e estudos, é preciso baixar os dados do servidor FTP e instalar o Jupyter Notebook.
 
-A partir do diretório raiz do repositório.
+Para baixar os dados do servidor FTP, basta acessar o seu endpoint: _ftp://178.128.12.141/_. Lembrando que a estrutura de arquivos do servidor FTP é a mesma da pasta `data` deste repositório, então tenha cuidado para não armazenar os dados baixados em pastas erradas. Uma forma de baixar os dados é com o comando [wget](https://www.gnu.org/software/wget/), por um terminal de comandos, entre na pasta raiz deste repositório e execute o seguinte comando:
 
+    $ wget -r -nH -nc -P data ftp://178.128.12.141
 
-Executar um Notebook
---------------------
+Este comando baixará todos os arquivos de dados do servidor e pode demorar alguns minutos ou mesmo horas. Cada notebook precisa de um conjunto específico de arquivos de dados e raramente ou único notebook utilizará todos os arquivos do servidor e para baixar arquivos específicos do servidor, execute o comando:
 
-Execute o jupyter-notebook:
+    $ wget -nc -P data/FILE ftp://178.128.12.141/FILE
+
+Onde _FILE_ deve ser substituído pelo caminho e nome do arquivo desejado.
+
+Para instalar o Jupyter Notebook, é possível utilizar a plataforma [Anaconda](https://www.anaconda.com/) ou o [pip](http://jupyter.org/install).
+
+#### Reprodução de pesquisas
+
+Após a instalação, execute o seguinte comando a partir da raiz do diretório:
 
     $ jupyter-notebook
 
-No jupter-notebook que foi aberto no navegador entre no diretório 'notebooks'
-e abra o notebook desejado
-
-
-Estrutura da pasta Notebook
----------------------------
-
-A pasta notebook foi dividido em 3 subpastas:
+Este comando abrirá uma página o navegador. A partir deste navegador, entre no diretório _notebooks_ e abra o notebook desejado. Estrutura de pastas para armazenar os notebooks de estudo e pesquisa:
 
 * **Doing:** notebooks que estão sendo desenvolvidos.
 
@@ -95,76 +58,38 @@ Seguem o formato <Descrição do Notebook>-<Versão>.
 * **Report:** Notebooks com os resultados das pesquisas. Esta pasta contém as
 versões de notebooks estáveis e atualizados das pesquisas realizadas.
 
+#### Passo a passo de contribuições
 
-Objetivos
----------
+1. Crie um _Fork_ deste repositório: na página do repositório [salic-ml no GitHub](https://github.com/lappis-unb/salic-ml) tem um botão para realizar o _fork_;
 
-Automatizar o processo de admissão de propostas do Salic.
+2. Clone o seu _fork_ do repositório:
 
-* **Verificação da planilha orçamentária:** para cada item da planilha
-orçamentária, verificar se o valor solicitado para o mesmo é compatível com a
-com a estrutura do projeto e com o histórico de aprovação daquele item.
-Exemplo: solicitação de R$ 3,5 milhões de reais para pagamento de INSS.
-* **Categorização de projetos:** verificar se o conjunto de produtos e serviços
-solicitados fazem juz a categoria do projeto.
+```
+$ git clone http://github.com/<USERNAME>/salic-ml.git
+```
 
-Arquitetura
------------
+3. Crie uma _branch_ de pesquisa:
 
-A cada nova proposta cadastrada, o Salic envia os dados da proposta ao Salic-ML
-via API, então o sistema realiza o processamento necessário e envia os
-resultados de volta para o Salic. Ainda existe a possibilidade de um
-administrador externo sincronizar os dados entre o Salic-ML e o Salic e
-retreinar o algoritmo utilizado.
+```
+$ git checkout -b <USERNAME>-new-research
+```
 
-![Arquitetura Salic-ML](arquitetura.jpg)
+4. Faça suas mudanças e realize os seus _commits_:
 
-Solução
+```
+$ git commit -am 'My contribution'
+```
+
+5. Atualize suas modificações no seu _fork_ remoto:
+
+```
+$ git push origin <USERNAME>-new-research
+```
+
+6. Crie o seu _pull request_: na plataforma GitHub, a partir do seu _fork_, terá um botão para abrir um _pull request_.
+
+
+Licença
 -------
 
-O corrente desenvolvimento tem como foco a criação de uma solução para
-automatizar a verificação da planilha orçamentária, ou seja, verificar se cada
-item da planilha contém um valor solicitado aceitável ou se deve ser reduzido.
-
-**Ferramentas:** descrição das ferramentas utilizadas para viabilizar o
-Salic-ML.
-
-* DBeaver: acesso de leitura do banco de dados do Salic via VPN;
-* Python e módulos científicos: numpy, scipy, matplotlib, pandas, sklearn;
-* Jupyter notebook: interface de programação interativa para acelerar a
-pesquisa;
-* Django: criação da API.
-
-**Abordagem:** o corrente problema é multivariável, desta forma, foram
-levantadas todas as variáveis que podem influenciar aumento ou diminuição do
-valor aceitável.
-
-Todos os dados referentes às planilhas orçamentárias foram baixados do Salic
-para manipulação e pesquisa local.
-
-A primeira variável investigada foi o valor solicitado de cada item.
-Comparou-se o valor aprovado e recusado para cada item de cada projeto. O
-gráfico abaixo é um exemplo da análise realizada.
-
-![Itens aprovados e recusados no tempo](itens.jpg)
-
-**Resultados:** apenas a comparação entre o valor solicitado e o valor
-aprovado não são suficientes para garantir quando um valor solicitado deve ser
-aceito.
-
-Próximos passos
----------------
-
-* Investigar por análise de hipóteses quais outras variáveis podem ou não estar
-relacionadas com a aprovação do item com o valor solicitado;
-* Realizar análises de desempenho para cada método de verificação dos valores
-dos itens da planilha orçamentária;
-* Implementação de métodos estatísticos utilizando ou não aprendizado de
-máquina para verificação dos valores dos itens da planilha orçamentária.
-
-Novas demandas
---------------
-
-Expandir o escopo do Salic-ML para englobar não só a análise de propostas
-submetidas ao Salic, como também a análise de resultados de projetos já
-executados e a investigação de insights para servirem de insumo ao Ver-Salic.
+O salic-ml é desenvolvido sob a [Licença GPLv3](LICENSE.md).
