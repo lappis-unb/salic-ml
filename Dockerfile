@@ -18,4 +18,6 @@ RUN python setup.py develop
 ENV LC_ALL C.UTF-8
 ENV LANG=C.UTF-8
 
+EXPOSE 8888
+
 ENTRYPOINT ["./docker/entrypoint.sh"]
