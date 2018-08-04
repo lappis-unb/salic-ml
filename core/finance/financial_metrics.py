@@ -1,5 +1,7 @@
 from core.utils.read_csv import read_csv
 from core.finance.metrics.number_of_items import NumberOfItems
+from core.finance.metrics.verified_funds import VerifiedFunds
+
 
 class FinancialMetrics():
     def __init__(self):
@@ -29,5 +31,6 @@ class FinancialMetrics():
 
     def _init_metrics(self):
         self.metrics = {
-            'items': NumberOfItems(self.datasets['orcamento'])
+            'items': NumberOfItems(self.datasets['orcamento']),
+            'verified_funds': VerifiedFunds(self.datasets['comprovacao'])
         }
