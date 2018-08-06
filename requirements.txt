@@ -6,3 +6,4 @@ pandas
 requests
 scikit-learn
 scipy
+pytest

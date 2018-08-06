@@ -1,0 +1,44 @@
+import unittest
+from core.finance.financial_metrics import FinancialMetrics
+
+class TestFinancialMetrics(unittest.TestCase):
+
+    def setUp(self):
+        self.fm = FinancialMetrics()
+
+    def test_init(self):
+        print('\n[TEST] Test if the financial metrics are loading as expected')
+        print('Starting fm...')
+        fm = FinancialMetrics()
+        print('datasets: {}'.format(fm.datasets.keys()))
+        print('metrics: {}'.format(fm.metrics.keys()))
+        assert True
+
+    def test_num_items(self):
+        print('\n[TEST] Test if the metric \'number of items\' is correct')
+        pronac = 90105
+        metric = 'items'
+        print('Getting project #{} results...'.format(pronac))
+        fm = FinancialMetrics()
+        results = fm.get_metrics(pronac, metrics=[metric])
+        print(results)
+        assert (results[metric]['is_outlier'] == False)
+
+    def test_get_metrics_verified_funds(self):
+        print('\n[TEST] Test if the metric \'total verified funds\' is correct')
+        key = 'verified_funds'
+        pronac = 178098
+        metrics = [key]
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+
+        self.assertIsInstance(response, dict)
+        self.assertIn(key, response)
+        self.assertTrue(len(response) == 1)
+
+        response_funds = response[key]
+        self.assertIsInstance(response_funds, dict)
+
+        expected_keys = ['is_outlier', 'total_verified_funds',
+                         'maximum_expected_funds']
+        map(lambda key: self.assertIn(key, response_funds), expected_keys)

@@ -1,4 +1,6 @@
-SELECT a.idPlanilhaAprovacao,c.idComprovantePagamento,a.IdPRONAC,
+SELECT projetos.AnoProjeto + projetos.Sequencial as PRONAC,
+a.idPlanilhaAprovacao,c.idComprovantePagamento,a.IdPRONAC,
+projetos.Segmento as idSegmento,
    a.idProduto as cdProduto,a.idEtapa as cdEtapa,a.idUFDespesa AS cdUF,a.idMunicipioDespesa as cdCidade,a.idPlanilhaItem,
    c.nrComprovante,c.nrSerie,e.CNPJCPF as nrCNPJCPF,f.Descricao as nmFornecedor,
    CASE c.tpDocumento
@@ -28,6 +30,7 @@ SELECT a.idPlanilhaAprovacao,c.idComprovantePagamento,a.IdPRONAC,
   INNER JOIN BDCORPORATIVO.scSAC.tbComprovantePagamento                   c ON (b.idComprovantePagamento = c.idComprovantePagamento)
   INNER JOIN Agentes.dbo.Agentes                                          e ON (c.idFornecedor           = e.idAgente)
   INNER JOIN Agentes.dbo.Nomes                                            f ON (c.idFornecedor           = f.idAgente)
+  INNER JOIN SAC.dbo.Projetos                                      projetos ON (a.IdPRONAC               = projetos.IdPRONAC)
   WHERE    a.nrFonteRecurso = 109 
 	  AND (sac.dbo.fnVlComprovado_Fonte_Produto_Etapa_Local_Item
 	  (a.idPronac,a.nrFonteRecurso,a.idProduto,a.idEtapa,a.idUFDespesa,a.idMunicipioDespesa, a.idPlanilhaItem)) > 0 
