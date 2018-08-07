@@ -5,13 +5,16 @@ import salicml.outliers.gaussian_outlier as gaussian_outlier
 
 
 class ApprovedFunds():
+    """Responsable for detecting anomalies in projects total approved values.
+    This class maintains a internal cache of projects data so any information
+    need should be present in the dataset passed to the constructor.
+    """
 
     needed_columns = ['PRONAC', 'idSegmento', 'VlTotalAprovado']
 
-
     def __init__(self, dt_approved_funds):
-        """
-            TODO.
+        """All information needed to answer future requests to this class will
+        be saved/cached in this function.
         """
         assert isinstance(dt_approved_funds, pd.DataFrame)
 
@@ -22,6 +25,10 @@ class ApprovedFunds():
         self._init_projects_data()
 
     def get_metrics(self, pronac):
+        """ Calculates whether a given pronac is an anomaly or not in terms of
+        it's total approved value.  Uses the internal cache to get data about
+        the given pronac.
+        """
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_approved_funds = self.get_pronac_total_approved_funds(pronac)
         maximum_expected_funds = \
@@ -35,6 +42,9 @@ class ApprovedFunds():
         return response
 
     def _init_metrics_cache(self):
+        """ Saves metrics for each segment from the dataset. These metrics will
+        be used to calculate whether a given pronac is an anomaly or not.
+        """
         segment_projects = self.dt_approved_funds. \
             groupby(['idSegmento', 'PRONAC']).sum()
 
@@ -48,20 +58,24 @@ class ApprovedFunds():
         self._segments_cache = segment_approved_avg_std.to_dict(orient='index')
 
     def _init_projects_data(self):
+        """ Saves data about each individual project from the dataset """
         self.project_approved_grp = self.dt_approved_funds.groupby(['PRONAC'])
         self.project_approved = self.project_approved_grp.sum()
 
     def is_pronac_outlier(self, pronac):
+        """ Tests if the given pronac is a gaussian outlier in terms of it's
+        total approved value. It is assumed that the data follows a Gaussian
+        distribution """
         assert isinstance(pronac, int)
 
         total_approved = self.get_pronac_total_approved_value(pronac)
         id_segmento = self.get_pronac_segment(pronac)
 
-        if not np.isin(id_segmento, self.segment_approved_avg_std.index):
+        if not (id_segmento in self._segments_cache):
             raise ValueError('Segment {} was not trained'.format(id_segmento))
 
-        mean = self.segment_approved_avg_std.loc[id_segmento]['mean']
-        std = self.segment_approved_avg_std.loc[id_segmento]['std']
+        mean = self._segments_cache[id_segmento]['mean']
+        std = self._segments_cache[id_segmento]['std']
         outlier = gaussian_outlier.is_outlier(total_approved, mean, std)
 
         return outlier, mean, std

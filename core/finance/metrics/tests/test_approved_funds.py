@@ -9,19 +9,13 @@ class TestApprovedFunds(unittest.TestCase):
         csv_name = 'planilha_orcamentaria.csv'
         usecols = ApprovedFunds.needed_columns
 
-        self.dt_verified_funds = read_csv(csv_name, usecols=usecols)
-        self.verified_funds = ApprovedFunds(self.dt_verified_funds)
+        self.dt_approved_funds = read_csv(csv_name, usecols=usecols)
+        self.assertIsNotNone(self.dt_approved_funds)
 
-    def test_IO(self):
-        csv_name = 'planilha_comprovacao.csv'
-        usecols = ['idPlanilhaAprovacao', 'PRONAC', 'vlComprovacao',
-                   'idSegmento']
-
-        csv = read_csv(csv_name, usecols=usecols)
-        self.assertIsNotNone(csv)
+        self.approved_funds = ApprovedFunds(self.dt_approved_funds)
 
     def test_init_mean_std(self):
-        cache = self.verified_funds._segments_cache
+        cache = self.approved_funds._segments_cache
         self.assertTrue(cache)
 
         mean_std = ['mean', 'std']
@@ -30,13 +24,13 @@ class TestApprovedFunds(unittest.TestCase):
             map(lambda x: self.assertIn(x, cache[segment]), mean_std)
 
     def test_inlier_pronac(self):
-        pronac = 153699
+        pronac = 138140
 
-        is_outlier, mean, std  = self.verified_funds.is_pronac_outlier(pronac)
+        is_outlier, mean, std  = self.approved_funds.is_pronac_outlier(pronac)
         self.assertFalse(is_outlier)
 
     def test_outlier_pronac(self):
-        pronac = 178098
+        pronac = 121386
 
-        is_outlier, mean, std = self.verified_funds.is_pronac_outlier(pronac)
+        is_outlier, mean, std = self.approved_funds.is_pronac_outlier(pronac)
         self.assertTrue(is_outlier)
