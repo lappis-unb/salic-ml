@@ -26,8 +26,8 @@ class FinancialMetrics():
     def _init_datasets(self):
         self.datasets = {
             'orcamento': read_csv('planilha_orcamentaria.csv'),
-            'comprovacao': read_csv('planilha_comprovacao_2.csv'),
-            'captacao': read_csv('planilha_captacao_2.csv')
+            'comprovacao': read_csv('planilha_comprovacao.csv'),
+            'captacao': read_csv('planilha_captacao.csv')
         }
 
     def _init_metrics(self):
