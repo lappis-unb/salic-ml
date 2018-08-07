@@ -7,11 +7,9 @@ class TestFinancialMetrics(unittest.TestCase):
         self.fm = FinancialMetrics()
 
     def test_init(self):
-        print('\n[TEST] Test if the financial metrics are loading as expected')
-        print('Starting fm...')
-        fm = FinancialMetrics()
-        print('datasets: {}'.format(fm.datasets.keys()))
-        print('metrics: {}'.format(fm.metrics.keys()))
+        print('\n[TEST] Test if the financial metrics are loaded as expected')
+        print('datasets: {}'.format(self.fm.datasets.keys()))
+        print('metrics: {}'.format(self.fm.metrics.keys()))
         assert True
 
     def test_num_items(self):
@@ -19,8 +17,7 @@ class TestFinancialMetrics(unittest.TestCase):
         pronac = 90105
         metric = 'items'
         print('Getting project #{} results...'.format(pronac))
-        fm = FinancialMetrics()
-        results = fm.get_metrics(pronac, metrics=[metric])
+        results = self.fm.get_metrics(pronac, metrics=[metric])
         print(results)
         assert (results[metric]['is_outlier'] == False)
 
