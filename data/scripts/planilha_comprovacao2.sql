@@ -2,7 +2,7 @@ SELECT projetos.AnoProjeto + projetos.Sequencial as PRONAC,
 a.idPlanilhaAprovacao,c.idComprovantePagamento,a.IdPRONAC,
 projetos.Segmento as idSegmento,
    a.idProduto as cdProduto,a.idEtapa as cdEtapa,a.idUFDespesa AS cdUF,a.idMunicipioDespesa as cdCidade,a.idPlanilhaItem,
-   c.nrComprovante,c.nrSerie,e.CNPJCPF as nrCNPJCPF,f.Descricao as nmFornecedor,
+   c.nrComprovante,c.nrSerie,e.CNPJCPF as nrCNPJCPF,f.Descricao as nmFornecedor, projetos.CgcCpf as proponenteCgcCpf,
    CASE c.tpDocumento
 	 WHEN 1 THEN ('Cupom Fiscal')
 	 WHEN 2 THEN ('Guia de Recolhimento')
