@@ -131,3 +131,6 @@ tags
 
 ### PyCharm
 .idea
+
+### MacOS FS
+.DS_Store
