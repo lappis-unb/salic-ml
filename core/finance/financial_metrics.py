@@ -10,7 +10,7 @@ from core.finance.metrics.common_items_ratio import CommonItemsRatio
 
 class FinancialMetrics():
     PROCESSED_FILE_PATH = os.path.join(PROJECT_ROOT, 'data', 'processed',
-                                    'financial_metrics.pickle')
+                                       'financial_metrics.pickle')
 
     def __init__(self):
         self.load()
@@ -44,7 +44,7 @@ class FinancialMetrics():
         self.metrics = {
             'items': NumberOfItems(self.datasets['orcamento']),
             'verified_funds': VerifiedFunds(self.datasets['comprovacao']),
-            #'raised_funds': RaisedFunds(self.datasets['captacao']),
+            'raised_funds': RaisedFunds(self.datasets['captacao']),
             'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'])
         }
 
