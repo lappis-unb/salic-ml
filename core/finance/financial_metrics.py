@@ -5,12 +5,13 @@ from core.utils.read_csv import read_csv, read_csv_as_string, PROJECT_ROOT
 from core.finance.metrics.number_of_items import NumberOfItems
 from core.finance.metrics.verified_funds import VerifiedFunds
 from core.finance.metrics.raised_funds import RaisedFunds
+from core.finance.metrics.common_items_ratio import CommonItemsRatio
 from core.finance.metrics.proponent_projects import ProponentProjects
 
 
 class FinancialMetrics():
     PROCESSED_FILE_PATH = os.path.join(PROJECT_ROOT, 'data', 'processed',
-                                    'financial_metrics.pickle')
+                                       'financial_metrics.pickle')
 
     def __init__(self):
         self.load()
@@ -49,6 +50,7 @@ class FinancialMetrics():
             'items': NumberOfItems(self.datasets['orcamento']),
             'verified_funds': VerifiedFunds(self.datasets['comprovacao']),
             'raised_funds': RaisedFunds(self.datasets['captacao']),
+            'common_items_ratio': CommonItemsRatio(self.datasets['orcamento']),
             'proponent_projects': ProponentProjects(self.datasets['comprovacao_string'], self.datasets['projetos_string'])
         }
 

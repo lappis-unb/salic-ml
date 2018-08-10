@@ -1,5 +1,3 @@
-import numpy as np
-
 class NumberOfItems():
     def __init__(self, items):
         """
@@ -25,14 +23,15 @@ class NumberOfItems():
         """
             This function receives a project identifier and a constant 'k' and
             verify if this project has an anomalous 'number os items' in its
-            budget spreadsheet, based on a gaussian distribution. The project is
-            said outlier if its 'number of items' is greater than 'mean + k*std'
-            of its segment. It also return the project 'number of items' and its
-            segment 'mean' and 'standard deviation'.
+            budget spreadsheet, based on a gaussian distribution. The project
+            is said outlier if its:
+                (number of items) > (mean + k * std)
+            for this segment. It also return the project 'number of items' and
+            its segment 'mean' and 'standard deviation' for this metric.
             Input:
                 pronac: the project identifier.
-                k: constant that defines the threshold to verify if a project is
-                   an outlier.
+                k: constant that defines the threshold to verify if a project
+                   is an outlier.
             Output:
                 A dictionary containing the keys: is_outlier, value, mean, and
                 std.
