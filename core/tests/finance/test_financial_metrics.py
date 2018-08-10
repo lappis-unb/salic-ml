@@ -57,3 +57,17 @@ class TestFinancialMetrics(unittest.TestCase):
         expected_keys = ['is_outlier', 'total_raised_funds',
                          'maximum_expected_funds']
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
+
+    def test_get_proponent_projects(self):
+        pronac = '00000000000000'
+        key = 'proponent_projects'
+        metrics = [key]
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+
+        response_propoents = response[key]
+        self.assertIsInstance(response_propoents, dict)
+
+        expected_keys = ['submitted_projects', 'analyzed_projects']
+        map(lambda key: self.assertIn(key, response_propoents), expected_keys)
+
