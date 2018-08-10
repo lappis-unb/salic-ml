@@ -12,3 +12,10 @@ def read_csv(csv_name, usecols=None):
     csv_path = os.path.join(DATA_FOLDER, csv_name)
     csv = pd.read_csv(csv_path, low_memory=False, usecols=usecols)
     return csv
+
+
+def read_csv_as_string(csv_name, usecols=None):
+    """Returns a DataFrame from a .csv file stored in /data/raw/"""
+    csv_path = os.path.join(DATA_FOLDER, csv_name)
+    csv = pd.read_csv(csv_path, low_memory=False, usecols=usecols, dtype=str)
+    return csv

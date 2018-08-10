@@ -68,6 +68,6 @@ class TestFinancialMetrics(unittest.TestCase):
         response_propoents = response[key]
         self.assertIsInstance(response_propoents, dict)
 
-        expected_keys = ['submitted_projects', 'analyzed_projects']
+        expected_keys = ['cnpj_cpf', 'submitted_projects', 'analyzed_projects']
         map(lambda key: self.assertIn(key, response_propoents), expected_keys)
 

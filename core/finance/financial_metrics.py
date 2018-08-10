@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from core.utils.read_csv import read_csv, PROJECT_ROOT
+from core.utils.read_csv import read_csv, read_csv_as_string, PROJECT_ROOT
 from core.finance.metrics.number_of_items import NumberOfItems
 from core.finance.metrics.verified_funds import VerifiedFunds
 from core.finance.metrics.raised_funds import RaisedFunds
@@ -38,7 +38,10 @@ class FinancialMetrics():
             'orcamento': read_csv('planilha_orcamentaria.csv'),
             'comprovacao': read_csv('planilha_comprovacao.csv'),
             'captacao': read_csv('planilha_captacao.csv'),
-            'projetos': read_csv('planilha_projetos.csv')
+            # TODO: CHANGE ALL PRONAC TO INTEGER OR STRING
+            #       All the columns of the CSVs below are read as strings.
+            'comprovacao_string': read_csv_as_string('planilha_comprovacao.csv'),
+            'projetos_string': read_csv_as_string('planilha_projetos.csv')
         }
 
     def _init_metrics(self):
@@ -46,7 +49,7 @@ class FinancialMetrics():
             'items': NumberOfItems(self.datasets['orcamento']),
             'verified_funds': VerifiedFunds(self.datasets['comprovacao']),
             'raised_funds': RaisedFunds(self.datasets['captacao']),
-            'proponent_projects': ProponentProjects(self.datasets['comprovacao'], self.datasets['projetos'])
+            'proponent_projects': ProponentProjects(self.datasets['comprovacao_string'], self.datasets['projetos_string'])
         }
 
     def save(self):
