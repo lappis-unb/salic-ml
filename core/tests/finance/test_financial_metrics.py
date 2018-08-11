@@ -72,7 +72,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
 
     def test_get_proponent_projects(self):
-        pronac = '178098'
+        pronac = 178098
         key = 'proponent_projects'
         metrics = [key]
 
