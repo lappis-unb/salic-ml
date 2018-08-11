@@ -6,6 +6,7 @@ from core.finance.metrics.number_of_items import NumberOfItems
 from core.finance.metrics.verified_funds import VerifiedFunds
 from core.finance.metrics.raised_funds import RaisedFunds
 from core.finance.metrics.common_items_ratio import CommonItemsRatio
+from core.finance.metrics.new_providers import NewProviders
 
 
 class FinancialMetrics():
@@ -45,7 +46,8 @@ class FinancialMetrics():
             'items': NumberOfItems(self.datasets['orcamento']),
             'verified_funds': VerifiedFunds(self.datasets['comprovacao']),
             'raised_funds': RaisedFunds(self.datasets['captacao']),
-            'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'])
+            'common_items_ratio': CommonItemsRatio(self.datasets['orcamento']),
+            'new_providers': NewProviders(self.datasets['comprovacao']),
         }
 
     def save(self):
