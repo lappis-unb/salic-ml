@@ -43,11 +43,11 @@ class FinancialMetrics():
 
     def _init_metrics(self):
         self.metrics = {
-            'items': NumberOfItems(self.datasets['orcamento']),
-            'verified_funds': VerifiedFunds(self.datasets['comprovacao']),
-            'raised_funds': RaisedFunds(self.datasets['captacao']),
-            'common_items_ratio': CommonItemsRatio(self.datasets['orcamento']),
-            'new_providers': NewProviders(self.datasets['comprovacao']),
+            'items': NumberOfItems(self.datasets['orcamento'].copy()),
+            'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
+            'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
+            'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy()),
+            'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
         }
 
     def save(self):
