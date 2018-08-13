@@ -63,6 +63,7 @@ class TestFinancialMetrics(unittest.TestCase):
                          'maximum_expected_funds']
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
 
+
     def test_get_metrics_common_items_ratio(self):
         print('\n[TEST] Test if the metric [common items ratio] is correct')
         pronac = 90105
@@ -71,6 +72,20 @@ class TestFinancialMetrics(unittest.TestCase):
         results = self.fm.get_metrics(pronac, metrics=[metric])
         print(results)
         assert (not results[metric]['is_outlier'])
+
+    def test_get_proponent_projects(self):
+        pronac = 178098
+        key = 'proponent_projects'
+        metrics = [key]
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+        print('Getting project #{} proponent information...'.format(pronac))
+        print(response)
+        response_propoents = response[key]
+        self.assertIsInstance(response_propoents, dict)
+
+        expected_keys = ['cnpj_cpf', 'submitted_projects', 'analyzed_projects']
+        map(lambda key: self.assertIn(key, response_propoents), expected_keys)
 
     def test_get_metrics_total_receipts(self):
         key = 'total_receipts'
