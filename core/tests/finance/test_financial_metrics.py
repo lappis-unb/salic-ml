@@ -5,8 +5,11 @@ from core.finance.financial_metrics import FinancialMetrics
 class TestFinancialMetrics(unittest.TestCase):
     fm = FinancialMetrics()
 
-    def setUp(self):
-        self.fm = TestFinancialMetrics.fm
+    @classmethod
+    def setUpClass(cls):
+        super(TestFinancialMetrics, cls).setUpClass()
+
+        cls.fm = TestFinancialMetrics.fm
 
     def test_init(self):
         print('\n[TEST] Test if the financial metrics are loaded as expected')
@@ -68,3 +71,25 @@ class TestFinancialMetrics(unittest.TestCase):
         results = self.fm.get_metrics(pronac, metrics=[metric])
         print(results)
         assert (not results[metric]['is_outlier'])
+
+    def test_new_providers(self):
+        key = 'new_providers'
+        metrics = [key]
+        pronac = '130222'
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+
+        self.assertIsInstance(response, dict)
+        self.assertIn(key, response)
+        self.assertTrue(len(response) == 1)
+
+        response_new_providers = response[key]
+        self.assertIsInstance(response_new_providers, dict)
+
+        expected_keys = ['new_providers', 'new_providers_percentage',
+                 'segment_average_percentage', 'is_outlier',
+                 'all_projects_average_percentage', ]
+
+        map(lambda key: self.assertIn(key, response_new_providers),
+                        expected_keys)
+
