@@ -72,7 +72,26 @@ class TestFinancialMetrics(unittest.TestCase):
         print(results)
         assert (not results[metric]['is_outlier'])
 
-    def test_new_providers(self):
+    def test_get_metrics_total_receipts(self):
+        key = 'total_receipts'
+        pronac = '131886'
+        metrics = [key]
+        
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+
+        self.assertIsInstance(response, dict)
+        self.assertIn(key, response)
+        self.assertTrue(len(response) == 1)
+        
+        response_receipts = response[key]
+        self.assertIsInstance(response_receipts, dict)
+
+        expected_keys = ['is_outlier', 'total_receipts',
+            'maximum_expected_in_segment', ]
+
+        map(lambda key: self.assertIn(key, response_receipts), expected_keys)
+
+  def test_new_providers(self):
         key = 'new_providers'
         metrics = [key]
         pronac = '130222'
@@ -92,4 +111,3 @@ class TestFinancialMetrics(unittest.TestCase):
 
         map(lambda key: self.assertIn(key, response_new_providers),
                         expected_keys)
-

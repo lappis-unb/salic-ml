@@ -6,6 +6,7 @@ from core.finance.metrics.number_of_items import NumberOfItems
 from core.finance.metrics.verified_funds import VerifiedFunds
 from core.finance.metrics.raised_funds import RaisedFunds
 from core.finance.metrics.common_items_ratio import CommonItemsRatio
+from core.finance.metrics.total_receipts import TotalReceipts
 from core.finance.metrics.new_providers import NewProviders
 
 
@@ -47,6 +48,7 @@ class FinancialMetrics():
             'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
             'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
             'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy()),
+            'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
             'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
         }
 
