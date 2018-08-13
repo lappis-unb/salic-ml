@@ -7,6 +7,7 @@ from core.finance.metrics.verified_funds import VerifiedFunds
 from core.finance.metrics.raised_funds import RaisedFunds
 from core.finance.metrics.common_items_ratio import CommonItemsRatio
 from core.finance.metrics.proponent_projects import ProponentProjects
+from core.finance.metrics.total_receipts import TotalReceipts
 from core.finance.metrics.new_providers import NewProviders
 
 
@@ -47,9 +48,11 @@ class FinancialMetrics():
     def _init_metrics(self):
         self.metrics = {
             'items': NumberOfItems(self.datasets['orcamento'].copy()),
+            'approved_funds': ApprovedFunds(self.datasets['orcamento'].copy()),
             'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
             'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
             'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy()),
+            'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
             'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
             'proponent_projects': ProponentProjects(self.datasets['comprovacao'].copy(), \
                                                     self.datasets['projetos'].copy())
