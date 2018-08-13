@@ -9,6 +9,7 @@ from core.finance.metrics.common_items_ratio import CommonItemsRatio
 from core.finance.metrics.proponent_projects import ProponentProjects
 from core.finance.metrics.total_receipts import TotalReceipts
 from core.finance.metrics.new_providers import NewProviders
+from core.finance.metrics.approved_funds import ApprovedFunds
 
 
 class FinancialMetrics():

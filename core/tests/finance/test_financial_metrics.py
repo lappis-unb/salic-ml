@@ -106,7 +106,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
         map(lambda key: self.assertIn(key, response_receipts), expected_keys)
 
-  def test_new_providers(self):
+    def test_new_providers(self):
         key = 'new_providers'
         metrics = [key]
         pronac = '130222'
