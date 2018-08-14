@@ -19,7 +19,7 @@ class TotalReceipts():
 
     def get_metrics(self, pronac):
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC must be str')
+            raise ValueError('PRONAC type must be str')
 
         is_outlier, total_receipts, maximum_expected = \
             self.is_pronac_outlier(pronac)

@@ -30,7 +30,8 @@ class ApprovedFunds():
         it's total approved value.  Uses the internal cache to get data about
         the given pronac.
         """
-        assert isinstance(pronac, str)
+        if not isinstance(pronac, str):
+            raise ValueError('PRONAC type must be str')
 
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_approved_funds = self.get_pronac_total_approved_funds(pronac)
@@ -71,7 +72,7 @@ class ApprovedFunds():
         distribution """
         assert isinstance(pronac, str)
 
-        total_approved = self.get_pronac_total_approved_value(pronac)
+        total_approved = self.get_pronac_total_approved_funds(pronac)
         id_segmento = self.get_pronac_segment(pronac)
 
         if not (id_segmento in self._segments_cache):
@@ -83,7 +84,7 @@ class ApprovedFunds():
 
         return outlier, mean, std
 
-    def get_pronac_total_approved_value(self, pronac):
+    def get_pronac_total_approved_funds(self, pronac):
         total_approved = self.project_approved.loc[pronac]['VlTotalAprovado']
         return total_approved
 

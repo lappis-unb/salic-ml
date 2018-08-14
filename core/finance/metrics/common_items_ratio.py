@@ -59,8 +59,9 @@ class CommonItemsRatio():
                 A dictionary containing the keys: is_outlier, value, mean, std,
                 uncommon_items, and common_items_not_in_project.
         """
+
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
+            raise ValueError('PRONAC type must be str')
 
         ### TODO: OPTIMIZE PERFORMANCE.
         ### For now, using pronac as integer

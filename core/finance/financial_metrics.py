@@ -25,21 +25,26 @@ class FinancialMetrics():
         print('****** Computing Metrics ******')
         self._init_metrics()
 
-    def get_metrics(self, pronac, metrics=[]):
-
+    def get_metrics(self, pronac, metrics=None):
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
+            raise ValueError('PRONAC type must be str')
+
         results = {}
 
-        if metrics is []:
+        if metrics is None:
             metrics = self.metrics.keys()
 
         for metric in metrics:
-            if metric in self.metrics:
-                print('Getting Metrics for [{}]'.format(metric))
-                results[metric] = self.metrics[metric].get_metrics(pronac)
-            else:
+            if metric not in self.metrics:
                 raise Exception('metricNotFound: {}'.format(metric))
+
+        for metric in metrics:
+            try:
+                print('Getting Metrics for [{}]'.format(metric))
+                metric_obj = self.metrics[metric]
+                results[metric] = metric_obj.get_metrics(pronac)
+            except: #TODO: create exception types
+                pass
 
         self._add_easiness_to_metrics(results)
         return results
