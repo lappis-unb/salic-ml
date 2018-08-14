@@ -19,11 +19,7 @@ class TestFinancialMetrics(unittest.TestCase):
     def test_get_metrics_no_metrics_parameter(self):
         pronac = '131886'
 
-        expected_metrics = ['items', 'approved_funds', 'verified_funds', \
-                            'raised_funds', 'common_items_ratio', \
-                            'new_providers', 'total_receipts', \
-                            'proponent_projects']
-
+        expected_metrics = self.fm.metrics.keys()
         response = self.fm.get_metrics(pronac)
 
         for metric in expected_metrics:
