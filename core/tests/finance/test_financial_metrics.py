@@ -17,7 +17,7 @@ class TestFinancialMetrics(unittest.TestCase):
         assert True
     
     def test_get_metrics_no_metrics_parameter(self):
-        pronac = 131886
+        pronac = '131886'
 
         expected_metrics = ['items', 'approved_funds', 'verified_funds', \
                             'raised_funds', 'common_items_ratio', \
