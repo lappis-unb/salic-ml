@@ -15,6 +15,19 @@ class TestFinancialMetrics(unittest.TestCase):
         print('datasets: {}'.format(self.fm.datasets.keys()))
         print('metrics: {}'.format(self.fm.metrics.keys()))
         assert True
+    
+    def test_get_metrics_no_metrics_parameter(self):
+        pronac = 131886
+
+        expected_metrics = ['items', 'approved_funds', 'verified_funds', \
+                            'raised_funds', 'common_items_ratio', \
+                            'new_providers', 'total_receipts', \
+                            'proponent_projects']
+
+        response = self.fm.get_metrics(pronac)
+
+        for metric in expected_metrics:
+            self.assertIn(metric, response)
 
     def test_get_metrics_num_items(self):
         print('\n[TEST] Test if the metric [number of items] is correct')

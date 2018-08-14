@@ -31,7 +31,7 @@ class FinancialMetrics():
             raise ValueError('PRONAC type must be str (string)')
         results = {}
 
-        if metrics is []:
+        if metrics == []:
             metrics = self.metrics.keys()
 
         for metric in metrics:

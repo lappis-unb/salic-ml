@@ -71,7 +71,7 @@ class ApprovedFunds():
         distribution """
         assert isinstance(pronac, str)
 
-        total_approved = self.get_pronac_total_approved_value(pronac)
+        total_approved = self.get_pronac_total_approved_funds(pronac)
         id_segmento = self.get_pronac_segment(pronac)
 
         if not (id_segmento in self._segments_cache):
@@ -83,7 +83,7 @@ class ApprovedFunds():
 
         return outlier, mean, std
 
-    def get_pronac_total_approved_value(self, pronac):
+    def get_pronac_total_approved_funds(self, pronac):
         total_approved = self.project_approved.loc[pronac]['VlTotalAprovado']
         return total_approved
 
