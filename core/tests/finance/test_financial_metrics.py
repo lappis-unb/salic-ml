@@ -147,3 +147,15 @@ class TestFinancialMetrics(unittest.TestCase):
             'total_metrics_outliers': 0,
         }
         self.assertEqual(easiness, expected_easiness)
+
+    def test_calculate_easiness_without_outliers(self):
+        pronac = '178098'
+        key = 'proponent_projects'
+        metrics = [key]
+
+        EASINESS_KEY = 'easiness'
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+        self.assertNotIn(EASINESS_KEY, response)
+
+
