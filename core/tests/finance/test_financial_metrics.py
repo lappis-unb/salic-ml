@@ -19,7 +19,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_get_metrics_num_items(self):
         print('\n[TEST] Test if the metric [number of items] is correct')
-        pronac = 90105
+        pronac = '090105'
         metric = 'items'
         print('Getting project #{} results...'.format(pronac))
         results = self.fm.get_metrics(pronac, metrics=[metric])
@@ -29,7 +29,7 @@ class TestFinancialMetrics(unittest.TestCase):
     def test_get_metrics_verified_funds(self):
         print('\n[TEST] Test if the metric [total verified funds] is correct')
         key = 'verified_funds'
-        pronac = 178098
+        pronac = '178098'
         metrics = [key]
 
         response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
@@ -46,8 +46,8 @@ class TestFinancialMetrics(unittest.TestCase):
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
 
     def test_get_metrics_raised_funds(self):
-        key = 'verified_funds'
-        pronac = 178098
+        key = 'raised_funds'
+        pronac = '178098'
         metrics = [key]
 
         response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
@@ -66,7 +66,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_get_metrics_common_items_ratio(self):
         print('\n[TEST] Test if the metric [common items ratio] is correct')
-        pronac = 90105
+        pronac = '090105'
         metric = 'common_items_ratio'
         print('Getting project #{} results...'.format(pronac))
         results = self.fm.get_metrics(pronac, metrics=[metric])
@@ -74,7 +74,7 @@ class TestFinancialMetrics(unittest.TestCase):
         assert (not results[metric]['is_outlier'])
 
     def test_get_proponent_projects(self):
-        pronac = 178098
+        pronac = '178098'
         key = 'proponent_projects'
         metrics = [key]
 

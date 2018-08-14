@@ -1,6 +1,6 @@
 import unittest
 
-from core.utils.read_csv import read_csv
+from core.utils.read_csv import read_csv_with_different_type
 from core.finance.metrics.approved_funds import ApprovedFunds
 
 class TestApprovedFunds(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestApprovedFunds(unittest.TestCase):
         csv_name = 'planilha_orcamentaria.csv'
         usecols = ApprovedFunds.needed_columns
 
-        self.dt_approved_funds = read_csv(csv_name, usecols=usecols)
+        self.dt_approved_funds = read_csv_with_different_type(csv_name, {'PRONAC': str}, usecols=usecols)
         self.assertIsNotNone(self.dt_approved_funds)
 
         self.approved_funds = ApprovedFunds(self.dt_approved_funds)
@@ -24,13 +24,13 @@ class TestApprovedFunds(unittest.TestCase):
             map(lambda x: self.assertIn(x, cache[segment]), mean_std)
 
     def test_inlier_pronac(self):
-        pronac = 138140
+        pronac = '138140'
 
         is_outlier, mean, std  = self.approved_funds.is_pronac_outlier(pronac)
         self.assertFalse(is_outlier)
 
     def test_outlier_pronac(self):
-        pronac = 121386
+        pronac = '121386'
 
         is_outlier, mean, std = self.approved_funds.is_pronac_outlier(pronac)
         self.assertTrue(is_outlier)

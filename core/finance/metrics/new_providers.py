@@ -11,15 +11,10 @@ class NewProviders():
     def __init__(self, dt_comprovacao):
         """ TODO
         """
+        print('*** NewProviders ***')
         assert isinstance(dt_comprovacao, pd.DataFrame)
 
         self.dt_comprovacao = dt_comprovacao[NewProviders.usecols].copy()
-        self.dt_comprovacao['PRONAC'] = \
-            self.dt_comprovacao['PRONAC'].astype(str)
-
-        self.dt_comprovacao['nrCNPJCPF'] = \
-            self.dt_comprovacao['nrCNPJCPF'].astype(str)
-
         self._train()
 
     def get_metrics(self, pronac):

@@ -10,14 +10,10 @@ class TotalReceipts():
         """
             TODO.
         """
-
+        print('*** TotalReceipts ***')
         assert isinstance(dt_comprovacao, pd.DataFrame)
 
         self.dt_total_receipts = dt_comprovacao[TotalReceipts.usecols].copy()
-
-        self.dt_total_receipts['PRONAC'] = \
-            self.dt_total_receipts['PRONAC'].astype(str)
-
         self._init_metrics_cache()
         self._init_projects_data()
 

@@ -17,6 +17,7 @@ class CommonItemsRatio():
                 This function has no output, instead, it caches the metrics
                 found in its instance.
         """
+        print('*** CommonItemsRatio ***')
         # Generate distinct items table
         distinct_items = items[['idPlanilhaItens', 'Item']]
         distinct_items = distinct_items.set_index('idPlanilhaItens')
@@ -24,6 +25,12 @@ class CommonItemsRatio():
 
         # Filtering items table
         items = items[['PRONAC', 'idSegmento', 'idPlanilhaItens']]
+
+        ### TODO: OPTIMIZE PERFORMANCE.
+        ### For now, using pronac as integer
+        items[['PRONAC']] = items[['PRONAC']].astype(int)
+        ####################################
+
         self.items = items.drop_duplicates()
 
         # Generating cache
@@ -52,6 +59,14 @@ class CommonItemsRatio():
                 A dictionary containing the keys: is_outlier, value, mean, std,
                 uncommon_items, and common_items_not_in_project.
         """
+        if not isinstance(pronac, str):
+            raise ValueError('PRONAC type must be str (string)')
+
+        ### TODO: OPTIMIZE PERFORMANCE.
+        ### For now, using pronac as integer
+        pronac = int(pronac)
+        ####################################
+
         items = self.items
         project = items[items['PRONAC'] == pronac].iloc[0]
         segment = project['idSegmento']
