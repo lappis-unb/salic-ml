@@ -46,12 +46,13 @@ class FinancialMetrics():
 
     def _add_easiness_to_metrics(self, metrics):
         """ Add an easiness metric to the dict-like metrics parameter.
-            This function modifies the parameter.
+            This function modifies the parameter only if easiness is not empty.
         """
 
         easiness = self.calculate_easiness(metrics)
-        EASINESS_KEY = 'easiness'
-        metrics[EASINESS_KEY] = easiness
+        if easiness:
+            EASINESS_KEY = 'easiness'
+            metrics[EASINESS_KEY] = easiness
 
     def calculate_easiness(self, metrics):
         """ Calculates how easy it should be to analyse the project's finances.
@@ -69,14 +70,13 @@ class FinancialMetrics():
                 total_metrics_outliers =+ 1 if metric[IS_OUTLIER_KEY] \
                                             else 0
 
-        if total_metrics == 0:
-            return
-
-        easiness = {
-            'easiness': 1 - total_metrics_outliers / total_metrics,
-            'total_metrics': total_metrics,
-            'total_metrics_outliers': total_metrics_outliers,
-        }
+        easiness = {}
+        if total_metrics > 0:
+            easiness = {
+                'easiness': 1 - total_metrics_outliers / total_metrics,
+                'total_metrics': total_metrics,
+                'total_metrics_outliers': total_metrics_outliers,
+            }
         return easiness
 
     def _init_datasets(self):
