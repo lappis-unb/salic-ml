@@ -35,14 +35,14 @@ class FinancialMetrics():
             metrics = self.metrics.keys()
 
         for metric in metrics:
+            if metric not in self.metrics:
+                raise Exception('metricNotFound: {}'.format(metric))
+
+        for metric in metrics:
             try:
                 print('Getting Metrics for [{}]'.format(metric))
-                if metric not in self.metrics:
-                  print('Metric {} not found!'.format(metric))
                 metric_obj = self.metrics[metric]
                 results[metric] = metric_obj.get_metrics(pronac)
-            except KeyError:
-                raise Exception('metricNotFound: {}'.format(metric))
             except: #TODO: create exception types
                 pass
 
