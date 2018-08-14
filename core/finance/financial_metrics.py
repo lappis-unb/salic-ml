@@ -67,7 +67,7 @@ class FinancialMetrics():
         for metric_key, metric in metrics.items():
             if IS_OUTLIER_KEY in metric:
                 total_metrics += 1
-                total_metrics_outliers =+ 1 if metric[IS_OUTLIER_KEY] \
+                total_metrics_outliers += 1 if metric[IS_OUTLIER_KEY] \
                                             else 0
 
         easiness = {}
