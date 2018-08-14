@@ -41,7 +41,43 @@ class FinancialMetrics():
             else:
                 raise Exception('metricNotFound: {}'.format(metric))
 
+        self._add_easiness_to_metrics(results)
         return results
+
+    def _add_easiness_to_metrics(self, metrics):
+        """ Add an easiness metric to the dict-like metrics parameter.
+            This function modifies the parameter only if easiness is not empty.
+        """
+
+        easiness = self.calculate_easiness(metrics)
+        if easiness:
+            EASINESS_KEY = 'easiness'
+            metrics[EASINESS_KEY] = easiness
+
+    def calculate_easiness(self, metrics):
+        """ Calculates how easy it should be to analyse the project's finances.
+        """
+        if not isinstance(metrics, dict):
+            raise ValueError('Argument metrics must be dict-like')
+
+        IS_OUTLIER_KEY = 'is_outlier'
+        total_metrics = 0
+        total_metrics_outliers = 0
+
+        for metric_key, metric in metrics.items():
+            if IS_OUTLIER_KEY in metric:
+                total_metrics += 1
+                total_metrics_outliers += 1 if metric[IS_OUTLIER_KEY] \
+                                            else 0
+
+        easiness = {}
+        if total_metrics > 0:
+            easiness = {
+                'easiness': 1 - total_metrics_outliers / total_metrics,
+                'total_metrics': total_metrics,
+                'total_metrics_outliers': total_metrics_outliers,
+            }
+        return easiness
 
     def _init_datasets(self):
         self.datasets = {

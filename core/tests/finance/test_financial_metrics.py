@@ -3,13 +3,12 @@ from core.finance.financial_metrics import FinancialMetrics
 
 
 class TestFinancialMetrics(unittest.TestCase):
-    fm = FinancialMetrics()
 
     @classmethod
     def setUpClass(cls):
         super(TestFinancialMetrics, cls).setUpClass()
 
-        cls.fm = TestFinancialMetrics.fm
+        cls.fm = FinancialMetrics()
 
     def test_init(self):
         print('\n[TEST] Test if the financial metrics are loaded as expected')
@@ -36,7 +35,6 @@ class TestFinancialMetrics(unittest.TestCase):
 
         self.assertIsInstance(response, dict)
         self.assertIn(key, response)
-        self.assertTrue(len(response) == 1)
 
         response_funds = response[key]
         self.assertIsInstance(response_funds, dict)
@@ -54,7 +52,6 @@ class TestFinancialMetrics(unittest.TestCase):
 
         self.assertIsInstance(response, dict)
         self.assertIn(key, response)
-        self.assertTrue(len(response) == 1)
 
         response_funds = response[key]
         self.assertIsInstance(response_funds, dict)
@@ -62,7 +59,6 @@ class TestFinancialMetrics(unittest.TestCase):
         expected_keys = ['is_outlier', 'total_raised_funds',
                          'maximum_expected_funds']
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
-
 
     def test_get_metrics_common_items_ratio(self):
         print('\n[TEST] Test if the metric [common items ratio] is correct')
@@ -96,8 +92,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
         self.assertIsInstance(response, dict)
         self.assertIn(key, response)
-        self.assertTrue(len(response) == 1)
-        
+
         response_receipts = response[key]
         self.assertIsInstance(response_receipts, dict)
 
@@ -115,7 +110,6 @@ class TestFinancialMetrics(unittest.TestCase):
 
         self.assertIsInstance(response, dict)
         self.assertIn(key, response)
-        self.assertTrue(len(response) == 1)
 
         response_new_providers = response[key]
         self.assertIsInstance(response_new_providers, dict)
@@ -126,3 +120,42 @@ class TestFinancialMetrics(unittest.TestCase):
 
         map(lambda key: self.assertIn(key, response_new_providers),
                         expected_keys)
+
+    def test_calculate_easiness_keys(self):
+        pronac = '130222'
+        metric_names = ['new_providers', 'total_receipts', ]
+        metrics = self.fm.get_metrics(pronac=pronac, metrics=metric_names)
+
+        EASINESS_KEY = 'easiness'
+        EXPECTED_KEYS = ['easiness', 'total_metrics', 'total_metrics_outliers']
+
+        self.assertIn(EASINESS_KEY, metrics)
+        filter(lambda x: self.assertIn(x, metrics[EASINESS_KEY]),
+               EXPECTED_KEYS)
+
+    def test_calculate_easiness(self):
+        pronac = '130222'
+        metric_names = ['new_providers', 'total_receipts', ]
+        metrics = self.fm.get_metrics(pronac=pronac, metrics=metric_names)
+
+        EASINESS_KEY = 'easiness'
+
+        easiness = metrics[EASINESS_KEY]
+        expected_easiness = {
+            'easiness': 1.0,
+            'total_metrics': 2,
+            'total_metrics_outliers': 0,
+        }
+        self.assertEqual(easiness, expected_easiness)
+
+    def test_calculate_easiness_without_outliers(self):
+        pronac = '178098'
+        key = 'proponent_projects'
+        metrics = [key]
+
+        EASINESS_KEY = 'easiness'
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+        self.assertNotIn(EASINESS_KEY, response)
+
+
