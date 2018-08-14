@@ -1,6 +1,6 @@
 import unittest
 
-from core.utils.read_csv import read_csv
+from core.utils.read_csv import read_csv_with_different_type
 from core.finance.metrics.raised_funds import RaisedFunds
 
 class TestRaisedFunds(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestRaisedFunds(unittest.TestCase):
         csv_name = 'planilha_captacao.csv'
         usecols = ['Pronac', 'Segmento', 'CaptacaoReal']
 
-        self.dt_raised_funds = read_csv(csv_name, usecols=usecols)
+        self.dt_raised_funds = read_csv_with_different_type('planilha_captacao.csv', {'Pronac': str}, usecols=usecols)
 
         self.raised_funds = RaisedFunds(self.dt_raised_funds)
 
@@ -17,7 +17,7 @@ class TestRaisedFunds(unittest.TestCase):
         csv_name = 'planilha_captacao.csv'
         usecols = ['Pronac', 'Segmento', 'CaptacaoReal']
 
-        csv = read_csv(csv_name, usecols=usecols)
+        csv = read_csv_with_different_type('planilha_captacao.csv', {'Pronac': str}, usecols=usecols)
         self.assertIsNotNone(csv)
 
     def test_init_mean_std(self):
@@ -30,13 +30,13 @@ class TestRaisedFunds(unittest.TestCase):
             map(lambda x: self.assertIn(x, cache[segment]), mean_std)
 
     def test_inlier_pronac(self):
-        pronac = 153699
+        pronac = '153699'
 
         is_outlier, mean, std = self.raised_funds.is_pronac_outlier(pronac)
         self.assertFalse(is_outlier)
 
     def test_outlier_pronac(self):
-        pronac = 178098
+        pronac = '178098'
 
         is_outlier, mean, std = self.raised_funds.is_pronac_outlier(pronac)
         self.assertTrue(is_outlier)

@@ -17,6 +17,7 @@ class ProponentProjects():
                 df_projects : pandas.Dataframe with at least the columns 'PRONAC',
                 and 'CgcCpf'.
         """
+        print('*** ProponentProjects ***')
         assert isinstance(df_verified_funds, pd.DataFrame)
         assert isinstance(df_projects, pd.DataFrame)
 
@@ -45,6 +46,9 @@ class ProponentProjects():
                     'analyzed_projects' is a dictionary with the keys:
                         - number_of_projects, pronacs_of_this_proponent
         """
+        if not isinstance(pronac, str):
+            raise ValueError('PRONAC type must be str (string)')
+
         cnpj_cpf = self.get_cnpj_cpf_by_pronac(pronac)
 
         submitted = {}

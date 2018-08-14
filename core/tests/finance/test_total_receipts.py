@@ -1,7 +1,7 @@
 import unittest
 
 
-from core.utils.read_csv import read_csv
+from core.utils.read_csv import read_csv_with_different_type
 from core.finance.metrics.total_receipts import TotalReceipts
 
 class TestTotalReceipts(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestTotalReceipts(unittest.TestCase):
 
         super(TestTotalReceipts, cls).setUpClass()
 
-        cls.dt_comprovacao = read_csv(csv_name, usecols=usecols)
+        cls.dt_comprovacao = read_csv_with_different_type(csv_name, {'PRONAC': str}, usecols=usecols)
         cls.total_receipts = TotalReceipts(cls.dt_comprovacao)
 
     def test_outlier_pronac(self):

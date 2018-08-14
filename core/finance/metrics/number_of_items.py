@@ -13,6 +13,7 @@ class NumberOfItems():
                 This function has no output, instead, it caches the metrics
                 found in its instance.
         """
+        print('*** NumberOfItems ***')
         items = items[['idSegmento', 'PRONAC', 'idPlanilhaAprovacao']]
         num_items = items.groupby(['idSegmento', 'PRONAC']).count()
         metrics = num_items.groupby('idSegmento').agg(['mean', 'std'])
@@ -36,6 +37,9 @@ class NumberOfItems():
                 A dictionary containing the keys: is_outlier, value, mean, and
                 std.
         """
+        if not isinstance(pronac, str):
+            raise ValueError('PRONAC type must be str (string)')
+
         project = self.cache['projects'].loc[pronac]
         metrics = self.cache[project['idSegmento']]
         threshold = metrics['mean'] + k * metrics['std']

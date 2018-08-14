@@ -1,7 +1,7 @@
 import unittest
 
 
-from core.utils.read_csv import read_csv
+from core.utils.read_csv import read_csv_with_different_type
 from core.finance.metrics.new_providers import NewProviders
 
 class TestNewProviders(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestNewProviders(unittest.TestCase):
 
         super(TestNewProviders, cls).setUpClass()
 
-        cls.dt_comprovacao = read_csv(csv_name, usecols=usecols)
+        cls.dt_comprovacao = read_csv_with_different_type(csv_name, {'PRONAC': str, 'nrCNPJCPF': str}, usecols=usecols)
         cls.new_providers = NewProviders(cls.dt_comprovacao)
 
     def test_outlier_pronac(self):

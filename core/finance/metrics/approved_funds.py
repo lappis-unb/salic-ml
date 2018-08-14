@@ -16,6 +16,7 @@ class ApprovedFunds():
         """All information needed to answer future requests to this class will
         be saved/cached in this function.
         """
+        print('*** ApprovedFunds ***')
         assert isinstance(dt_approved_funds, pd.DataFrame)
 
         self.dt_approved_funds = \
@@ -29,6 +30,8 @@ class ApprovedFunds():
         it's total approved value.  Uses the internal cache to get data about
         the given pronac.
         """
+        assert isinstance(pronac, str)
+
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_approved_funds = self.get_pronac_total_approved_funds(pronac)
         maximum_expected_funds = \
@@ -66,7 +69,7 @@ class ApprovedFunds():
         """ Tests if the given pronac is a gaussian outlier in terms of it's
         total approved value. It is assumed that the data follows a Gaussian
         distribution """
-        assert isinstance(pronac, int)
+        assert isinstance(pronac, str)
 
         total_approved = self.get_pronac_total_approved_value(pronac)
         id_segmento = self.get_pronac_segment(pronac)

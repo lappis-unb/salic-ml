@@ -13,6 +13,7 @@ class VerifiedFunds():
         be saved/cached in this function. Saves information about each
         individual project as well as projects in each of the segments.
         """
+        print('*** VerifiedFunds ***')
         assert isinstance(dt_verified_funds, pd.DataFrame)
 
         self.dt_verified_funds = dt_verified_funds
@@ -24,6 +25,9 @@ class VerifiedFunds():
         it's total verified funds.  Uses the internal cache to get data about
         the given pronac.
         """
+        if not isinstance(pronac, str):
+            raise ValueError('PRONAC type must be str (string)')
+
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_verified_funds = self.get_pronac_verified_funds(pronac)
         maximum_expected_funds = gaussian_outlier.maximum_expected_value(mean, std)
