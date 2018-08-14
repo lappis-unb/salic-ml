@@ -17,11 +17,8 @@ class RaisedFunds():
         self._init_projects_data()
 
     def get_metrics(self, pronac):
-        """ TODO
-        """
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
-
+            raise ValueError('PRONAC type must be str')
 
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_raised_funds = self.get_pronac_raised_funds(pronac)

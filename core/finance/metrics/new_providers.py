@@ -21,7 +21,7 @@ class NewProviders():
         """ TODO
         """
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
+            raise ValueError('PRONAC type must be str')
 
         items = self.projects.get_group(pronac)
         response = {}

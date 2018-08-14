@@ -30,7 +30,8 @@ class ApprovedFunds():
         it's total approved value.  Uses the internal cache to get data about
         the given pronac.
         """
-        assert isinstance(pronac, str)
+        if not isinstance(pronac, str):
+            raise ValueError('PRONAC type must be str')
 
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_approved_funds = self.get_pronac_total_approved_funds(pronac)

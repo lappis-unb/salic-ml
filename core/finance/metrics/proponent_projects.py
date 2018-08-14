@@ -47,7 +47,7 @@ class ProponentProjects():
                         - number_of_projects, pronacs_of_this_proponent
         """
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
+            raise ValueError('PRONAC type must be str')
 
         cnpj_cpf = self.get_cnpj_cpf_by_pronac(pronac)
 

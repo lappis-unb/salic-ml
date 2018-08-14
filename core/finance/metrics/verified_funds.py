@@ -26,7 +26,7 @@ class VerifiedFunds():
         the given pronac.
         """
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
+            raise ValueError('PRONAC type must be str')
 
         is_outlier, mean, std = self.is_pronac_outlier(pronac)
         total_verified_funds = self.get_pronac_verified_funds(pronac)

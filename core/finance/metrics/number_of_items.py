@@ -38,7 +38,7 @@ class NumberOfItems():
                 std.
         """
         if not isinstance(pronac, str):
-            raise ValueError('PRONAC type must be str (string)')
+            raise ValueError('PRONAC type must be str')
 
         project = self.cache['projects'].loc[pronac]
         metrics = self.cache[project['idSegmento']]
