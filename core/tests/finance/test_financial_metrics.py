@@ -167,4 +167,26 @@ class TestFinancialMetrics(unittest.TestCase):
         response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
         self.assertNotIn(EASINESS_KEY, response)
 
+    def test_items_prices(self):
+        key = 'items_prices'
+        metrics = [key]
+        pronac = '137225'
+
+        response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
+
+        print('metrics.response.items = {}'.format(response))
+
+        self.assertIsInstance(response, dict)
+        self.assertIn(key, response)
+
+        response_items = response[key]
+        print('response.items = {}'.format(response_items))
+
+        self.assertIsInstance(response_items, dict)
+
+        expected_keys = ['is_outlier', 'number_items_outliers', 'total_items',
+                         'maximum_expected', 'outlier_items', ]
+
+        map(lambda key: self.assertIn(key, expected_keys),
+                        expected_keys)
 
