@@ -10,6 +10,7 @@ from core.finance.metrics.proponent_projects import ProponentProjects
 from core.finance.metrics.total_receipts import TotalReceipts
 from core.finance.metrics.new_providers import NewProviders
 from core.finance.metrics.approved_funds import ApprovedFunds
+from core.finance.metrics.item_prices import ItemsPrice
 
 
 class FinancialMetrics():
@@ -102,7 +103,8 @@ class FinancialMetrics():
            'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
            'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
            'proponent_projects': ProponentProjects(self.datasets['comprovacao'].copy(), \
-                                                   self.datasets['projetos'].copy())
+                                                   self.datasets['projetos'].copy()),
+           'items_prices': ItemsPrice(self.datasets['orcamento'].copy()),
         }
 
     def save(self):
