@@ -43,7 +43,7 @@ class TestTotalReceipts(unittest.TestCase):
         pronac = '152066'
         response = self.total_receipts.get_metrics(pronac)
 
-        expected_keys = ['is_outlier', 'total_receipts',
+        expected_keys = ['is_outlier', 'outlier_scale', 'total_receipts',
             'maximum_expected_in_segment', ]
 
         for key in expected_keys:

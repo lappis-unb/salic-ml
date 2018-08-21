@@ -48,7 +48,7 @@ class TestFinancialMetrics(unittest.TestCase):
         response_funds = response[key]
         self.assertIsInstance(response_funds, dict)
 
-        expected_keys = ['is_outlier', 'total_verified_funds',
+        expected_keys = ['is_outlier', 'outlier_scale', 'total_verified_funds',
                          'maximum_expected_funds']
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
 
@@ -65,7 +65,7 @@ class TestFinancialMetrics(unittest.TestCase):
         response_funds = response[key]
         self.assertIsInstance(response_funds, dict)
 
-        expected_keys = ['is_outlier', 'total_raised_funds',
+        expected_keys = ['is_outlier', 'outlier_scale', 'total_raised_funds',
                          'maximum_expected_funds']
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
 
@@ -105,7 +105,7 @@ class TestFinancialMetrics(unittest.TestCase):
         response_receipts = response[key]
         self.assertIsInstance(response_receipts, dict)
 
-        expected_keys = ['is_outlier', 'total_receipts',
+        expected_keys = ['is_outlier', 'outlier_scale', 'total_receipts',
             'maximum_expected_in_segment', ]
 
         map(lambda key: self.assertIn(key, response_receipts), expected_keys)

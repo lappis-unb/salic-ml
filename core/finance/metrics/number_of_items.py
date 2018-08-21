@@ -1,3 +1,6 @@
+import salicml.outliers.gaussian_outlier as gaussian_outlier
+
+
 class NumberOfItems():
     def __init__(self, items):
         """
@@ -46,6 +49,7 @@ class NumberOfItems():
 
         results = {}
         results['is_outlier'] = (project['idPlanilhaAprovacao'] > threshold)
+        results['outlier_scale'] = gaussian_outlier.outlier_scale(project['idPlanilhaAprovacao'], metrics['mean'], metrics['std'], k)
         results['value'] = project['idPlanilhaAprovacao']
         results['mean'] = metrics['mean']
         results['std'] = metrics['std']
