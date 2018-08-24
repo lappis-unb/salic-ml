@@ -1,7 +1,7 @@
 SELECT a.idPronac,a.AnoProjeto+a.Sequencial as PRONAC,a.NomeProjeto,k.idProduto,k.idPlanilhaAprovacao, k.idPlanilhaAprovacaoPai,
        case 
          when k.idProduto = 0
-           then 'Administração do Projeto'
+           then 'Administracao do Projeto'
            else c.Descricao 
          end as Produto,
        convert(varchar(8),d.idPlanilhaEtapa) + ' - ' + d.Descricao as Etapa,i.Descricao as Item,

@@ -64,7 +64,7 @@ def save_dataframe_as_csv(dt, dir_path):
     if not os.path.exists(os.path.dirname(dir_path)):
         os.makedirs(dirname)
 
-    dt.to_csv(dir_path, encoding='utf-8', index=False)
+    dt.to_csv(dir_path, index=False)
     print('.csv saved in path \'{}\'.'.format(dir_path))
 
 def save_file_in_ftp(ftp, source_file_path, dest_file_path):
