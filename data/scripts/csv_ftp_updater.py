@@ -9,6 +9,9 @@ import pyodbc
 
 from ftplib import FTP
 
+
+UPLOAD_KEY = 'upload_csv'
+
 CREDENTIALS = {
     'HOST': os.environ.get('DB_HOST', ''),
     'PORT': os.environ.get('DB_PORT', ''),
@@ -36,9 +39,41 @@ def set_and_parse_args():
     parse.add_argument('--update_ftp', help='If present, all downloaded .csv files ' \
                        'will be saved in the ftp dir /raw/.',
                        action='store_true', default=False)
+
+    parse.add_argument('--upload_csv', help='Uploads a list of .csv files to ' \
+                       'the ftp dir /raw/. Only .csv files are allowed.',
+                       action='store_true', default=False)
+
     args = parse.parse_args()
     args_dict = vars(args)
     return args_dict
+
+def execute_upload_csv(args):
+    CSV_PATHS_KEY = 'paths'
+    CSV_FORMAT = '.csv'
+
+    assert UPLOAD_KEY in args
+    assert CSV_PATHS_KEY in args
+
+    INCOMPATIBLE_FLAGS = ['update_ftp', ]
+    for flag in INCOMPATIBLE_FLAGS:
+        present = args.get(flag, False)
+        if present:
+            exit('Flag --{} is incompatible with flag --{}'.format(flag,
+                UPLOAD_KEY))
+
+    for path in args[CSV_PATHS_KEY]:
+        if not path.endswith(CSV_FORMAT):
+            exit('Can\'t upload \'{}\'. Only files with format {} are ' \
+                    'allowed.'.format(path, CSV_FORMAT))
+
+    ftp = init_ftp()
+
+    for path in args[CSV_PATHS_KEY]:
+        dest_file_path = 'raw/' + os.path.basename(path)
+        save_file_in_ftp(ftp, path, dest_file_path)
+
+    ftp.quit()
 
 def execute_pandas_sql_query(query):
     '''Executes SQL query, returns the result as a DataFrame object.'''
@@ -72,6 +107,7 @@ def save_file_in_ftp(ftp, source_file_path, dest_file_path):
     dest_dirname = os.path.dirname(dest_file_path)
     ftp.cwd(dest_dirname)
     with open(source_file_path, 'rb') as f_send:
+        print('Uploading file \'{}\'...'.format(source_file_path))
         ftp.storbinary('STOR {}'.format(dest_filename), f_send)
         ftp.sendcmd('SITE CHMOD 644 ' + dest_filename)
         print('File \'{}\' saved in \'ftp/{}\''.format(source_file_path,
@@ -90,6 +126,10 @@ def init_ftp():
 def main():
     args = set_and_parse_args()
 
+    if args[UPLOAD_KEY]:
+        execute_upload_csv(args)
+        exit(0)
+
     paths = args['paths']
     csv_dir = args['csv_dir']
     files = []
@@ -99,7 +139,7 @@ def main():
             dir_files = [os.path.join(path, file_name)
                          for file_name in os.listdir(path)
                          if file_name.endswith('.sql')]
-            paths += dir_files
+            files += dir_files
         elif path.endswith('.sql'):
             files.append(path)
         else:
@@ -109,6 +149,9 @@ def main():
     for file_path in files:
         with open(file_path, 'r') as file_content:
             query = file_content.read()
+            sql_filename = os.path.basename(file_path)
+            print('Downloading query [{}]...'.format(sql_filename))
+
             query_result = execute_pandas_sql_query(query)
 
             csv_path = os.path.join(csv_dir, file_path[:-4] + '.csv')
@@ -123,6 +166,7 @@ def main():
         for csv_path in csv_paths:
             csv_filename = os.path.basename(csv_path)
             dest_file_path = 'raw/' + csv_filename
+
             save_file_in_ftp(ftp, csv_path, dest_file_path)
 
     ftp.quit()

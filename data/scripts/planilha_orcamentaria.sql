@@ -1,7 +1,5 @@
-```SQL
 -- Project example: http://salic.cultura.gov.br/verprojetos?idPronac=501eac548e7d4fa987034573abc6e179MjEwMzEwZUA3NWVmUiEzNDUwb3RT
 -- ID_PRONAC: '210310', PRONAC = '172085'
-
 SELECT a.idPronac, a.PRONAC, a.idPlanilhaAprovacao, Item, i.idPlanilhaItens, Unidade, QtDias, QtItem, nrOcorrencia,
 	(VlSolicitado / NULLIF(QtItem * nrOcorrencia, 0)) AS VlUnitarioSolicitado,
 	VlSolicitado AS VlTotalSolicitado,
@@ -26,4 +24,3 @@ INNER JOIN SAC.dbo.Segmento s
 	ON P.Segmento = s.Codigo
 INNER JOIN SAC.dbo.Area area
 	ON p.Area = area.Codigo;
-```
