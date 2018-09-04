@@ -112,9 +112,25 @@ class FinancialMetrics():
             pickle.dump(self, ofile, pickle.HIGHEST_PROTOCOL)
 
     def load(self):
-        if os.path.isfile(FinancialMetrics.PROCESSED_FILE_PATH):
+        is_loaded = self._load_pickle_file()
+
+        if not is_loaded:
+            self.initialize()
+
+    def _load_pickle_file(self):
+        if not os.path.isfile(FinancialMetrics.PROCESSED_FILE_PATH):
+            return False
+
+        try:
             with open(FinancialMetrics.PROCESSED_FILE_PATH, 'rb') as ifile:
                 financial_metrics = pickle.load(ifile)
                 self.__dict__.update(financial_metrics.__dict__)
-        else:
-            self.initialize()
+
+            return True
+
+        except:
+            os.remove(FinancialMetrics.PROCESSED_FILE_PATH)
+
+            print("Error on read picke file")
+
+            return False
