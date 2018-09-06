@@ -71,6 +71,7 @@ class NewProviders():
 
                 new_providers.setdefault(cnpj, {})
                 new_providers[cnpj].setdefault('items', {})
+                new_providers[cnpj].setdefault('name', provider_name)
 
                 new_providers[cnpj]['items'].setdefault(item_id, {})
                 new_providers[cnpj]['items'][item_id]['name'] = item_name
