@@ -24,7 +24,8 @@ class CommonItemsRatio():
         self.distinct_items = distinct_items.drop_duplicates()
 
         # Filtering items table
-        items = items[['PRONAC', 'idSegmento', 'idPlanilhaItens']]
+        items = items[['PRONAC', 'idSegmento', 'idPlanilhaItens', 'idPronac',
+                       'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
 
         ### TODO: OPTIMIZE PERFORMANCE.
         ### For now, using pronac as integer
@@ -86,6 +87,13 @@ class CommonItemsRatio():
         uncommon_items = self.distinct_items.loc[uncommon_items]
         uncommon_items = uncommon_items.to_dict()['Item']
 
+        for index, item in items.iterrows():
+            item_id = item['idPlanilhaItens']
+            if item_id in uncommon_items:
+                item_name = uncommon_items[item_id]
+                item_salic_url = self._item_salic_url(item)
+                uncommon_items[item_id] = {'name': item_name, 'salic_url': item_salic_url}
+
         com_items_not_in_proj = list(seg_top_items.difference(project_items))
         com_items_not_in_proj = self.distinct_items.loc[com_items_not_in_proj]
         com_items_not_in_proj = com_items_not_in_proj.to_dict()['Item']
@@ -97,7 +105,38 @@ class CommonItemsRatio():
         results['std'] = metrics['std']
         results['uncommon_items'] = uncommon_items
         results['common_items_not_in_project'] = com_items_not_in_proj
+
         return results
+
+    def _item_salic_url(self, item_info):
+        url_keys = [
+            ('pronac', 'idPronac'),
+            ('uf', 'uf'),
+            ('product', 'produto'),
+            ('county', 'idmunicipio'),
+            ('item_id', 'idPlanilhaItem'),
+            ('stage', 'etapa')
+        ]
+
+        url_values = {
+            'pronac': item_info['idPronac'],
+            'uf': item_info['UfItem'],
+            'product': item_info['idProduto'],
+            'county': item_info['cdCidade'],
+            'item_id': item_info['idPlanilhaItens'],
+            'stage': item_info['cdEtapa']
+        }
+
+        item_data = []
+        for key, value in url_keys:
+            item_data.append((value, url_values[key]))
+
+        URL_PREFIX = '/prestacao-contas/analisar/comprovante'
+        url = URL_PREFIX
+        for key, value in item_data:
+            url += '/' + str(key) + '/' + str(value)
+
+        return url
 
     def _top_items(self, items, percentage=0.1):
         # Generating items occurrences table grouped by segment and item ID
