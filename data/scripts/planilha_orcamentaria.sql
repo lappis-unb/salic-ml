@@ -24,7 +24,7 @@ SELECT
 	k.idProduto,
 	case 
 	 when k.idProduto = 0
-	   then 'Administração do Projeto'
+	   then 'Administracao do Projeto'
 	   else c.Descricao 
 	end as Produto,
 	a.DtProtocolo as DataProjeto,
