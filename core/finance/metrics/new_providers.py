@@ -5,8 +5,9 @@ import numpy as np
 class NewProviders():
     """ TODO
     """
-    usecols = ['PRONAC', 'nrCNPJCPF', 'DataProjeto', 'idPlanilhaAprovacao',
-               'Item', 'nmFornecedor', 'idSegmento']
+    usecols = ['PRONAC', 'IdPRONAC', 'nrCNPJCPF', 'DataProjeto', 'idPlanilhaAprovacao',
+               'Item', 'nmFornecedor', 'idSegmento', 'UF', 'cdProduto', 'cdCidade',
+               'idPlanilhaItem', 'cdEtapa']
 
     def __init__(self, dt_comprovacao):
         """ TODO
@@ -16,6 +17,36 @@ class NewProviders():
 
         self.dt_comprovacao = dt_comprovacao[NewProviders.usecols].copy()
         self._train()
+
+    def item_salic_url(self, item_info):
+        url_keys = [
+            ('pronac', 'idPronac'),
+            ('uf', 'uf'),
+            ('product', 'produto'),
+            ('county', 'idmunicipio'),
+            ('item_id', 'idPlanilhaItem'),
+            ('stage', 'etapa')
+        ]
+
+        url_values = {
+            'pronac': item_info['IdPRONAC'],
+            'uf': item_info['UF'],
+            'product': item_info['cdProduto'],
+            'county': item_info['cdCidade'],
+            'item_id': item_info['idPlanilhaItem'],
+            'stage': item_info['cdEtapa']
+        }
+
+        item_data = []
+        for key, value in url_keys:
+            item_data.append((value, url_values[key]))
+
+        URL_PREFIX = '/prestacao-contas/analisar/comprovante'
+        url = URL_PREFIX
+        for key, value in item_data:
+            url += '/' + str(key) + '/' + str(value)
+
+        return url
 
     def get_metrics(self, pronac):
         """ TODO
@@ -39,10 +70,13 @@ class NewProviders():
                 provider_name = row['nmFornecedor']
 
                 new_providers.setdefault(cnpj, {})
-                new_providers[cnpj].setdefault('name', provider_name)
                 new_providers[cnpj].setdefault('items', {})
 
-                new_providers[cnpj]['items'][item_id] = item_name
+                new_providers[cnpj]['items'].setdefault(item_id, {})
+                new_providers[cnpj]['items'][item_id]['name'] = item_name
+
+                item_info = row
+                new_providers[cnpj]['items'][item_id]['salic_url'] = self.item_salic_url(item_info)
 
         new_providers_percentage = len(new_providers) / len(
             items['nrCNPJCPF'].unique())
