@@ -87,12 +87,13 @@ class CommonItemsRatio():
         uncommon_items = self.distinct_items.loc[uncommon_items]
         uncommon_items = uncommon_items.to_dict()['Item']
 
-        for index, item in items.iterrows():
+        items_filter = items['idPlanilhaItens'].isin(uncommon_items)
+        filtered_items = items[items_filter].drop_duplicates(subset='idPlanilhaItens')
+        for index, item in filtered_items.iterrows():
             item_id = item['idPlanilhaItens']
-            if item_id in uncommon_items:
-                item_name = uncommon_items[item_id]
-                item_salic_url = self._item_salic_url(item)
-                uncommon_items[item_id] = {'name': item_name, 'salic_url': item_salic_url}
+            item_name = uncommon_items[item_id]
+            item_salic_url = self._item_salic_url(item)
+            uncommon_items[item_id] = {'name': item_name, 'salic_url': item_salic_url}
 
         com_items_not_in_proj = list(seg_top_items.difference(project_items))
         com_items_not_in_proj = self.distinct_items.loc[com_items_not_in_proj]
