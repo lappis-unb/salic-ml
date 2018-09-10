@@ -2,7 +2,7 @@ import numpy as np
 
 
 class CommonItemsRatio():
-    def __init__(self, items):
+    def __init__(self, items, dt_comprovacao):
         """
             This function receives a pandas.DataFrame with all items of all
             Salic projects and generates the mean and variance of the
@@ -38,6 +38,8 @@ class CommonItemsRatio():
         self.cache = {}
         self.cache['top_items'] = self._top_items(self.items)
         self.cache['metrics'] = self._top_items_metrics(self.items)
+
+        self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
 
     def get_metrics(self, pronac, k=1.5):
         """
@@ -93,7 +95,8 @@ class CommonItemsRatio():
             item_id = item['idPlanilhaItens']
             item_name = uncommon_items[item_id]
             item_salic_url = self._item_salic_url(item)
-            uncommon_items[item_id] = {'name': item_name, 'salic_url': item_salic_url}
+            has_receipt = self._item_has_receipt(item)
+            uncommon_items[item_id] = {'name': item_name, 'salic_url': item_salic_url, 'has_receipt': has_receipt}
 
         com_items_not_in_proj = list(seg_top_items.difference(project_items))
         com_items_not_in_proj = self.distinct_items.loc[com_items_not_in_proj]
@@ -201,3 +204,15 @@ class CommonItemsRatio():
         # Returning the percentage of project items in the list of the most
         # common segment items
         return found_in_top / len(project_items)
+
+
+    def _item_has_receipt(self, item_info):
+        item_identifier = str(item_info['idPronac']) + '/' + str(item_info['idPlanilhaItens'])
+        return item_identifier in self.dt_comprovacao
+
+
+    def _process_receipt_data(self, dt_comprovacao):
+        dt_comprovacao = dt_comprovacao[['idPronac', 'idPlanilhaItens']].astype(str)
+        dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['idPronac'] + '/' + dt_comprovacao['idPlanilhaItens']
+        dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
+        return dt_comprovacao

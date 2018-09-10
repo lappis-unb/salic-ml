@@ -78,6 +78,7 @@ class NewProviders():
 
                 item_info = row
                 new_providers[cnpj]['items'][item_id]['salic_url'] = self.item_salic_url(item_info)
+                new_providers[cnpj]['items'][item_id]['has_receipt'] = True
 
         new_providers_percentage = len(new_providers) / len(
             items['nrCNPJCPF'].unique())
