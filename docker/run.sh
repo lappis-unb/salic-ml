@@ -1,5 +1,10 @@
 #!/bin/bash
 
-echo "RUN sudo docker run --rm -it -v "$PWD":/salic-ml salic-ml bash"
+if [[ -n $1 ]]; then
+	PORT=$1
+else
+	PORT='8888'
+fi
 
-sudo docker run --rm -it -v "$PWD":/salic-ml -p 8888:8888 salic-ml bash
+echo "RUN sudo docker run --rm -it -v \"$PWD\":/salic-ml -p $PORT:$PORT salic-ml bash"
+sudo docker run --rm -it -v "$PWD":/salic-ml -p $PORT:$PORT salic-ml bash
