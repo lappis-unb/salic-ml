@@ -208,11 +208,11 @@ class CommonItemsRatio():
 
     def _item_has_receipt(self, item_info):
         item_identifier = str(item_info['idPronac']) + '/' + str(item_info['idPlanilhaItens'])
-        return item_identifier in self.dt_comprovacao
+        return item_identifier in self.dt_comprovacao.index
 
 
     def _process_receipt_data(self, dt_comprovacao):
-        dt_comprovacao = dt_comprovacao[['idPronac', 'idPlanilhaItens']].astype(str)
-        dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['idPronac'] + '/' + dt_comprovacao['idPlanilhaItens']
+        dt_comprovacao = dt_comprovacao[['IdPRONAC', 'idPlanilhaItem']].astype(str)
+        dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['IdPRONAC'] + '/' + dt_comprovacao['idPlanilhaItem']
         dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
         return dt_comprovacao
