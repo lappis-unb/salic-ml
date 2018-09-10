@@ -15,7 +15,7 @@ class GetProjectInfoFromPronac():
 
     def get_projects_name_and_url(self, pronac_list):
         project_name_id = self.projects_info_df.loc[pronac_list, ['NomeProjeto', 'IdPRONAC']]
-        project_name_id['IdPRONAC'] = 'prestacao-contas/prestacao-contas/tipo-avaliacao/idPronac/' + \
+        project_name_id['IdPRONAC'] = 'prestacao-contas/realizar-prestacao-contas/index/idPronac/' + \
                                       project_name_id['IdPRONAC'].astype(str)
         project_name_id.columns = ['NomeProjeto', 'URL']
         projects_dict = project_name_id.to_dict('index')
