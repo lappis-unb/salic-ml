@@ -14,12 +14,13 @@ class ItemsPrice():
                 'UfItem', 'idProduto', 'cdCidade', 'cdEtapa', ]
  
 
-    def __init__(self, dt_orcamentaria):
+    def __init__(self, dt_orcamentaria, dt_comprovacao):
         """ TODO
         """
         assert isinstance(dt_orcamentaria, pd.DataFrame)
 
         self.dt_orcamentaria = dt_orcamentaria[ItemsPrice.usecols].copy()
+        self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
         self._train()
 
     def get_metrics(self, pronac):
@@ -91,8 +92,10 @@ class ItemsPrice():
             if is_outlier:
                 outliers += 1
                 item_salic_url = self._item_salic_url(row)
+                has_receipt = self._item_has_receipt(row)
                 items_outliers[item_id] = {'name': item_name,
-                                           'salic_url': item_salic_url}
+                                           'salic_url': item_salic_url,
+                                           'has_receipt': has_receipt}
 
         outliers_percentage = outliers / items.shape[0]
         return outliers, items.shape[0], outliers_percentage, items_outliers
@@ -127,3 +130,14 @@ class ItemsPrice():
 
         return url
 
+
+    def _item_has_receipt(self, item_info):
+        item_identifier = str(getattr(item_info, 'idPronac')) + '/' + str(getattr(item_info, 'idPlanilhaItens'))
+        return item_identifier in self.dt_comprovacao
+
+
+    def _process_receipt_data(self, dt_comprovacao):
+        dt_comprovacao = dt_comprovacao[['idPronac', 'idPlanilhaItens']].astype(str)
+        dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['idPronac'] + '/' + dt_comprovacao['idPlanilhaItens']
+        dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
+        return dt_comprovacao
