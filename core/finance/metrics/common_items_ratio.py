@@ -89,7 +89,10 @@ class CommonItemsRatio():
         uncommon_items = self.distinct_items.loc[uncommon_items]
         uncommon_items = uncommon_items.to_dict()['Item']
 
-        items_filter = items['idPlanilhaItens'].isin(uncommon_items)
+        pronac_filter = items['PRONAC'] == pronac
+        uncommon_items_filter = items['idPlanilhaItens'].isin(uncommon_items)
+        items_filter = pronac_filter & uncommon_items_filter
+
         filtered_items = items[items_filter].drop_duplicates(subset='idPlanilhaItens')
         for index, item in filtered_items.iterrows():
             item_id = item['idPlanilhaItens']
