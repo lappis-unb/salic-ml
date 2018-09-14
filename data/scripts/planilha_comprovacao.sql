@@ -7,6 +7,7 @@ projetos.Segmento AS idSegmento,
 a.idProduto AS cdProduto,
 a.idEtapa AS cdEtapa,
 a.idUFDespesa AS cdUF,
+uf.Uf AS UF,
 a.idMunicipioDespesa AS cdCidade,
 a.idPlanilhaItem,
 itens.Descricao AS Item,
@@ -45,7 +46,8 @@ projetos.CgcCpf AS proponenteCgcCpf,
   INNER JOIN Agentes.dbo.Nomes                                            f ON (c.idFornecedor           = f.idAgente)
   INNER JOIN SAC.dbo.Projetos                                      projetos ON (a.IdPRONAC               = projetos.IdPRONAC)
   INNER JOIN SAC.dbo.tbPlanilhaItens 								  itens ON (a.idPlanilhaItem 		 = itens.idPlanilhaItens)
+  INNER JOIN SAC.dbo.Uf 												 uf ON (a.idUFDespesa 			 = uf.CodUfIbge)
   WHERE    a.nrFonteRecurso = 109 
 	  AND (sac.dbo.fnVlComprovado_Fonte_Produto_Etapa_Local_Item
 	  (a.idPronac,a.nrFonteRecurso,a.idProduto,a.idEtapa,a.idUFDespesa,a.idMunicipioDespesa, a.idPlanilhaItem)) > 0 
-;
+;	
