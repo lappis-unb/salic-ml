@@ -33,13 +33,14 @@ class ApprovedFunds():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        is_outlier, mean, std = self.is_pronac_outlier(pronac)
+        is_outlier, outlier_scale, mean, std = self.is_pronac_outlier(pronac)
         total_approved_funds = self.get_pronac_total_approved_funds(pronac)
         maximum_expected_funds = \
             gaussian_outlier.maximum_expected_value(mean, std)
 
         response = {
             'is_outlier': is_outlier,
+            'outlier_scale': outlier_scale,
             'total_approved_funds': total_approved_funds,
             'maximum_expected_funds': maximum_expected_funds
         }
@@ -81,8 +82,9 @@ class ApprovedFunds():
         mean = self._segments_cache[id_segmento]['mean']
         std = self._segments_cache[id_segmento]['std']
         outlier = gaussian_outlier.is_outlier(total_approved, mean, std)
+        outlier_scale = gaussian_outlier.outlier_scale(total_approved, mean, std)
 
-        return outlier, mean, std
+        return outlier, outlier_scale, mean, std
 
     def get_pronac_total_approved_funds(self, pronac):
         total_approved = self.project_approved.loc[pronac]['VlTotalAprovado']

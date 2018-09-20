@@ -21,11 +21,12 @@ class TotalReceipts():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        is_outlier, total_receipts, maximum_expected = \
+        is_outlier, outlier_scale, total_receipts, maximum_expected = \
             self.is_pronac_outlier(pronac)
 
         response = {
             'is_outlier': is_outlier,
+            'outlier_scale': outlier_scale,
             'total_receipts': total_receipts,
             'maximum_expected_in_segment': maximum_expected,
         }
@@ -71,7 +72,8 @@ class TotalReceipts():
         std = self._segments_cache[id_segmento]['std']
         outlier = gaussian_outlier.is_outlier(total_receipts, mean, std)
         maximum_expected = gaussian_outlier.maximum_expected_value(mean, std)
-        return outlier, total_receipts, maximum_expected
+        outlier_scale = gaussian_outlier.outlier_scale(total_receipts, mean, std)
+        return outlier, outlier_scale, total_receipts, maximum_expected
 
     def get_pronac_receipts(self, pronac):
         return self.project_receipts.loc[pronac]['NumeroComprovantes']

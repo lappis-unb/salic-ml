@@ -33,11 +33,11 @@ class TestVerifiedFunds(unittest.TestCase):
     def test_inlier_pronac(self):
         pronac = '153699'
 
-        is_outlier, mean, std  = self.verified_funds.is_pronac_outlier(pronac)
+        is_outlier, outlier_scale, mean, std = self.verified_funds.is_pronac_outlier(pronac)
         self.assertFalse(is_outlier)
 
     def test_outlier_pronac(self):
         pronac = '178098'
 
-        is_outlier, mean, std = self.verified_funds.is_pronac_outlier(pronac)
+        is_outlier, outlier_scale, mean, std = self.verified_funds.is_pronac_outlier(pronac)
         self.assertTrue(is_outlier)

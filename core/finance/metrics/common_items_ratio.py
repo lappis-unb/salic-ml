@@ -1,4 +1,5 @@
 import numpy as np
+import salicml.outliers.gaussian_outlier as gaussian_outlier
 
 
 class CommonItemsRatio():
@@ -78,7 +79,7 @@ class CommonItemsRatio():
         com_items_ratio = self._perc_items_in_top(items, pronac, seg_top_items)
 
         metrics = self.cache['metrics'][segment]
-        threshold = metrics['mean'] - k * metrics['std']
+        # threshold = metrics['mean'] - k * metrics['std']
 
         project_items = items[items['PRONAC'] == pronac]
         project_items = project_items.drop(columns=['PRONAC', 'idSegmento'])
@@ -106,7 +107,9 @@ class CommonItemsRatio():
         com_items_not_in_proj = com_items_not_in_proj.to_dict()['Item']
 
         results = {}
-        results['is_outlier'] = (com_items_ratio < threshold)
+        results['is_outlier'] = gaussian_outlier.is_left_outlier(com_items_ratio, metrics['mean'], metrics['std'], k)
+        # (com_items_ratio < threshold)
+        results['outlier_scale'] = gaussian_outlier.left_outlier_scale(com_items_ratio, metrics['mean'], metrics['std'], k)
         results['value'] = com_items_ratio
         results['mean'] = metrics['mean']
         results['std'] = metrics['std']

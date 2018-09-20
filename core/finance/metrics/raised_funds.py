@@ -20,12 +20,13 @@ class RaisedFunds():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        is_outlier, mean, std = self.is_pronac_outlier(pronac)
+        is_outlier, outlier_scale, mean, std = self.is_pronac_outlier(pronac)
         total_raised_funds = self.get_pronac_raised_funds(pronac)
         maximum_expected_funds = gaussian_outlier.maximum_expected_value(mean, std)
 
         response = {
             'is_outlier': is_outlier,
+            'outlier_scale': outlier_scale,
             'total_raised_funds': total_raised_funds,
             'maximum_expected_funds': maximum_expected_funds
         }
@@ -43,7 +44,8 @@ class RaisedFunds():
         mean = self._segments_cache[id_segmento]['mean']
         std = self._segments_cache[id_segmento]['std']
         outlier = gaussian_outlier.is_outlier(raised_funds, mean, std)
-        return (outlier, mean, std)
+        outlier_scale = gaussian_outlier.outlier_scale(raised_funds, mean, std)
+        return (outlier, outlier_scale, mean, std)
 
     def _init_metrics_cache(self):
         """ TODO

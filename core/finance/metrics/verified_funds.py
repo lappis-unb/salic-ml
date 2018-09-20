@@ -28,12 +28,13 @@ class VerifiedFunds():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        is_outlier, mean, std = self.is_pronac_outlier(pronac)
+        is_outlier, outlier_scale, mean, std = self.is_pronac_outlier(pronac)
         total_verified_funds = self.get_pronac_verified_funds(pronac)
         maximum_expected_funds = gaussian_outlier.maximum_expected_value(mean, std)
 
         response = {
             'is_outlier': is_outlier,
+            'outlier_scale': outlier_scale,
             'total_verified_funds': total_verified_funds,
             'maximum_expected_funds': maximum_expected_funds
         }
@@ -76,7 +77,8 @@ class VerifiedFunds():
         mean = self._segments_cache[id_segmento]['mean']
         std = self._segments_cache[id_segmento]['std']
         outlier = gaussian_outlier.is_outlier(verified_funds, mean, std)
-        return (outlier, mean, std)
+        outlier_scale = gaussian_outlier.outlier_scale(verified_funds, mean, std)
+        return (outlier, outlier_scale, mean, std)
 
 
     def get_pronac_verified_funds(self, pronac):
