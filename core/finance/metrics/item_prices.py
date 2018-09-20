@@ -10,14 +10,17 @@ class ItemsPrice():
     """ TODO
     """
     usecols = ['PRONAC', 'idPlanilhaAprovacao', 'Item', 'idPlanilhaItens',
-               'VlUnitarioAprovado', 'idSegmento', 'DataProjeto']
+               'VlUnitarioAprovado', 'idSegmento', 'DataProjeto', 'idPronac',
+                'UfItem', 'idProduto', 'cdCidade', 'cdEtapa', ]
 
-    def __init__(self, dt_orcamentaria):
+
+    def __init__(self, dt_orcamentaria, dt_comprovacao):
         """ TODO
         """
         assert isinstance(dt_orcamentaria, pd.DataFrame)
 
         self.dt_orcamentaria = dt_orcamentaria[ItemsPrice.usecols].copy()
+        self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
         self._train()
 
     def get_metrics(self, pronac):
@@ -59,9 +62,7 @@ class ItemsPrice():
         self.dt_train_agg.columns = self.dt_train_agg.columns.droplevel(0)
         self.dt_train_agg.rename(columns={'<lambda>': 'std'}, inplace=True)
 
-        self.pronacs_grp = self.dt_orcamentaria[
-            ['PRONAC', 'idPlanilhaItens', 'VlUnitarioAprovado',
-             'idSegmento', 'Item', ]].groupby(['PRONAC'])
+        self.pronacs_grp = self.dt_orcamentaria.groupby(['PRONAC'])
 
     def is_item_outlier(self, id_planilha_item, id_segmento, price):
         if (id_segmento, id_planilha_item) not in self.dt_train_agg.index:
@@ -90,9 +91,53 @@ class ItemsPrice():
                                              price=unit_value)
             if is_outlier:
                 outliers += 1
-                items_outliers[item_id] = item_name
+                item_salic_url = self._item_salic_url(row)
+                has_receipt = self._item_has_receipt(row)
+                items_outliers[item_id] = {'name': item_name,
+                                           'salic_url': item_salic_url,
+                                           'has_receipt': has_receipt}
 
         outliers_percentage = outliers / items.shape[0]
         return outliers, items.shape[0], outliers_percentage, items_outliers
 
+    def _item_salic_url(self, item_info):
+        url_keys = [
+            ('pronac', 'idPronac'),
+            ('uf', 'uf'),
+            ('product', 'produto'),
+            ('county', 'idmunicipio'),
+            ('item_id', 'idPlanilhaItem'),
+            ('stage', 'etapa')
+        ]
 
+        url_values = {
+            'pronac': getattr(item_info, 'idPronac'),
+            'uf': getattr(item_info, 'UfItem'),
+            'product': getattr(item_info, 'idProduto'),
+            'county': getattr(item_info, 'cdCidade'),
+            'item_id': getattr(item_info, 'idPlanilhaItens'),
+            'stage': getattr(item_info, 'cdEtapa')
+        }
+
+        item_data = []
+        for key, value in url_keys:
+            item_data.append((value, url_values[key]))
+
+        URL_PREFIX = '/prestacao-contas/analisar/comprovante'
+        url = URL_PREFIX
+        for key, value in item_data:
+            url += '/' + str(key) + '/' + str(value)
+
+        return url
+
+
+    def _item_has_receipt(self, item_info):
+        item_identifier = str(getattr(item_info, 'idPronac')) + '/' + str(getattr(item_info, 'idPlanilhaItens'))
+        return item_identifier in self.dt_comprovacao.index
+
+
+    def _process_receipt_data(self, dt_comprovacao):
+        dt_comprovacao = dt_comprovacao[['IdPRONAC', 'idPlanilhaItem']].astype(str)
+        dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['IdPRONAC'] + '/' + dt_comprovacao['idPlanilhaItem']
+        dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
+        return dt_comprovacao

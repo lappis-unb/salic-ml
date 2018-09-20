@@ -99,12 +99,12 @@ class FinancialMetrics():
            'approved_funds': ApprovedFunds(self.datasets['orcamento'].copy()),
            'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
            'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
-           'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy()),
+           'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
            'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
            'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
            'proponent_projects': ProponentProjects(self.datasets['comprovacao'].copy(), \
                                                    self.datasets['projetos'].copy()),
-           'items_prices': ItemsPrice(self.datasets['orcamento'].copy()),
+           'items_prices': ItemsPrice(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
         }
 
     def save(self):
@@ -112,9 +112,25 @@ class FinancialMetrics():
             pickle.dump(self, ofile, pickle.HIGHEST_PROTOCOL)
 
     def load(self):
-        if os.path.isfile(FinancialMetrics.PROCESSED_FILE_PATH):
+        is_loaded = self._load_pickle_file()
+
+        if not is_loaded:
+            self.initialize()
+
+    def _load_pickle_file(self):
+        if not os.path.isfile(FinancialMetrics.PROCESSED_FILE_PATH):
+            return False
+
+        try:
             with open(FinancialMetrics.PROCESSED_FILE_PATH, 'rb') as ifile:
                 financial_metrics = pickle.load(ifile)
                 self.__dict__.update(financial_metrics.__dict__)
-        else:
-            self.initialize()
+
+            return True
+
+        except:
+            os.remove(FinancialMetrics.PROCESSED_FILE_PATH)
+
+            print("Error on read picke file")
+
+            return False

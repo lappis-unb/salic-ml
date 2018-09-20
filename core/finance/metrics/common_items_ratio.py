@@ -2,7 +2,7 @@ import numpy as np
 
 
 class CommonItemsRatio():
-    def __init__(self, items):
+    def __init__(self, items, dt_comprovacao):
         """
             This function receives a pandas.DataFrame with all items of all
             Salic projects and generates the mean and variance of the
@@ -24,7 +24,8 @@ class CommonItemsRatio():
         self.distinct_items = distinct_items.drop_duplicates()
 
         # Filtering items table
-        items = items[['PRONAC', 'idSegmento', 'idPlanilhaItens']]
+        items = items[['PRONAC', 'idSegmento', 'idPlanilhaItens', 'idPronac',
+                       'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
 
         ### TODO: OPTIMIZE PERFORMANCE.
         ### For now, using pronac as integer
@@ -37,6 +38,8 @@ class CommonItemsRatio():
         self.cache = {}
         self.cache['top_items'] = self._top_items(self.items)
         self.cache['metrics'] = self._top_items_metrics(self.items)
+
+        self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
 
     def get_metrics(self, pronac, k=1.5):
         """
@@ -86,6 +89,18 @@ class CommonItemsRatio():
         uncommon_items = self.distinct_items.loc[uncommon_items]
         uncommon_items = uncommon_items.to_dict()['Item']
 
+        pronac_filter = items['PRONAC'] == pronac
+        uncommon_items_filter = items['idPlanilhaItens'].isin(uncommon_items)
+        items_filter = pronac_filter & uncommon_items_filter
+
+        filtered_items = items[items_filter].drop_duplicates(subset='idPlanilhaItens')
+        for index, item in filtered_items.iterrows():
+            item_id = item['idPlanilhaItens']
+            item_name = uncommon_items[item_id]
+            item_salic_url = self._item_salic_url(item)
+            has_receipt = self._item_has_receipt(item)
+            uncommon_items[item_id] = {'name': item_name, 'salic_url': item_salic_url, 'has_receipt': has_receipt}
+
         com_items_not_in_proj = list(seg_top_items.difference(project_items))
         com_items_not_in_proj = self.distinct_items.loc[com_items_not_in_proj]
         com_items_not_in_proj = com_items_not_in_proj.to_dict()['Item']
@@ -97,7 +112,38 @@ class CommonItemsRatio():
         results['std'] = metrics['std']
         results['uncommon_items'] = uncommon_items
         results['common_items_not_in_project'] = com_items_not_in_proj
+
         return results
+
+    def _item_salic_url(self, item_info):
+        url_keys = [
+            ('pronac', 'idPronac'),
+            ('uf', 'uf'),
+            ('product', 'produto'),
+            ('county', 'idmunicipio'),
+            ('item_id', 'idPlanilhaItem'),
+            ('stage', 'etapa')
+        ]
+
+        url_values = {
+            'pronac': item_info['idPronac'],
+            'uf': item_info['UfItem'],
+            'product': item_info['idProduto'],
+            'county': item_info['cdCidade'],
+            'item_id': item_info['idPlanilhaItens'],
+            'stage': item_info['cdEtapa']
+        }
+
+        item_data = []
+        for key, value in url_keys:
+            item_data.append((value, url_values[key]))
+
+        URL_PREFIX = '/prestacao-contas/analisar/comprovante'
+        url = URL_PREFIX
+        for key, value in item_data:
+            url += '/' + str(key) + '/' + str(value)
+
+        return url
 
     def _top_items(self, items, percentage=0.1):
         # Generating items occurrences table grouped by segment and item ID
@@ -161,3 +207,15 @@ class CommonItemsRatio():
         # Returning the percentage of project items in the list of the most
         # common segment items
         return found_in_top / len(project_items)
+
+
+    def _item_has_receipt(self, item_info):
+        item_identifier = str(item_info['idPronac']) + '/' + str(item_info['idPlanilhaItens'])
+        return item_identifier in self.dt_comprovacao.index
+
+
+    def _process_receipt_data(self, dt_comprovacao):
+        dt_comprovacao = dt_comprovacao[['IdPRONAC', 'idPlanilhaItem']].astype(str)
+        dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['IdPRONAC'] + '/' + dt_comprovacao['idPlanilhaItem']
+        dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
+        return dt_comprovacao

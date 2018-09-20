@@ -5,8 +5,8 @@
 ## Packages
 ### pip install --upgrade setuptools wheel twine
 #
-## Environment Variables
-### export PIP_USER=""; export PIP_PASSWORD=""
+## Run
+### PIP_USER="" PIP_PASSWORD="" python update_pip.py
 
 
 import os
