@@ -23,4 +23,4 @@ INNER JOIN SAC.dbo.tbPlanilhaItens i
 INNER JOIN SAC.dbo.Segmento s
 	ON P.Segmento = s.Codigo
 INNER JOIN SAC.dbo.Area area
-	ON p.Area = area.Codigo;
+	ON p.Area = area.Codigo

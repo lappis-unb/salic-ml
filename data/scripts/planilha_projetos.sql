@@ -11,5 +11,3 @@ DtSituacao,
 DtInicioExecucao,
 DtFimExecucao
 FROM SAC.dbo.Projetos
-;
-

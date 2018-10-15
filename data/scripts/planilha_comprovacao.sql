@@ -48,4 +48,3 @@ projetos.CgcCpf AS proponenteCgcCpf,
   WHERE    a.nrFonteRecurso = 109 
 	  AND (sac.dbo.fnVlComprovado_Fonte_Produto_Etapa_Local_Item
 	  (a.idPronac,a.nrFonteRecurso,a.idProduto,a.idEtapa,a.idUFDespesa,a.idMunicipioDespesa, a.idPlanilhaItem)) > 0 
-;
