@@ -93,6 +93,25 @@ class FinancialMetrics():
            'projetos': read_csv_with_different_type('planilha_projetos.csv', {'PRONAC': str, 'CgcCpf': str})
         }
 
+    def _init_data_sources(self):
+        from core.data_handler.data_source import DataSource
+
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
+        print('sql_folder = {}'.format(sql_folder))
+
+
+
+        dataset_sql_map = {
+            'orcamento': 'planilha_orcamentaria.sql',
+        }
+
+        self.dats_sources = {
+           'orcamento': read_csv_with_different_type('planilha_orcamentaria.csv', {'PRONAC': str}),
+        }
+
+
     def _init_metrics(self):
         self.metrics = {
            'items': NumberOfItems(self.datasets['orcamento'].copy()),

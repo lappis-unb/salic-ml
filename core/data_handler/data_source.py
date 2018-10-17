@@ -31,8 +31,9 @@ class DataSource:
     def get_dataset(self, pronac=None, use_cache=False):
         download = True
         dataset = None
-        cache_name = self.file_name + DataSource.CACHE_EXTENSION
+        cache_name = self.file_name[:-4] + DataSource.CACHE_EXTENSION
         cache_path = os.path.join(DataSource.CACHE_DIR_PATH, cache_name)
+
 
         if (not pronac) and use_cache:
             print('cache_path = {}'.format(cache_path))
@@ -46,7 +47,7 @@ class DataSource:
             sql = self._prepare_sql(pronac)
 
             dataset = db_connector.execute_pandas_sql_query(sql)
-            if not pronac:
+            if False:#not pronac:
                 storage.save(cache_path, dataset)
 
         print('\ndataset = \n')

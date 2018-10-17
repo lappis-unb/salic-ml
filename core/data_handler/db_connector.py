@@ -40,7 +40,7 @@ class DbConnector:
         cursor.close()
         return data
 
-    def execute_pandas_sql_query(self, query):
-        dataframe = pd.read_sql_query(query, self.db, coerce_float=False)
+    def execute_pandas_sql_query(self, query, chunksize=None):
+        dataframe = pd.read_sql_query(query, self.db, coerce_float=False, chunksize=chunksize)
         return dataframe
 
