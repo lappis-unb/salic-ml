@@ -24,3 +24,5 @@ INNER JOIN SAC.dbo.Segmento s
 	ON P.Segmento = s.Codigo
 INNER JOIN SAC.dbo.Area area
 	ON p.Area = area.Codigo
+WHERE p.DtProtocolo>='2013-01-01 00:00:00'
+
