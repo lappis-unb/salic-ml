@@ -1,7 +1,8 @@
 import os
 
 import pandas as pd
-import pyodbc
+import pyodbc as dbc
+#import pypyodbc as dbc
 
 
 class DbConnector:
@@ -28,7 +29,7 @@ class DbConnector:
                     db_credentials['USER'], db_credentials['PASSWORD'])
         )
 
-        self.db = pyodbc.connect(db_parameters)
+        self.db = dbc.connect(db_parameters)
 
     def _database_disconnect(self):
         self.db.close()
@@ -36,9 +37,11 @@ class DbConnector:
     def execute_query(self, query):
         cursor = self.db.cursor()
         cursor.execute(query)
-        data = list(map(list, cursor.fetchall()))
+        ret = cursor.fetchall()
         cursor.close()
-        return data
+        return ret
+        #data = list(map(list, cursor.fetchall()))
+        #return data
 
     def execute_pandas_sql_query(self, query, chunksize=None):
         dataframe = pd.read_sql_query(query, self.db, coerce_float=False, chunksize=chunksize)

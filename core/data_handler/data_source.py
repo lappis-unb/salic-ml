@@ -1,6 +1,7 @@
 import os
 from core.data_handler import storage
 from core.data_handler.db_connector import DbConnector
+import gc
 
 
 class DataSource:
@@ -22,8 +23,9 @@ class DataSource:
 
         mp = self.map_where
         mp['planilha_captacao.sql'] = 'WHERE (capt.AnoProjeto+capt.Sequencial)'
-        mp['planilha_comprovacao.sql'] = 'AND (projetos.AnoProjeto + projetos.Sequencial)'
-        mp['planilha_orcamentaria.sql'] = 'WHERE a.PRONAC'
+        mp['planilha_comprovacao.sql'] = ' AND (projetos.AnoProjeto + projetos.Sequencial)'
+        mp['new_planilha_comprovacao.sql'] = 'WHERE (projetos.AnoProjeto + projetos.Sequencial)'
+        mp['planilha_orcamentaria.sql'] = 'AND a.PRONAC'
         mp['planilha_projetos.sql'] = 'WHERE (projetos.AnoProjeto + projetos.Sequencial)'
 
 
@@ -36,8 +38,6 @@ class DataSource:
 
 
         if (not pronac) and use_cache:
-            print('cache_path = {}'.format(cache_path))
-
             if os.path.exists(cache_path):
                 download = False
                 dataset = storage.load(cache_path, on_error_callback=None)
@@ -47,11 +47,9 @@ class DataSource:
             sql = self._prepare_sql(pronac)
 
             dataset = db_connector.execute_pandas_sql_query(sql)
-            if False:#not pronac:
+            if not pronac:
                 storage.save(cache_path, dataset)
-
-        print('\ndataset = \n')
-        print(dataset)
+        gc.collect()
 
         assert not dataset.empty
         return dataset
