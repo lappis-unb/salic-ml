@@ -12,7 +12,8 @@ SELECT projetos.IdPRONAC,
 	   uf.CodUfIbge as UF,
 	   a.idProduto AS cdProduto,
 	   a.idMunicipioDespesa AS cdCidade,
-	   a.idEtapa AS cdEtapa
+	   a.idEtapa AS cdEtapa,
+	   projetos.CgcCpf AS proponenteCgcCpf
 FROM SAC.dbo.tbPlanilhaAprovacao a
 INNER JOIN SAC.dbo.Projetos projetos ON (a.IdPRONAC = projetos.IdPRONAC)
 INNER JOIN BDCorporativo.scSAC.tbComprovantePagamentoxPlanilhaAprovacao comprovacao ON (a.idPlanilhaAprovacao = comprovacao.idPlanilhaAprovacao)
