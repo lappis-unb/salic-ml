@@ -22,7 +22,7 @@ class DataSource:
         mp['planilha_captacao.sql'] = 'WHERE (capt.AnoProjeto+capt.Sequencial)'
         mp['planilha_comprovacao.sql'] = ' AND (projetos.AnoProjeto + projetos.Sequencial)'
         mp['new_planilha_comprovacao.sql'] = 'WHERE (projetos.AnoProjeto + projetos.Sequencial)'
-        mp['planilha_orcamentaria.sql'] = 'AND a.PRONAC'
+        mp['planilha_orcamentaria.sql'] = 'AND (a.AnoProjeto+a.Sequencial)'
         mp['planilha_projetos.sql'] = 'WHERE (projetos.AnoProjeto + projetos.Sequencial)'
 
     def get_dataset(self, sql_file_path, pronac=None, use_cache=False):
