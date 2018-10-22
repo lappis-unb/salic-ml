@@ -88,7 +88,7 @@ class VerifiedFunds():
         datasource = DataSource()
         path = os.path.join(sql_folder, 'planilha_comprovacao.sql')
 
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac, use_cache=True)
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
         pronac_dataframe['vlComprovacao'] = pronac_dataframe['vlComprovacao'].apply(pd.to_numeric)
 
         pronac_funds = pronac_dataframe[['idPlanilhaAprovacao', 'PRONAC', 'vlComprovacao', 'idSegmento']]

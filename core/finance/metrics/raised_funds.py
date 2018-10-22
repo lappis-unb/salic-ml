@@ -71,7 +71,7 @@ class RaisedFunds():
         datasource = DataSource()
         path = os.path.join(sql_folder, 'planilha_captacao.sql')
 
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac, use_cache=True)
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
         pronac_dataframe['CaptacaoReal'] = pronac_dataframe['CaptacaoReal'].apply(pd.to_numeric)
 
         pronac_data = {

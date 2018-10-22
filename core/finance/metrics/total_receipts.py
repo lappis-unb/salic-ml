@@ -82,7 +82,7 @@ class TotalReceipts():
         datasource = DataSource()
         path = os.path.join(sql_folder, 'planilha_comprovacao.sql')
 
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac, use_cache=True)
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
 
         pronac_data = {
             'segment_id': pronac_dataframe.iloc[0]['idSegmento'],
