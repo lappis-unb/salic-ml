@@ -1,6 +1,8 @@
+import os
 import pandas as pd
-
 import salicml.outliers.gaussian_outlier as gaussian_outlier
+
+from core.data_handler.data_source import DataSource
 
 
 class VerifiedFunds():
@@ -15,6 +17,7 @@ class VerifiedFunds():
         """
         print('*** VerifiedFunds ***')
         assert isinstance(dt_verified_funds, pd.DataFrame)
+        dt_verified_funds['vlComprovacao'] = dt_verified_funds['vlComprovacao'].apply(pd.to_numeric)
 
         self.dt_verified_funds = dt_verified_funds
         self._init_metrics_cache()
@@ -28,8 +31,7 @@ class VerifiedFunds():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        is_outlier, mean, std = self.is_pronac_outlier(pronac)
-        total_verified_funds = self.get_pronac_verified_funds(pronac)
+        is_outlier, mean, std, total_verified_funds = self.is_pronac_outlier(pronac)
         maximum_expected_funds = gaussian_outlier.maximum_expected_value(mean, std)
 
         response = {
@@ -67,22 +69,37 @@ class VerifiedFunds():
         """ Tests if the given pronac is a gaussian outlier in terms of it's
         total verified funds. It is assumed that the data follows a Gaussian
         distribution """
-        verified_funds = self.get_pronac_verified_funds(pronac)
-        id_segmento = self.get_pronac_segment(pronac)
 
-        if not id_segmento in self._segments_cache:
-            raise ValueError('Segment {} was not trained'.format(id_segmento))
+        pronac_data = self._get_pronac_data(pronac)
 
-        mean = self._segments_cache[id_segmento]['mean']
-        std = self._segments_cache[id_segmento]['std']
-        outlier = gaussian_outlier.is_outlier(verified_funds, mean, std)
-        return (outlier, mean, std)
+        if not pronac_data['segment_id'] in self._segments_cache:
+            raise ValueError('Segment {} was not trained'.format(pronac_data['segment_id']))
 
+        mean = self._segments_cache[pronac_data['segment_id']]['mean']
+        std = self._segments_cache[pronac_data['segment_id']]['std']
+        outlier = gaussian_outlier.is_outlier(pronac_data['verified_funds'], mean, std)
+        return (outlier, mean, std, pronac_data['verified_funds'])
 
-    def get_pronac_verified_funds(self, pronac):
-        return self.project_funds.loc[pronac]['vlComprovacao']
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
 
-    def get_pronac_segment(self, pronac):
-        return self.project_funds_grp.get_group(pronac).iloc[0]['idSegmento']
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_comprovacao.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac, use_cache=True)
+        pronac_dataframe['vlComprovacao'] = pronac_dataframe['vlComprovacao'].apply(pd.to_numeric)
+
+        pronac_funds = pronac_dataframe[['idPlanilhaAprovacao', 'PRONAC', 'vlComprovacao', 'idSegmento']]
+        funds_grp = pronac_funds.drop(columns=['idPlanilhaAprovacao']).groupby(['PRONAC'])
+        project_funds = funds_grp.sum()
+
+        pronac_data = {
+            'segment_id': pronac_dataframe.iloc[0]['idSegmento'],
+            'verified_funds': project_funds.loc[pronac]['vlComprovacao']
+        }
+
+        return pronac_data
 
 
