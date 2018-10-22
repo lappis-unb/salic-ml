@@ -1,7 +1,9 @@
+import os
 import pandas as pd
 import numpy as np
-
 import salicml.outliers.gaussian_outlier as gaussian_outlier
+
+from core.data_handler.data_source import DataSource
 
 class TotalReceipts():
     usecols = ['PRONAC', 'idSegmento', 'idComprovantePagamento']
@@ -61,20 +63,30 @@ class TotalReceipts():
         if not pronac in self.dt_total_receipts.PRONAC.unique():
             raise ValueError('No data for PRONAC ({})'.format(pronac))
 
-        total_receipts = self.get_pronac_receipts(pronac)
-        id_segmento = self.get_pronac_segment(pronac)
+        pronac_data = self._get_pronac_data(pronac)
 
-        if not id_segmento in self._segments_cache:
-            raise ValueError('Segment {} was not trained'.format(id_segmento))
+        if not pronac_data['segment_id'] in self._segments_cache:
+            raise ValueError('Segment {} was not trained'.format(pronac_data['segment_id']))
 
-        mean = self._segments_cache[id_segmento]['mean']
-        std = self._segments_cache[id_segmento]['std']
-        outlier = gaussian_outlier.is_outlier(total_receipts, mean, std)
+        mean = self._segments_cache[pronac_data['segment_id']]['mean']
+        std = self._segments_cache[pronac_data['segment_id']]['std']
+        outlier = gaussian_outlier.is_outlier(pronac_data['total_receipts'], mean, std)
         maximum_expected = gaussian_outlier.maximum_expected_value(mean, std)
-        return outlier, total_receipts, maximum_expected
+        return outlier, pronac_data['total_receipts'], maximum_expected
 
-    def get_pronac_receipts(self, pronac):
-        return self.project_receipts.loc[pronac]['NumeroComprovantes']
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
 
-    def get_pronac_segment(self, pronac):
-        return self.project_receipts_grp.get_group(pronac).iloc[0]['idSegmento']
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_comprovacao.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac, use_cache=True)
+
+        pronac_data = {
+            'segment_id': pronac_dataframe.iloc[0]['idSegmento'],
+            'total_receipts': pronac_dataframe.shape[0]
+        }
+
+        return pronac_data
