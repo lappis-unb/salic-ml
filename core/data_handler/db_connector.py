@@ -2,7 +2,6 @@ import os
 
 import pandas as pd
 import pyodbc as dbc
-#import pypyodbc as dbc
 
 
 class DbConnector:
@@ -40,8 +39,6 @@ class DbConnector:
         ret = cursor.fetchall()
         cursor.close()
         return ret
-        #data = list(map(list, cursor.fetchall()))
-        #return data
 
     def execute_pandas_sql_query(self, query, chunksize=None):
         dataframe = pd.read_sql_query(query, self.db, coerce_float=False, chunksize=chunksize)

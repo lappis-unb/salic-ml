@@ -40,4 +40,4 @@ INNER JOIN agentes.dbo.vUfMunicipio f on (b.UfDespesa = f.idUF and b.MunicipioDe
 INNER JOIN SAC.dbo.Area area ON (a.Area = area.Codigo)
 INNER JOIN SAC.dbo.Segmento segmento ON (a.segmento = segmento.Codigo)
 WHERE k.stAtivo = 'S' AND
-      a.DtProtocolo >='2014-01-01 00:00:00'
+      a.DtProtocolo >='2013-01-01 00:00:00'

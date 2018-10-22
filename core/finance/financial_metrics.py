@@ -118,7 +118,7 @@ class FinancialMetrics():
              'approved_funds': ApprovedFunds(self.datasets['orcamento'].copy()),
              'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
              'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
-             #'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
+             'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
              'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
              'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
              'proponent_projects': ProponentProjects(self.datasets['comprovacao'].copy(), \
