@@ -86,31 +86,28 @@ class FinancialMetrics():
         return easiness
 
     def _init_datasets(self):
-        self.datasets = {
-           'orcamento': read_csv_with_different_type('planilha_orcamentaria.csv', {'PRONAC': str}),
-           'comprovacao': read_csv_with_different_type('planilha_comprovacao.csv', {'PRONAC': str, 'proponenteCgcCpf': str}),
-           'captacao': read_csv_with_different_type('planilha_captacao.csv', {'Pronac': str, 'CgcCpfMecena': str}),
-           'projetos': read_csv_with_different_type('planilha_projetos.csv', {'PRONAC': str, 'CgcCpf': str})
-        }
-
-    def _init_data_sources(self):
         from core.data_handler.data_source import DataSource
 
         __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
         sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir)
         sql_folder = os.path.join(sql_folder, 'data', 'scripts')
-        print('sql_folder = {}'.format(sql_folder))
 
-
+        datasource = DataSource()
 
         dataset_sql_map = {
             'orcamento': 'planilha_orcamentaria.sql',
+            'comprovacao': 'planilha_comprovacao.sql',
+            'captacao': 'planilha_captacao.sql',
+            'projetos': 'planilha_projetos.sql',
         }
 
-        self.dats_sources = {
-           'orcamento': read_csv_with_different_type('planilha_orcamentaria.csv', {'PRONAC': str}),
+        # TODO: adjust columns types, e.g. PRONAC should be read as a string
+        self.datasets = {
+            'orcamento': datasource.get_dataset(os.path.join(sql_folder, dataset_sql_map['orcamento']), use_cache=True),
+            'comprovacao': datasource.get_dataset(os.path.join(sql_folder, dataset_sql_map['comprovacao']), use_cache=True),
+            'captacao': datasource.get_dataset(os.path.join(sql_folder, dataset_sql_map['captacao']), use_cache=True),
+            'projetos': datasource.get_dataset(os.path.join(sql_folder, dataset_sql_map['projetos']), use_cache=True),
         }
-
 
     def _init_metrics(self):
         self.metrics = {
