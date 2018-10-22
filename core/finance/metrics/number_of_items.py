@@ -58,6 +58,7 @@ class NumberOfItems():
         return results
 
     def _get_pronac_data(self, pronac):
+
         __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
         sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
         sql_folder = os.path.join(sql_folder, 'data', 'scripts')
@@ -71,5 +72,6 @@ class NumberOfItems():
             'segment_id': pronac_dataframe.iloc[0]['idSegmento'],
             'items_count': pronac_dataframe.shape[0]
         }
+
 
         return pronac_data

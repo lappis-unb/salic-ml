@@ -1,7 +1,8 @@
 import os
+
 from core.data_handler import storage
 from core.data_handler.db_connector import DbConnector
-import gc
+from core.utils.exceptions import DataNotFoundForPronac
 
 
 class DataSource:
@@ -42,9 +43,18 @@ class DataSource:
             db_connector = DbConnector()
             sql = self._prepare_sql(sql_file_path, pronac)
             dataset = db_connector.execute_pandas_sql_query(sql)
+
             if not pronac:
                 storage.save(cache_path, dataset)
-        gc.collect()
+        else:
+            print('Cache "{}" was used for {}\n'.format(cache_path, file_name))
+
+        if pronac and dataset.empty:
+            raise DataNotFoundForPronac
+
+        for column in dataset.columns:
+            if column.lower().replace(' ', '') == 'pronac':
+                dataset[column] = dataset[column].str.replace(' ', '')
 
         assert not dataset.empty
         return dataset

@@ -11,6 +11,7 @@ from core.finance.metrics.total_receipts import TotalReceipts
 from core.finance.metrics.new_providers import NewProviders
 from core.finance.metrics.approved_funds import ApprovedFunds
 from core.finance.metrics.item_prices import ItemsPrice
+from core.utils.exceptions import DataNotFoundForPronac
 
 
 class FinancialMetrics():
@@ -21,8 +22,9 @@ class FinancialMetrics():
         self.load()
 
     def initialize(self):
-        print('****** Reading CSVs ******')
+        print('****** Obtaining datasets ******')
         self._init_datasets()
+
         print('****** Computing Metrics ******')
         self._init_metrics()
 
@@ -44,8 +46,9 @@ class FinancialMetrics():
                 print('Getting Metrics for [{}]'.format(metric))
                 metric_obj = self.metrics[metric]
                 results[metric] = metric_obj.get_metrics(pronac)
-            except: #TODO: create exception types
-                pass
+            except DataNotFoundForPronac as ex:
+                print('No data for pronac={} for metric={}, skipping it.'.
+                      format(pronac, metric))
 
         self._add_easiness_to_metrics(results)
         return results
@@ -111,16 +114,18 @@ class FinancialMetrics():
 
     def _init_metrics(self):
         self.metrics = {
-           'items': NumberOfItems(self.datasets['orcamento'].copy()),
-           'approved_funds': ApprovedFunds(self.datasets['orcamento'].copy()),
-           'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
-           'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
-           'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
-           'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
-           'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
-           'proponent_projects': ProponentProjects(self.datasets['comprovacao'].copy(), \
-                                                   self.datasets['projetos'].copy()),
-           'items_prices': ItemsPrice(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
+             'items': NumberOfItems(self.datasets['orcamento'].copy()),
+             'approved_funds': ApprovedFunds(self.datasets['orcamento'].copy()),
+             'verified_funds': VerifiedFunds(self.datasets['comprovacao'].copy()),
+             'raised_funds': RaisedFunds(self.datasets['captacao'].copy()),
+             #'common_items_ratio': CommonItemsRatio(self.datasets['orcamento'].copy(), self.datasets['comprovacao'].copy()),
+             'total_receipts': TotalReceipts(self.datasets['comprovacao'].copy()),
+             'new_providers': NewProviders(self.datasets['comprovacao'].copy()),
+             'proponent_projects': ProponentProjects(self.datasets['comprovacao'].copy(), \
+                                                    self.datasets['projetos'].copy()),
+             'items_prices': ItemsPrice(self.datasets['orcamento'].copy(),
+                                       self.datasets[
+                                           'comprovacao'].copy()),
         }
 
     def save(self):
