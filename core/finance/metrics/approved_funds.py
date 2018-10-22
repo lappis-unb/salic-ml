@@ -1,7 +1,9 @@
+import os
 import pandas as pd
 import numpy as np
-
 import salicml.outliers.gaussian_outlier as gaussian_outlier
+
+from core.data_handler.data_source import DataSource
 
 
 class ApprovedFunds():
@@ -33,8 +35,7 @@ class ApprovedFunds():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        is_outlier, mean, std = self.is_pronac_outlier(pronac)
-        total_approved_funds = self.get_pronac_total_approved_funds(pronac)
+        is_outlier, mean, std, total_approved_funds = self.is_pronac_outlier(pronac)
         maximum_expected_funds = \
             gaussian_outlier.maximum_expected_value(mean, std)
 
@@ -72,23 +73,34 @@ class ApprovedFunds():
         distribution """
         assert isinstance(pronac, str)
 
-        total_approved = self.get_pronac_total_approved_funds(pronac)
-        id_segmento = self.get_pronac_segment(pronac)
+        pronac_data = self._get_pronac_data(pronac)
 
-        if not (id_segmento in self._segments_cache):
-            raise ValueError('Segment {} was not trained'.format(id_segmento))
+        if not (pronac_data['segment_id'] in self._segments_cache):
+            raise ValueError('Segment {} was not trained'.format(pronac_data['segment_id']))
 
-        mean = self._segments_cache[id_segmento]['mean']
-        std = self._segments_cache[id_segmento]['std']
-        outlier = gaussian_outlier.is_outlier(total_approved, mean, std)
+        mean = self._segments_cache[pronac_data['segment_id']]['mean']
+        std = self._segments_cache[pronac_data['segment_id']]['std']
+        outlier = gaussian_outlier.is_outlier(pronac_data['approved_funds'], mean, std)
 
-        return outlier, mean, std
+        return outlier, mean, std, pronac_data['approved_funds']
 
-    def get_pronac_total_approved_funds(self, pronac):
-        total_approved = self.project_approved.loc[pronac]['VlTotalAprovado']
-        return total_approved
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
 
-    def get_pronac_segment(self, pronac):
-        id_segmento = self.project_approved_grp.get_group(pronac). \
-            iloc[0]['idSegmento']
-        return id_segmento
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_orcamentaria.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
+        pronac_dataframe = pronac_dataframe[ApprovedFunds.needed_columns]
+
+        approved_grp = pronac_dataframe.groupby(['PRONAC'])
+        approved = approved_grp.sum()
+
+        pronac_data = {
+            'segment_id': pronac_dataframe.iloc[0]['idSegmento'],
+            'approved_funds': approved.loc[pronac]['VlTotalAprovado']
+        }
+
+        return pronac_data
