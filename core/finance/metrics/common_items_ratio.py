@@ -1,5 +1,7 @@
+import os
 import numpy as np
 
+from core.data_handler.data_source import DataSource
 
 class CommonItemsRatio():
     def __init__(self, items, dt_comprovacao):
@@ -71,8 +73,11 @@ class CommonItemsRatio():
         pronac = int(pronac)
         ####################################
 
+        pronac_items = self._get_pronac_data(pronac)
+
         items = self.items
-        project = items[items['PRONAC'] == pronac].iloc[0]
+
+        project = pronac_items.iloc[0]
         segment = project['idSegmento']
         seg_top_items = self._top_items_segment(segment)
         com_items_ratio = self._perc_items_in_top(items, pronac, seg_top_items)
@@ -80,7 +85,7 @@ class CommonItemsRatio():
         metrics = self.cache['metrics'][segment]
         threshold = metrics['mean'] - k * metrics['std']
 
-        project_items = items[items['PRONAC'] == pronac]
+        project_items = pronac_items
         project_items = project_items.drop(columns=['PRONAC', 'idSegmento'])
         project_items = project_items.set_index('idPlanilhaItens').index
         seg_top_items = seg_top_items.set_index('idPlanilhaItens').index
@@ -219,3 +224,17 @@ class CommonItemsRatio():
         dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['IdPRONAC'] + '/' + dt_comprovacao['idPlanilhaItem']
         dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
         return dt_comprovacao
+
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
+
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_orcamentaria.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
+        pronac_dataframe = pronac_dataframe[['PRONAC', 'idSegmento', 'idPlanilhaItens', 'idPronac',
+            'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
+
+        return pronac_dataframe
