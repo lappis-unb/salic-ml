@@ -1,3 +1,7 @@
+import os
+
+from core.data_handler.data_source import DataSource
+
 class NumberOfItems():
     def __init__(self, items):
         """
@@ -40,14 +44,32 @@ class NumberOfItems():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        project = self.cache['projects'].loc[pronac]
-        metrics = self.cache[project['idSegmento']]
+        pronac_data = self._get_pronac_data(pronac)
+
+        metrics = self.cache[pronac_data['segment_id']]
         threshold = metrics['mean'] + k * metrics['std']
 
         results = {}
-        results['is_outlier'] = (project['idPlanilhaAprovacao'] > threshold)
-        results['value'] = project['idPlanilhaAprovacao']
+        results['is_outlier'] = (pronac_data['items_count'] > threshold)
+        results['value'] = pronac_data['items_count']
         results['mean'] = metrics['mean']
         results['std'] = metrics['std']
 
         return results
+
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
+
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_orcamentaria.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac, use_cache=True)
+
+        pronac_data = {
+            'segment_id': pronac_dataframe.iloc[0]['idSegmento'],
+            'items_count': pronac_dataframe.shape[0]
+        }
+
+        return pronac_data
