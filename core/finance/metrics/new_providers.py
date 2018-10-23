@@ -1,6 +1,8 @@
+import os
 import pandas as pd
 import numpy as np
 
+from core.data_handler.data_source import DataSource
 
 class NewProviders():
     """ TODO
@@ -54,7 +56,8 @@ class NewProviders():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        items = self.projects.get_group(pronac)
+        items = self._get_pronac_data(pronac)
+
         response = {}
         new_providers = {}
         pronac_segment = None
@@ -146,5 +149,17 @@ class NewProviders():
         }
         return averages
 
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
 
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_comprovacao.sql')
 
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
+        pronac_dataframe = pronac_dataframe[NewProviders.usecols]
+
+        dataframe_grouped_by = pronac_dataframe.groupby('PRONAC')
+
+        return dataframe_grouped_by.get_group(pronac)

@@ -1,10 +1,10 @@
-from datetime import datetime
-
+import os
 import pandas as pd
 import numpy as np
 
 from salicml.outliers import gaussian_outlier
-
+from datetime import datetime
+from core.data_handler.data_source import DataSource
 
 class ItemsPrice():
     """ TODO
@@ -20,6 +20,7 @@ class ItemsPrice():
         assert isinstance(dt_orcamentaria, pd.DataFrame)
 
         self.dt_orcamentaria = dt_orcamentaria[ItemsPrice.usecols].copy()
+        self.dt_orcamentaria['VlUnitarioAprovado'] = self.dt_orcamentaria['VlUnitarioAprovado'].apply(pd.to_numeric)
         self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
         self._train()
 
@@ -75,7 +76,7 @@ class ItemsPrice():
         return outlier
 
     def get_outliers_percentage(self, pronac):
-        items = self.pronacs_grp.get_group(pronac)
+        items = self._get_pronac_data(pronac)
 
         outliers = 0
         items_outliers = {}
@@ -89,6 +90,7 @@ class ItemsPrice():
             is_outlier = self.is_item_outlier(id_planilha_item=item_id,
                                              id_segmento=segment_id,
                                              price=unit_value)
+
             if is_outlier:
                 outliers += 1
                 item_salic_url = self._item_salic_url(row)
@@ -96,6 +98,7 @@ class ItemsPrice():
                 items_outliers[item_id] = {'name': item_name,
                                            'salic_url': item_salic_url,
                                            'has_receipt': has_receipt}
+
 
         outliers_percentage = outliers / items.shape[0]
         return outliers, items.shape[0], outliers_percentage, items_outliers
@@ -141,3 +144,19 @@ class ItemsPrice():
         dt_comprovacao['pronac_planilha_itens'] = dt_comprovacao['IdPRONAC'] + '/' + dt_comprovacao['idPlanilhaItem']
         dt_comprovacao.set_index(['pronac_planilha_itens'], inplace=True)
         return dt_comprovacao
+
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
+
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_orcamentaria.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
+
+        pronac_dataframe = pronac_dataframe[ItemsPrice.usecols]
+
+        pronac_grp = pronac_dataframe.groupby(['PRONAC'])
+
+        return pronac_grp.get_group(pronac)

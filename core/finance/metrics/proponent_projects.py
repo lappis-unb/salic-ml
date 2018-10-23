@@ -1,4 +1,7 @@
+import os
 import pandas as pd
+
+from core.data_handler.data_source import DataSource
 
 class ProponentProjects():
     """ This class is used to verify all the projects of a given proponent
@@ -49,7 +52,7 @@ class ProponentProjects():
         if not isinstance(pronac, str):
             raise ValueError('PRONAC type must be str')
 
-        cnpj_cpf = self.get_cnpj_cpf_by_pronac(pronac)
+        cnpj_cpf = self._get_pronac_data(pronac)
 
         submitted = {}
         submitted['number_of_projects'] = 0
@@ -103,3 +106,20 @@ class ProponentProjects():
         submitted_projects = submitted_projects.to_dict('index')
 
         return [analyzed_projects, submitted_projects]
+
+    def _get_pronac_data(self, pronac):
+        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
+        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
+        sql_folder = os.path.join(sql_folder, 'data', 'scripts')
+
+        datasource = DataSource()
+        path = os.path.join(sql_folder, 'planilha_projetos.sql')
+
+        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
+
+        cnpj_cpf = 'CNPJ/CPF NOT FOUND'
+        cnpj_cpf_df = pronac_dataframe.loc[pronac_dataframe['PRONAC'] == pronac, ['CgcCpf']]
+        if not cnpj_cpf_df.empty:
+            cnpj_cpf = cnpj_cpf_df.iloc[0, 0]
+
+        return cnpj_cpf
