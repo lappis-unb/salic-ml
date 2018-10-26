@@ -1,0 +1,2 @@
+class DataNotFoundForPronac(Exception):
+    pass
