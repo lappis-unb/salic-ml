@@ -17,7 +17,7 @@ A parceria contou com a contribuição de diversos funcionários do MinC e do LA
 [Ricardo Poppi](https://github.com/ricardopoppi) e
 [Rodrigo Maia](https://github.com/rodmaia2099).
 
-O salic-ml desenvolve uma API para fornecer dados relevantes a respeito de projetos culturais a partir de seus dados abertos. O projeto conta com dois repositórios disponíveis na plataforma [GitHub](https://github.com/lappis-unb/) e um [servidor FTP](ftp://178.128.12.141/). Este é o repositório principal, onde são mantidas as pesquisas, tarefas e planejamento do time. O repositório [salic-ml-web](https://github.com/lappis-unb/salic-ml-web) é o repositório utilizado para desenvolver a API para a disponibilização dos dados encontrados através das pesquisas. Por fim, o servidor FTP fornece os dados brutos do Salic, utilizados para realizar todas as pesquisas do grupo.
+O salic-ml desenvolve uma API para fornecer dados relevantes a respeito de projetos culturais a partir de seus dados abertos. O projeto conta com dois repositórios disponíveis na plataforma [GitHub](https://github.com/lappis-unb/) e um [servidor FTP](ftp://138.68.73.247/). Este é o repositório principal, onde são mantidas as pesquisas, tarefas e planejamento do time. O repositório [salic-ml-web](https://github.com/lappis-unb/salic-ml-web) é o repositório utilizado para desenvolver a API para a disponibilização dos dados encontrados através das pesquisas. Por fim, o servidor FTP fornece os dados brutos do Salic, utilizados para realizar todas as pesquisas do grupo.
 
 
 Contribuição
@@ -29,13 +29,13 @@ Antes de mais nada, sinta-se à vontade para nos contactar sempre que precisar. 
 
 As pesquisas deste repositório são realizadas em notebooks do [Jupyter Notebook](http://jupyter.org/). Para reproduzir nossas pesquisas e estudos, é preciso baixar os dados do servidor FTP e instalar o Jupyter Notebook.
 
-Para baixar os dados do servidor FTP, basta acessar o seu endpoint: _ftp://178.128.12.141/_. Lembrando que a estrutura de arquivos do servidor FTP é a mesma da pasta `data` deste repositório, então tenha cuidado para não armazenar os dados baixados em pastas erradas. Uma forma de baixar os dados é com o comando [wget](https://www.gnu.org/software/wget/), por um terminal de comandos, entre na pasta raiz deste repositório e execute o seguinte comando:
+Para baixar os dados do servidor FTP, basta acessar o seu endpoint: _ftp://138.68.73.247/_. Lembrando que a estrutura de arquivos do servidor FTP é a mesma da pasta `data` deste repositório, então tenha cuidado para não armazenar os dados baixados em pastas erradas. Uma forma de baixar os dados é com o comando [wget](https://www.gnu.org/software/wget/), por um terminal de comandos, entre na pasta raiz deste repositório e execute o seguinte comando:
 
-    $ wget -r -nH -nc -P data ftp://178.128.12.141
+    $ wget -r -nH -nc -P data ftp://138.68.73.247
 
 Este comando baixará todos os arquivos de dados do servidor e pode demorar alguns minutos ou mesmo horas. Cada notebook precisa de um conjunto específico de arquivos de dados e raramente ou único notebook utilizará todos os arquivos do servidor e para baixar arquivos específicos do servidor, execute o comando:
 
-    $ wget -nc -P data/FILE ftp://178.128.12.141/FILE
+    $ wget -nc -P data/FILE ftp://138.68.73.247/FILE
 
 Onde _FILE_ deve ser substituído pelo caminho e nome do arquivo desejado.
 
