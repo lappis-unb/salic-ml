@@ -114,7 +114,7 @@ def save_file_in_ftp(ftp, source_file_path, dest_file_path):
             dest_file_path))
 
 def init_ftp():
-    host = '178.128.12.141'
+    host = '138.68.73.247'
     user = CREDENTIALS['FTP_USER']
     passwd = CREDENTIALS['FTP_PASSWORD']
 

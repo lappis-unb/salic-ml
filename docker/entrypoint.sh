@@ -2,6 +2,6 @@
 
 cmd="$@"
 
-# wget -r -nH -nc -P data ftp://178.128.12.141
+# wget -r -nH -nc -P data ftp://138.68.73.247
 
 exec $cmd
