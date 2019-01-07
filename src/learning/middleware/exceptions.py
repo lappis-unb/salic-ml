@@ -1,0 +1,2 @@
+class TraningNotFound(Exception):
+    pass

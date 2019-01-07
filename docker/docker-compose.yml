@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  salic_ml:
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile
+    volumes:
+      - .:/salic-ml
+    depends_on:
+      - salic_db
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+      - PYTHONIOENCODING=utf-8
+      - DB_HOST=salic_db
+      - DB_PORT=
+      - DB_USER=
+      - DB_PASSWORD=
+      - SALICML_PRODUCTION=True
+    ports:
+      - '8080:8080'
+
+  salic_db:
+    image: lappis/openconnect-globalprotect
+    environment:
+      - VPN_PASSWORD=
+      - VPN_SERVER=
+      - VPN_USER=
+      - SERVICE_IP=
+      - SERVICE_PORT=
+    ports:
+      - "9000:1435"
+    privileged: true
+    cap_add:
+      - NET-ADMIN
+
