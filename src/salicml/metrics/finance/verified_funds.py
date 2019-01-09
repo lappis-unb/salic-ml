@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import salicml.outliers.gaussian_outlier as gaussian_outlier
 
-from core.data_handler.data_source import DataSource
+from salicml.data.data_source import DataSource
 
 
 class VerifiedFunds:

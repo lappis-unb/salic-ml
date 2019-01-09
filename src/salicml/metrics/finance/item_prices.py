@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 from salicml.outliers import gaussian_outlier
-from datetime import datetime
-from core.data_handler.data_source import DataSource
+from salicml.data.data_source import DataSource
 
 
 class ItemsPrice:

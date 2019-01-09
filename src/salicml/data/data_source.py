@@ -1,8 +1,8 @@
 import os
 
-from core.data_handler import storage
-from core.data_handler.db_connector import DbConnector
-from core.utils.exceptions import DataNotFoundForPronac
+from salicml.data import storage
+from salicml.data.db_connector import DbConnector
+from salicml.utils.exceptions import DataNotFoundForPronac
 
 
 class DataSource:

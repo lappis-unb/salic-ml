@@ -1,7 +1,7 @@
 import unittest
 
-from core.utils.read_csv import read_csv_with_different_type
-from core.finance.metrics.proponent_projects import ProponentProjects
+from salicml.utils.read_csv import read_csv_with_different_type
+from salicml.metrics.finance.proponent_projects import ProponentProjects
 
 
 class TestProponentProjects(unittest.TestCase):

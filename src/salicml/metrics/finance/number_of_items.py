@@ -1,6 +1,6 @@
 import os
 
-from core.data_handler.data_source import DataSource
+from salicml.data.data_source import DataSource
 
 
 class NumberOfItems:

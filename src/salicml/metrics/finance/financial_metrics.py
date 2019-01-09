@@ -1,17 +1,17 @@
 import os
 import pickle
 
-from core.utils.read_csv import read_csv, read_csv_with_different_type, PROJECT_ROOT
-from core.finance.metrics.number_of_items import NumberOfItems
-from core.finance.metrics.verified_funds import VerifiedFunds
-from core.finance.metrics.raised_funds import RaisedFunds
-from core.finance.metrics.common_items_ratio import CommonItemsRatio
-from core.finance.metrics.proponent_projects import ProponentProjects
-from core.finance.metrics.total_receipts import TotalReceipts
-from core.finance.metrics.new_providers import NewProviders
-from core.finance.metrics.approved_funds import ApprovedFunds
-from core.finance.metrics.item_prices import ItemsPrice
-from core.utils.exceptions import DataNotFoundForPronac
+from salicml.utils.read_csv import PROJECT_ROOT
+from .number_of_items import NumberOfItems
+from .raised_funds import RaisedFunds
+from .verified_funds import VerifiedFunds
+from .common_items_ratio import CommonItemsRatio
+from .proponent_projects import ProponentProjects
+from .total_receipts import TotalReceipts
+from .new_providers import NewProviders
+from .item_prices import ItemsPrice
+from .approved_funds import ApprovedFunds
+from salicml.utils.exceptions import DataNotFoundForPronac
 
 
 class FinancialMetrics:
@@ -92,7 +92,7 @@ class FinancialMetrics:
         return easiness
 
     def _init_datasets(self):
-        from core.data_handler.data_source import DataSource
+        from salicml.data.data_source import DataSource
 
         __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
         sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir)
@@ -169,3 +169,5 @@ class FinancialMetrics:
             print("Error on read picke file")
 
             return False
+
+financial_metrics = FinancialMetrics()

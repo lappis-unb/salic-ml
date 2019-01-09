@@ -1,4 +1,4 @@
-from core.utils.read_csv import read_csv_with_different_type
+from salicml.utils.read_csv import read_csv_with_different_type
 
 
 class GetProjectInfoFromPronac:

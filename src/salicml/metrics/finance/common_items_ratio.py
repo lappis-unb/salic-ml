@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from core.data_handler.data_source import DataSource
+from salicml.data.data_source import DataSource
 
 
 class CommonItemsRatio:

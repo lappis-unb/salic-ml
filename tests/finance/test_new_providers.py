@@ -1,8 +1,8 @@
 import unittest
 
 
-from core.utils.read_csv import read_csv_with_different_type
-from core.finance.metrics.new_providers import NewProviders
+from salicml.utils.read_csv import read_csv_with_different_type
+from salicml.metrics.finance.new_providers import NewProviders
 
 
 class TestNewProviders(unittest.TestCase):

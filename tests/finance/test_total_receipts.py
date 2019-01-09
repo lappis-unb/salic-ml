@@ -1,8 +1,8 @@
 import unittest
 
 
-from core.utils.read_csv import read_csv_with_different_type
-from core.finance.metrics.total_receipts import TotalReceipts
+from salicml.utils.read_csv import read_csv_with_different_type
+from salicml.metrics.finance.total_receipts import TotalReceipts
 
 
 class TestTotalReceipts(unittest.TestCase):

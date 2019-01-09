@@ -1,8 +1,8 @@
 import unittest
 
 
-from core.utils.read_csv import read_csv_with_different_type
-from core.finance.metrics.item_prices import ItemsPrice
+from salicml.utils.read_csv import read_csv_with_different_type
+from salicml.metrics.finance.item_prices import ItemsPrice
 
 
 class TestItemsPrice(unittest.TestCase):

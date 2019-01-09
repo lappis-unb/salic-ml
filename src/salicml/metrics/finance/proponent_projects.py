@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-from core.data_handler.data_source import DataSource
+from salicml.data.data_source import DataSource
 
 
 class ProponentProjects:

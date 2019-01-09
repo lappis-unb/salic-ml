@@ -1,7 +1,7 @@
 import unittest
 
-from core.utils.read_csv import read_csv_with_different_type
-from core.finance.metrics.approved_funds import ApprovedFunds
+from salicml.utils.read_csv import read_csv_with_different_type
+from salicml.metrics.finance.approved_funds import ApprovedFunds
 
 
 class TestApprovedFunds(unittest.TestCase):

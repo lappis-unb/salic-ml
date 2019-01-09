@@ -1,5 +1,5 @@
 import unittest
-from core.finance.financial_metrics import FinancialMetrics
+from salicml.metrics.finance.financial_metrics import FinancialMetrics
 
 
 class TestFinancialMetrics(unittest.TestCase):
