@@ -1,8 +1,8 @@
 import pytest
 
-from salicml.api import main as salicml
-from salicml.middleware.middleware import Middleware
-from salicml.data_source.data_source_db import DataSourceMock
+from learning.api import main as salicml
+from learning.middleware import Middleware
+from learning.data_source.data_source_db import DataSourceMock
 
 OK_CODE = 200
 BAD_CODE = 400

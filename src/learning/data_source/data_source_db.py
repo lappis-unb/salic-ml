@@ -2,9 +2,9 @@ import pandas as pd
 import os
 
 from abc import ABC, abstractmethod
-from salicml.data_source.db_connector import DbConnector
-from salicml.middleware import constants
-from salicml.utils import storage
+from learning.data_source.db_connector import DbConnector
+from learning.middleware import constants
+from learning.utils import storage
 
 
 class VerifiedApprovedDataSource:

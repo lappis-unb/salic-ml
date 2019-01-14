@@ -4,8 +4,8 @@ import numpy
 from flask import Flask, jsonify
 from flask.json import JSONEncoder
 
-from salicml.middleware.middleware import Middleware
-from salicml.utils.utils import is_valid_pronac
+from learning.middleware.middleware import Middleware
+from learning.utils.utils import is_valid_pronac
 
 
 class CustomJSONEncoder(JSONEncoder):

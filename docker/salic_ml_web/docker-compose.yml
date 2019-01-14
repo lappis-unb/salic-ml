@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+  web:
+    build:
+       context: ../../
+    command: ["./init_dev.sh"]
+    volumes:
+      - .:/salic_ml_web
+      - ./../data:/usr/local/lib/python3.6/dist-packages/data
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SALIC_DB_HOST=salic_db
+      - SALIC_DB_PORT=1435
+      - SALIC_DB_USER=
+      - SALIC_DB_PASSWORD=
+      - PYTHONUNBUFFERED=1
+
+  salic_db:
+    image: edsonma/openconnect-globalprotect
+    environment:
+      - VPN_PASSWORD=
+      - VPN_SERVER=
+      - VPN_USER=
+      - SERVICE_IP=
+      - SERVICE_PORT=
+    ports:
+      - "9000:1435"
+    privileged: true
+    cap_add:
+      - NET-ADMIN

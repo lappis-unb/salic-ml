@@ -2,7 +2,7 @@ import os
 import shutil
 import unittest
 
-from salicml.utils import storage
+from learning.utils import storage
 
 
 class TestStorage(unittest.TestCase):

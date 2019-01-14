@@ -1,6 +1,6 @@
 import unittest
 
-from salicml.metrics.number_of_items import NumberOfItemsModel
+from learning.metrics.number_of_items import NumberOfItemsModel
 
 
 class TestMetricNumberOfItems(unittest.TestCase):

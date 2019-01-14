@@ -1,6 +1,6 @@
 import unittest
 
-from salicml.features.verified_approved import VerifiedApprovedFeature
+from learning.features.verified_approved import VerifiedApprovedFeature
 
 NEEDED_COLUMNS = ["PRONAC", "Item", "vlAprovado", "vlComprovacao"]
 

@@ -1,6 +1,6 @@
 import click
 
-from salicml.middleware import Middleware
+from learning.middleware import Middleware
 
 
 def train_all_metrics():
@@ -17,15 +17,9 @@ def train_number_of_items():
     middleware.train_number_of_items()
 
 
-@click.command()
-@click.option("--train", type=click.Choice(["all", "number_of_items"]))
-def main(train):
+def train_metrics(train):
     if train:
         if train == "all":
             train_all_metrics()
         if train == "number_of_items":
             train_number_of_items()
-
-
-if __name__ == "__main__":
-    main()

@@ -1,9 +1,9 @@
 import os
 
-from salicml.features.number_of_items import FeatureNumberOfItems
-from salicml.metrics.number_of_items import NumberOfItemsModel
-from salicml.middleware.exceptions import TraningNotFound
-from salicml.middleware import constants
+from learning.features.number_of_items import FeatureNumberOfItems
+from learning.metrics.number_of_items import NumberOfItemsModel
+from learning.middleware.exceptions import TraningNotFound
+from learning.middleware import constants
 
 
 class NumberOfItemsMiddleware:

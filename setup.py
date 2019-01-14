@@ -10,10 +10,17 @@ setup(
     packages=find_packages('src'),
     install_requires=[
         'django',
+        'django-boogie',
+        'django-cors-headers',
+        'django-filter',
+        'djangorestframework',
+        'django-rest-swagger',
         'flask',
+        'markdown',
         'numpy~=1.15.1',
         'pandas~=0.23.4',
         'pyodbc',
+        'psycopg2',
         'requests',
         'scikit-learn',
         'scipy',
@@ -23,6 +30,7 @@ setup(
     extras_require={
         'dev': [
             'click',
+            'flake8',
             'invoke',
             'ipdb~=0.11',
             'ipython~=6.5.0',

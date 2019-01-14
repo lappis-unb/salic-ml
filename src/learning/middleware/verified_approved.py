@@ -1,7 +1,7 @@
 import os
 
-from salicml.middleware import constants
-from salicml.features.verified_approved import VerifiedApprovedFeature
+from learning.middleware import constants
+from learning.features.verified_approved import VerifiedApprovedFeature
 
 
 TRAIN_FILE_NAME = "verified_approved.pickle"

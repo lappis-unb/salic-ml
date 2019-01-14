@@ -1,6 +1,6 @@
 import unittest
 
-from salicml.features.number_of_items import FeatureNumberOfItems
+from learning.features.number_of_items import FeatureNumberOfItems
 
 
 class TestFeatureNumberOfItems(unittest.TestCase):

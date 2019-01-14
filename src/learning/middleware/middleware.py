@@ -1,7 +1,7 @@
-from salicml.data_source.data_source_db import DataSourceDb
-from salicml.middleware.number_of_items import NumberOfItemsMiddleware
-from salicml.middleware.verified_approved import VerifiedApprovedMiddleware
-from salicml.middleware.exceptions import TraningNotFound
+from learning.data_source.data_source_db import DataSourceDb
+from learning.middleware.number_of_items import NumberOfItemsMiddleware
+from learning.middleware.verified_approved import VerifiedApprovedMiddleware
+from learning.middleware.exceptions import TraningNotFound
 
 
 class Middleware:

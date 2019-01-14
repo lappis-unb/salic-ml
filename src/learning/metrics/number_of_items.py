@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from salicml.models import gaussian_outlier
-from salicml.utils import storage
+from learning.models import gaussian_outlier
+from learning.utils import storage
 
 
 class NumberOfItemsModel:
