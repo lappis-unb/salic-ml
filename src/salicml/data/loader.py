@@ -79,7 +79,11 @@ class Loader:
             key = name or func.__name__
 
             def loader_function():
-                args = [getattr(self, attr) for attr in names]
+                if names:
+                    args = [getattr(self, attr) for attr in names]
+                else:
+                    args = (self,)
+
                 return func(*args)
 
             self._registry[key] = loader_function
