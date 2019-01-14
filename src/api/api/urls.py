@@ -14,10 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.conf.urls import url, include
+from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
+from boogie.rest import rest_api
 
 urlpatterns = [
-    path('admin', admin.site.urls),
-    url(r'', include('indicators.urls')),
+    path('admin/', admin.site.urls),
+
+    # rest api
+    path('', include(rest_api.urls)),
+    path('docs/', include_docs_urls(title='salic ml API Docs', public=False)),
 ]

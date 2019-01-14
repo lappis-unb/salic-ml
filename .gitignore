@@ -137,3 +137,7 @@ tags
 
 ### MacOS FS
 .DS_Store
+
+### Sqlite
+
+*.sqlite3
