@@ -1,38 +1,17 @@
 import unittest
 
-from salicml.utils.read_csv import read_csv_with_different_type
-from salicml.metrics.finance.approved_funds import ApprovedFunds
+from salicml.data.query import metrics
+from salicml.metrics.finance.approved_funds import approved_funds
 
 
 class TestApprovedFunds(unittest.TestCase):
     def setUp(self):
-        csv_name = "planilha_orcamentaria.csv"
-        usecols = ApprovedFunds.needed_columns
-
-        self.dt_approved_funds = read_csv_with_different_type(
-            csv_name, {"PRONAC": str}, usecols=usecols
-        )
-        self.assertIsNotNone(self.dt_approved_funds)
-
-        self.approved_funds = ApprovedFunds(self.dt_approved_funds)
-
-    def test_init_mean_std(self):
-        cache = self.approved_funds._segments_cache
-        self.assertTrue(cache)
-
-        mean_std = ["mean", "std"]
-
-        for segment in cache.keys():
-            map(lambda x: self.assertIn(x, cache[segment]), mean_std)
+        metrics.register(approved_funds)
 
     def test_inlier_pronac(self):
-        pronac = "138140"
-
-        is_outlier, mean, std = self.approved_funds.is_pronac_outlier(pronac)
-        self.assertFalse(is_outlier)
+        project = metrics.get_project('138140')
+        self.assertFalse(project.finance.approved_funds['is_outlier'])
 
     def test_outlier_pronac(self):
-        pronac = "121386"
-
-        is_outlier, mean, std = self.approved_funds.is_pronac_outlier(pronac)
-        self.assertTrue(is_outlier)
+        project = metrics.get_project('121386')
+        self.assertTrue(project.finance.approved_funds['is_outlier'])

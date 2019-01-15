@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 
 from salicml.utils.dates import Dates
+from salicml.data import data
 
 
 class ProjectItems:
@@ -63,10 +64,6 @@ class ProjectItems:
 
 
 class Projects:
-
-    PROJECT_ROOT = os.path.abspath(os.path.join(os.pardir, os.pardir))
-    DATA_FOLDER = os.path.join(PROJECT_ROOT, "data", "raw")
-
     DATE = "DtProtocolo"
     AREA = "Area"
     SEGMENTO = "Segmento"
@@ -79,14 +76,7 @@ class Projects:
         if dt is not None:
             self.dt = dt
         else:
-            self.__init_dt_from_csv()
-            pass
-
-    def __init_dt_from_csv(self):
-        projetos_csv_name = "projetos.csv"
-        projects_csv = os.path.join(Projects.DATA_FOLDER, projetos_csv_name)
-
-        self.dt = pd.read_csv(projects_csv, low_memory=False)
+            self.dt = data.projetos
 
     def __filter_dt(self):
         assert self.dt is not None
