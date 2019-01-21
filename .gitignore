@@ -141,3 +141,6 @@ tags
 ### Sqlite
 
 *.sqlite3
+
+# vscode
+.vscode
