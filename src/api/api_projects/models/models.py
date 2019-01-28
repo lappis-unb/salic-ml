@@ -14,6 +14,7 @@ class Project(models.Model):
         choices=ProjectSituation.SITUATIONS,
         default="A01",
     )
+    step = models.CharField(max_length=200)
 
     class Meta:
         verbose_name_plural = "Projects"
