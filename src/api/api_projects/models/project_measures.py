@@ -1,26 +1,7 @@
 from django.db import models
 from boogie.rest import rest_api
-from .project_situations import ProjectSituation
 from polymorphic.models import PolymorphicModel
-
-
-@rest_api(['pronac', 'name', 'created_at'], lookup_field='pronac')
-class Project(models.Model):
-    pronac = models.IntegerField(default=0)
-    name = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    situation = models.CharField(
-        choices=ProjectSituation.SITUATIONS,
-        default="A01",
-    )
-    step = models.CharField(max_length=200)
-
-    class Meta:
-        verbose_name_plural = "Projects"
-
-    def __str__(self):
-        return self.name
+from .projects import Project
 
 
 class Indicator(PolymorphicModel):
@@ -97,7 +78,7 @@ class FinancialIndicator(Indicator):
         }
 
     def __str__(self):
-        return self.name
+        return self.project.name + " value: " + str(self.value)
 
 
 class Metric(models.Model):

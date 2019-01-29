@@ -11,9 +11,12 @@ services:
   web:
     build:
        context: ./../../
-    command: ["./src/api/init_dev.sh"]
+       dockerfile: ./docker/salic_ml_web/Dockerfile
+    command: ["./etc/scripts/init_dev.sh"]
+    env_file:
+      - ./../../etc/env/db.env
     volumes:
-      - ./../../:/salic_ml_web
+      - ./../../:/api
       - ./../../data:/usr/local/lib/python3.7/dist-packages/data
     ports:
       - "8080:8080"

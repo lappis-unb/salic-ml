@@ -13,6 +13,7 @@ setup(
         'django-boogie',
         'django-cors-headers',
         'django-filter',
+        'django-polymorphic',
         'djangorestframework',
         'django-rest-swagger',
         'flask',
@@ -24,7 +25,6 @@ setup(
         'requests',
         'scikit-learn',
         'scipy',
-        'tables',
         'pycpfcnpj',
     ],
     extras_require={

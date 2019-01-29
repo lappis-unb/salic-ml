@@ -8,18 +8,14 @@ class DbConnector:
     def __init__(self):
         self._database_connect()
 
-    def __del__(self):
-        self._database_disconnect()
-
     def _database_connect(self):
         db_credentials = {
-            "HOST": os.environ.get("DB_HOST", ""),
-            "PORT": os.environ.get("DB_PORT", ""),
-            "USER": os.environ.get("DB_USER", ""),
-            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-            "DATABASE": os.environ.get("DB_NAME", ""),
+            "HOST": os.environ.get("CONNECT_DB_HOST", ""),
+            "PORT": os.environ.get("CONNECT_DB_PORT", ""),
+            "USER": os.environ.get("CONNECT_DB_USER", ""),
+            "PASSWORD": os.environ.get("CONNECT_DB_PASSWORD", ""),
+            "DATABASE": os.environ.get("CONNECT_DB_NAME", ""),
         }
-
         db_parameters = "DRIVER=FreeTDS;SERVER={0};PORT={1};DATABASE=;UID={2};PWD={3};\
              TDS_Version=8.0;".format(
             db_credentials["HOST"],
@@ -28,7 +24,7 @@ class DbConnector:
             db_credentials["PASSWORD"],
         )
 
-        self.db = dbc.connect(db_parameters)
+        print(db_credentials)
 
     def _database_disconnect(self):
         self.db.close()
@@ -45,3 +41,9 @@ class DbConnector:
             query, self.db, coerce_float=False, chunksize=chunksize
         )
         return dataframe
+
+    def close(self):
+        self._database_disconnect()
+
+
+db_connector = DbConnector
