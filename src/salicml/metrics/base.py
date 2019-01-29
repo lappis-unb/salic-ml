@@ -1,10 +1,11 @@
 from salicml.data import data
-import numpy as np
-import pandas as pd
 from functools import lru_cache
 
 
 def get_info(df, group, info=['mean', 'std']):
+    """
+    Aggregate mean and std with the given group.
+    """
     agg = df.groupby(group).agg(info)
     agg.columns = agg.columns.droplevel(0)
     return agg
@@ -20,6 +21,7 @@ def get_segment_id(pronac):
         df[df['PRONAC'] == int(pronac)]
         .iloc[0]['idSegmento']
     )
+
 
 @lru_cache(maxsize=128)
 def get_segment_projects(segment_id):
@@ -50,4 +52,3 @@ def approved_funds_by_projects(df):
     return df[['PRONAC', 'idSegmento', 'VlTotalAprovado']] \
             .groupby(['PRONAC', 'idSegmento']).sum() \
             .reset_index()
-
