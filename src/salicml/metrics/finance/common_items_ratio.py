@@ -1,265 +1,270 @@
 import os
 import numpy as np
+import pandas as pd
+from salicml.data import data
+from salicml.data.query import metrics
+from salicml.metrics.base import get_segment_id, get_segment_projects
+import timeit
+from functools import lru_cache
 
-from salicml.data.data_source import DataSource
+
+@metrics.register('finance')
+def common_items_ratio(pronac, data):
+    segment_id = get_segment_id(pronac)
+    ratio = common_items_percentage(pronac, segment_id)
+    metrics = data.common_items_metrics.to_dict(orient='index')[segment_id]
+
+    # constant that defines the threshold to verify if a project
+    # is an outlier.
+    k = 1.5
+    
+    threshold = metrics['mean'] - k * metrics['std']
+
+    uncommon_items = get_uncommon_items(pronac)
+
+    pronac_filter = data.all_items['PRONAC'] == pronac
+    uncommon_items_filter = (
+        data.all_items['idPlanilhaItens']
+        .isin(uncommon_items)
+    )
+    items_filter = (pronac_filter & uncommon_items_filter)
+    
+    filtered_items = data.all_items[items_filter].drop_duplicates(subset='idPlanilhaItens')
+    uncommon_items = add_info_to_uncommon_items(filtered_items, uncommon_items)
+    
+    return {
+        'is_outlier': ratio < threshold,
+        'value': ratio,
+        'mean': metrics['mean'],
+        'std': metrics['std'],
+        'uncommon_items': uncommon_items,
+        'common_items_not_present': get_common_items_not_present(pronac),
+    }
 
 
-class CommonItemsRatio:
-    def __init__(self, items, dt_comprovacao):
-        """
-        This function receives a pandas.DataFrame with all items of all
-        Salic projects and generates the mean and variance of the
-        percentage of the items of a project that are in the list of the
-        most common items for that segment. It also caches the list of the
-        most common items of each segment.
-        Input:
-            items: pandas.Dataframe containing the all items of all
-                   Salic projects. It must contain at least the columns
-                   'idSegmento', 'PRONAC', and 'idPlanilhaAprovacao'.
-        Output:
-            This function has no output, instead, it caches the metrics
-            found in its instance.
-        """
-        print("*** CommonItemsRatio ***")
-        # Generate distinct items table
-        distinct_items = items[["idPlanilhaItens", "Item"]]
-        distinct_items = distinct_items.set_index("idPlanilhaItens")
-        self.distinct_items = distinct_items.drop_duplicates()
+@data.lazy('all_items', 'common_items')
+def common_items_metrics(all_items, common_items):
+    segments = common_items.index.unique()
+    metrics = {}
+    for seg in segments[:1]:
+        common_items = segment_common_items(seg)
+        projects = get_segment_projects(seg)
 
-        # Filtering items table
-        items = items[
-            [
-                "PRONAC",
-                "idSegmento",
-                "idPlanilhaItens",
-                "idPronac",
-                "UfItem",
-                "idProduto",
-                "cdCidade",
-                "cdEtapa",
-            ]
-        ]
+        metric_values = []
 
-        ### TODO: OPTIMIZE PERFORMANCE.
-        ### For now, using pronac as integer
-        items[["PRONAC"]] = items[["PRONAC"]].astype(int)
-        ####################################
+        for proj in projects:
+            pronac = proj[0]
+            percentage = common_items_percentage(pronac, seg)
+            metric_values.append(percentage)
 
-        self.items = items.drop_duplicates()
-
-        # Generating cache
-        self.cache = {}
-        self.cache["top_items"] = self._top_items(self.items)
-        self.cache["metrics"] = self._top_items_metrics(self.items)
-
-        self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
-
-    def get_metrics(self, pronac, k=1.5):
-        """
-            This function receives a project identifier and a constant 'k' and
-            verify if this project has an anomalous percentage of its items
-            that belongs to the most common items of its segment, considering a
-            gaussian distribution of this percentage for all projects of a same
-            segment. The project is said outlier if its:
-                (# of common items ratio) = (# of common items) / (# of items)
-            is lower than (mean - k * std) for its segment. It also return the
-            project '# of common items ratio' and its segment 'mean' and
-            'standard deviation' for this metric. Besides that, this function
-            returns a list of the uncommon items found in the project and a
-            list of common items not found in the project.
-            Input:
-                pronac: the project identifier.
-                k: constant that defines the threshold to verify if a project
-                is an outlier.
-            Output:
-                A dictionary containing the keys: is_outlier, value, mean, std,
-                uncommon_items, and common_items_not_in_project.
-        """
-
-        if not isinstance(pronac, str):
-            raise ValueError("PRONAC type must be str")
-
-        ### TODO: OPTIMIZE PERFORMANCE.
-        ### For now, using pronac as integer
-        pronac = int(pronac)
-        ####################################
-
-        pronac_items = self._get_pronac_data(pronac)
-
-        items = self.items
-
-        project = pronac_items.iloc[0]
-        segment = project["idSegmento"]
-        seg_top_items = self._top_items_segment(segment)
-        com_items_ratio = self._perc_items_in_top(items, pronac, seg_top_items)
-
-        metrics = self.cache["metrics"][segment]
-        threshold = metrics["mean"] - k * metrics["std"]
-
-        project_items = pronac_items
-        project_items = project_items.drop(columns=["PRONAC", "idSegmento"])
-        project_items = project_items.set_index("idPlanilhaItens").index
-        seg_top_items = seg_top_items.set_index("idPlanilhaItens").index
-
-        uncommon_items = list(project_items.difference(seg_top_items))
-        uncommon_items = self.distinct_items.loc[uncommon_items]
-        uncommon_items = uncommon_items.to_dict()["Item"]
-
-        pronac_filter = items["PRONAC"] == pronac
-        uncommon_items_filter = items["idPlanilhaItens"].isin(uncommon_items)
-        items_filter = pronac_filter & uncommon_items_filter
-
-        filtered_items = items[items_filter].drop_duplicates(subset="idPlanilhaItens")
-        for index, item in filtered_items.iterrows():
-            item_id = item["idPlanilhaItens"]
-            item_name = uncommon_items[item_id]
-            item_salic_url = self._item_salic_url(item)
-            has_receipt = self._item_has_receipt(item)
-            uncommon_items[item_id] = {
-                "name": item_name,
-                "salic_url": item_salic_url,
-                "has_receipt": has_receipt,
-            }
-
-        com_items_not_in_proj = list(seg_top_items.difference(project_items))
-        com_items_not_in_proj = self.distinct_items.loc[com_items_not_in_proj]
-        com_items_not_in_proj = com_items_not_in_proj.to_dict()["Item"]
-
-        results = {}
-        results["is_outlier"] = com_items_ratio < threshold
-        results["value"] = com_items_ratio
-        results["mean"] = metrics["mean"]
-        results["std"] = metrics["std"]
-        results["uncommon_items"] = uncommon_items
-        results["common_items_not_in_project"] = com_items_not_in_proj
-
-        return results
-
-    def _item_salic_url(self, item_info):
-        url_keys = [
-            ("pronac", "idPronac"),
-            ("uf", "uf"),
-            ("product", "produto"),
-            ("county", "idmunicipio"),
-            ("item_id", "idPlanilhaItem"),
-            ("stage", "etapa"),
-        ]
-
-        url_values = {
-            "pronac": item_info["idPronac"],
-            "uf": item_info["UfItem"],
-            "product": item_info["idProduto"],
-            "county": item_info["cdCidade"],
-            "item_id": item_info["idPlanilhaItens"],
-            "stage": item_info["cdEtapa"],
+        metrics[seg] = {
+            'mean': np.mean(metric_values),
+            'std': np.std(metric_values)
         }
 
-        item_data = []
-        for key, value in url_keys:
-            item_data.append((value, url_values[key]))
+    return pd.DataFrame.from_dict(metrics, orient='index')
 
-        URL_PREFIX = "/prestacao-contas/analisar/comprovante"
-        url = URL_PREFIX
-        for key, value in item_data:
-            url += "/" + str(key) + "/" + str(value)
 
-        return url
+@data.lazy('all_items')
+def common_items(df):
+    """
+    Retorna os itens que são comuns em todos os segmentos
+    formato idSegmento idPlanilhaItens
+    """
+    percentage = 0.1
+    
+    items_filter = lambda x : x[None : max(2, int(len(x) * percentage))]
+   
+    return (
+        df
+        .groupby(['idSegmento', 'idPlanilhaItens'])
+        .count()
+        .rename(columns={'PRONAC': 'itemOccurrences'})
+        .sort_values('itemOccurrences', ascending=False)
+        .reset_index(['idSegmento', 'idPlanilhaItens'])
+        .groupby('idSegmento')
+        .apply(items_filter)
+        .reset_index(['idSegmento'], drop=True)
+        .set_index(['idSegmento'])
+    )
 
-    def _top_items(self, items, percentage=0.1):
-        # Generating items occurrences table grouped by segment and item ID
-        items = items.groupby(["idSegmento", "idPlanilhaItens"]).count()
-        items = items.rename(columns={"PRONAC": "itemOccurrences"})
-        items = items.sort_values("itemOccurrences", ascending=False)
-        items = items.reset_index(["idSegmento", "idPlanilhaItens"])
 
-        # Selecting only the 'percentage' most common items of each segment
-        def items_filter(x):
-            return x[None : max(2, int(len(x) * percentage))]
+@data.lazy('planilha_orcamentaria')
+def distinct_items(df):
+    return (
+        df
+        [['idPlanilhaItens', 'Item']]
+        .set_index('idPlanilhaItens')
+        .drop_duplicates()
+    )
 
-        top_items = items.groupby("idSegmento").apply(items_filter)
-        top_items = top_items.reset_index(["idSegmento"], drop=True)
-        top_items = top_items.set_index(["idSegmento"])
 
-        return top_items
+@data.lazy('planilha_orcamentaria')
+def all_items(df):
+    """
+    Retorna todos os itens usados nos segmentos
+    sem repetição
+    """
+    return (
+        df[['PRONAC', 'idSegmento', 'idPlanilhaItens', 'idPronac',
+            'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
+        .drop_duplicates()
+    )
 
-    def _top_items_metrics(self, items):
-        top_items = self.cache["top_items"]
-        segments = top_items.index.unique()
-        metrics = {}
-        for segment in segments:
-            top_items_seg = self._top_items_segment(segment)
-            segment_projects = items[items["idSegmento"] == segment]
-            segment_projects = segment_projects.drop_duplicates(["PRONAC"])
-            segment_projects = segment_projects["PRONAC"].values
 
-            # project metric value
-            pmv = []
-            for project in segment_projects:
-                pmv += [self._perc_items_in_top(items, project, top_items_seg)]
-            metrics[segment] = {"mean": np.mean(pmv), "std": np.std(pmv)}
-        return metrics
+@data.lazy('planilha_comprovacao')
+def receipt(df):
+    mutated_df = df[['IdPRONAC', 'idPlanilhaItem']].astype(str)
+    mutated_df['pronac_planilha_itens'] = (
+        f"{mutated_df['IdPRONAC']}/{mutated_df['idPlanilhaItem']}"
+    )
 
-    def _top_items_segment(self, segment):
-        top_items_seg = self.cache["top_items"].loc[segment]
-        top_items_seg = top_items_seg.reset_index(drop=1)
-        top_items_seg = top_items_seg.drop(columns=["itemOccurrences"])
-        return top_items_seg
+    return (
+        mutated_df
+        .set_index(['pronac_planilha_itens'])
+    )
 
-    def _perc_items_in_top(self, items, pronac, top_items_segment):
-        # Handle segments with no common items
-        if len(top_items_segment) == 0:
-            return 0
+@lru_cache(maxsize=128)
+def get_project_items(pronac):
+    """
+    Returns all items from a project.
+    """
+    df = data.all_items
+    return (
+        df[df['PRONAC'] == pronac]
+        .drop(columns=['PRONAC', 'idSegmento'])
+    )
 
-        # Generating the list of the project items
-        project_items = items[items["PRONAC"] == pronac]
-        project_items = project_items.drop(columns=["PRONAC", "idSegmento"])
-        project_items = project_items.values[:, 0]
-        if len(project_items) == 0:
-            return 1
 
-        # Generating the number of items found in the list of the most
-        # common segment items
-        found_in_top = top_items_segment.isin(project_items)
-        found_in_top = sum(found_in_top["idPlanilhaItens"])
+@lru_cache(maxsize=128)
+def segment_common_items(segment_id):
+    """
+    Returns all the common items in a segment.
+    """
+    df = data.common_items
+    return (
+        df
+        .loc[str(segment_id)]
+        .reset_index(drop=1)
+        .drop(columns=["itemOccurrences"])
+    )
 
-        # Returning the percentage of project items in the list of the most
-        # common segment items
-        return found_in_top / len(project_items)
 
-    def _item_has_receipt(self, item_info):
-        item_identifier = (
-            str(item_info["idPronac"]) + "/" + str(item_info["idPlanilhaItens"])
-        )
-        return item_identifier in self.dt_comprovacao.index
+@lru_cache(maxsize=128)
+def common_items_percentage(pronac, segment_id):
+    """
+    Returns the percentage of items in a project that are
+    common in the cultural segment. 
+    """
+    seg_common_items = segment_common_items(segment_id)
+    
+    if len(seg_common_items) == 0:
+        return 0
 
-    def _process_receipt_data(self, dt_comprovacao):
-        dt_comprovacao = dt_comprovacao[["IdPRONAC", "idPlanilhaItem"]].astype(str)
-        dt_comprovacao["pronac_planilha_itens"] = (
-            dt_comprovacao["IdPRONAC"] + "/" + dt_comprovacao["idPlanilhaItem"]
-        )
-        dt_comprovacao.set_index(["pronac_planilha_itens"], inplace=True)
-        return dt_comprovacao
+    project_items = get_project_items(pronac).values[:, 0]
+    project_items_amount = len(project_items)
+    
+    if project_items_amount == 0:
+        return 1
 
-    def _get_pronac_data(self, pronac):
-        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
-        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
-        sql_folder = os.path.join(sql_folder, "data", "scripts")
+    common_found_items = sum(seg_common_items.isin(project_items)['idPlanilhaItens'])
 
-        datasource = DataSource()
-        path = os.path.join(sql_folder, "planilha_orcamentaria.sql")
+    return common_found_items / project_items_amount
 
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
-        pronac_dataframe = pronac_dataframe[
-            [
-                "PRONAC",
-                "idSegmento",
-                "idPlanilhaItens",
-                "idPronac",
-                "UfItem",
-                "idProduto",
-                "cdCidade",
-                "cdEtapa",
-            ]
-        ]
 
-        return pronac_dataframe
+@lru_cache(maxsize=128)
+def get_uncommon_items(pronac):
+    segment_id = get_segment_id(pronac)
+    seg_common_items = (
+        segment_common_items(segment_id)
+        .set_index('idPlanilhaItens')
+        .index
+    ) 
+    project_items = (
+        get_project_items(pronac)
+        .set_index('idPlanilhaItens')
+        .index
+    )
+    
+    diff = list(project_items.difference(seg_common_items))
+
+    return (
+        data.distinct_items
+        .loc[diff]
+        .to_dict()['Item']
+    )
+
+
+@lru_cache(maxsize=128)
+def get_common_items_not_present(pronac):
+    segment_id = get_segment_id(pronac)
+    seg_common_items = (
+        segment_common_items(segment_id)
+        .set_index('idPlanilhaItens')
+        .index
+    ) 
+    project_items = (
+        get_project_items(pronac)
+        .set_index('idPlanilhaItens')
+        .index
+    )
+    diff = list(seg_common_items.difference(project_items))
+
+    return (
+        data.distinct_items
+        .loc[diff]
+        .to_dict()['Item']
+    )
+
+
+def add_info_to_uncommon_items(filtered_items, uncommon_items):
+    result = uncommon_items
+    
+    for index, item in filtered_items.iterrows():
+        item_id = item['idPlanilhaItens']
+        item_name = uncommon_items[item_id]
+        
+        result[item_id] = {
+            'name': item_name,
+            'salic_url': get_salic_url(item),
+            'has_recepit': has_recepit(item)
+        }
+    
+    print(result)
+    return result
+
+
+def has_recepit(item):
+    pronac_id = str(item['idPronac'])
+    item_id = str(item["idPlanilhaItens"])
+    
+    combined_id = f'{pronac_id}/{item_id}'
+
+    return combined_id in data.receipt.index
+
+
+def get_salic_url(item):
+    url_keys = {
+        'pronac':'idPronac',
+        'uf':'uf',
+        'product':'produto',
+        'county':'idmunicipio',
+        'item_id': 'idPlanilhaItem',
+        'stage': 'etapa',
+    }
+
+    url_values = {
+        "pronac": item["idPronac"],
+        "uf": item["UfItem"],
+        "product": item["idProduto"],
+        "county": item["cdCidade"],
+        "item_id": item["idPlanilhaItens"],
+        "stage": item["cdEtapa"],
+    }
+
+    item_data = [(value, url_values[key]) for key, value in url_keys.items()]
+    url = '/prestacao-contas/analisar/comprovante'
+    for k, v in item_data:
+        url += f'/{str(k)}/{str(v)}'
+
+    return url
