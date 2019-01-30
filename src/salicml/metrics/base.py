@@ -23,6 +23,48 @@ def get_segment_id(pronac):
     )
 
 
+def get_salic_url(item, prefix):
+    """
+    Mount a salic url for the given item.
+    """
+    url_keys = {
+        'pronac': 'idPronac',
+        'uf': 'uf',
+        'product': 'produto',
+        'county': 'idmunicipio',
+        'item_id': 'idPlanilhaItem',
+        'stage': 'etapa',
+    }
+
+    url_values = {
+        "pronac": item["idPronac"],
+        "uf": item["UfItem"],
+        "product": item["idProduto"],
+        "county": item["cdCidade"],
+        "item_id": item["idPlanilhaItens"],
+        "stage": item["cdEtapa"],
+    }
+
+    item_data = [(value, url_values[key]) for key, value in url_keys.items()]
+    url = prefix
+    for k, v in item_data:
+        url += f'/{str(k)}/{str(v)}'
+
+    return url
+
+
+def has_receipt(item):
+    """
+    Verify if a item has a receipt.
+    """
+    pronac_id = str(item['idPronac'])
+    item_id = str(item["idPlanilhaItens"])
+
+    combined_id = f'{pronac_id}/{item_id}'
+
+    return combined_id in data.receipt.index
+
+
 @lru_cache(maxsize=128)
 def get_segment_projects(segment_id):
     """
@@ -33,6 +75,22 @@ def get_segment_projects(segment_id):
         df[df['idSegmento'] == str(segment_id)]
         .drop_duplicates(["PRONAC"])
         .values
+    )
+
+
+@data.lazy('planilha_comprovacao')
+def receipt(df):
+    """
+    Return a dataframe to verify if a item has a receipt.
+    """
+    mutated_df = df[['IdPRONAC', 'idPlanilhaItem']].astype(str)
+    mutated_df['pronac_planilha_itens'] = (
+        f"{mutated_df['IdPRONAC']}/{mutated_df['idPlanilhaItem']}"
+    )
+
+    return (
+        mutated_df
+        .set_index(['pronac_planilha_itens'])
     )
 
 

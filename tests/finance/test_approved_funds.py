@@ -1,7 +1,7 @@
 import unittest
 
 from salicml.data.query import metrics
-from salicml.metrics.finance import approved_funds
+
 
 class TestApprovedFunds(unittest.TestCase):
 

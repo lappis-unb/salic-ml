@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
+
 from salicml.data import data
 from salicml.data.query import metrics
-from salicml.metrics.base import get_segment_id, get_segment_projects
+from salicml.metrics.base import get_salic_url, get_segment_id, get_segment_projects, has_receipt
 from functools import lru_cache
 
 
@@ -126,21 +127,6 @@ def all_items(df):
     )
 
 
-@data.lazy('planilha_comprovacao')
-def receipt(df):
-    """
-    Return a dataframe to verify if a item has a receipt.
-    """
-    mutated_df = df[['IdPRONAC', 'idPlanilhaItem']].astype(str)
-    mutated_df['pronac_planilha_itens'] = (
-        f"{mutated_df['IdPRONAC']}/{mutated_df['idPlanilhaItem']}"
-    )
-
-    return (
-        mutated_df
-        .set_index(['pronac_planilha_itens'])
-    )
-
 
 @lru_cache(maxsize=128)
 def get_project_items(pronac):
@@ -251,6 +237,7 @@ def add_info_to_uncommon_items(filtered_items, uncommon_items):
     """
 
     result = uncommon_items
+    url_prefix = '/prestacao-contas/analisar/comprovante'
 
     for _, item in filtered_items.iterrows():
         item_id = item['idPlanilhaItens']
@@ -258,50 +245,8 @@ def add_info_to_uncommon_items(filtered_items, uncommon_items):
 
         result[item_id] = {
             'name': item_name,
-            'salic_url': get_salic_url(item),
-            'has_recepit': has_recepit(item)
+            'salic_url': get_salic_url(item, url_prefix),
+            'has_recepit': has_receipt(item)
         }
 
     return result
-
-
-def has_recepit(item):
-    """
-    Verify if a item has a receipt.
-    """
-    pronac_id = str(item['idPronac'])
-    item_id = str(item["idPlanilhaItens"])
-
-    combined_id = f'{pronac_id}/{item_id}'
-
-    return combined_id in data.receipt.index
-
-
-def get_salic_url(item):
-    """
-    Mount a salic url for the given item.
-    """
-    url_keys = {
-        'pronac': 'idPronac',
-        'uf': 'uf',
-        'product': 'produto',
-        'county': 'idmunicipio',
-        'item_id': 'idPlanilhaItem',
-        'stage': 'etapa',
-    }
-
-    url_values = {
-        "pronac": item["idPronac"],
-        "uf": item["UfItem"],
-        "product": item["idProduto"],
-        "county": item["cdCidade"],
-        "item_id": item["idPlanilhaItens"],
-        "stage": item["cdEtapa"],
-    }
-
-    item_data = [(value, url_values[key]) for key, value in url_keys.items()]
-    url = '/prestacao-contas/analisar/comprovante'
-    for k, v in item_data:
-        url += f'/{str(k)}/{str(v)}'
-
-    return url

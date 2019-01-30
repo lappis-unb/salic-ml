@@ -1,185 +1,140 @@
-import os
+from salicml.outliers import gaussian_outlier
+from salicml.data.query import metrics
+from salicml.data import data
+from salicml.metrics.base import get_salic_url, has_receipt
+
 import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from salicml.outliers import gaussian_outlier
-from salicml.data.data_source import DataSource
+
+@metrics.register('finance')
+def item_prices(pronac, data):
+    """
+    Verify if a project is an outlier compared
+    to the other projects in his segment, based
+    on the price of bought items.
+    """
+    threshold = 0.1
+
+    outlier_info = get_outliers_percentage(pronac)
+    outlier_info['is_outlier'] = outlier_info['percentage'] > threshold
+    outlier_info['maximum_expected'] = threshold * outlier_info['total_items']
+
+    return outlier_info
 
 
-class ItemsPrice:
-    """ TODO
+def is_outlier(df, item_id, segment_id, price):
+    """
+    Verify if a item is an outlier compared to the
+    other occurrences of the same item, based on his price.
+
+    Args:
+        item_id: idPlanilhaItens
+        segment_id: idSegmento
+        price: VlUnitarioAprovado
     """
 
-    usecols = [
-        "PRONAC",
-        "idPlanilhaAprovacao",
-        "Item",
-        "idPlanilhaItens",
-        "VlUnitarioAprovado",
-        "idSegmento",
-        "DataProjeto",
-        "idPronac",
-        "UfItem",
-        "idProduto",
-        "cdCidade",
-        "cdEtapa",
-    ]
+    if (segment_id, item_id) not in df.index:
+        return False
 
-    def __init__(self, dt_orcamentaria, dt_comprovacao):
-        """ TODO
-        """
-        assert isinstance(dt_orcamentaria, pd.DataFrame)
+    mean = df.loc[(segment_id, item_id)]['mean']
+    std = df.loc[(segment_id, item_id)]['std']
 
-        self.dt_orcamentaria = dt_orcamentaria[ItemsPrice.usecols].copy()
-        self.dt_orcamentaria["VlUnitarioAprovado"] = self.dt_orcamentaria[
-            "VlUnitarioAprovado"
-        ].apply(pd.to_numeric)
-        self.dt_comprovacao = self._process_receipt_data(dt_comprovacao)
-        self._train()
+    return gaussian_outlier.is_outlier(
+        x=price, mean=mean, standard_deviation=std
+    )
 
-    def get_metrics(self, pronac):
-        """ TODO
-        """
-        if not isinstance(pronac, str):
-            raise ValueError("PRONAC type must be str")
 
-        PERCENTAGE_THRESHOLD = 0.1
-        outliers, total_items, outliers_percentage, items_outlier = self.get_outliers_percentage(
-            pronac
-        )
+@data.lazy('relevant_items')
+def aggregated_relevant_items(raw_df):
+    """
+    Aggragation for calculate mean and std.
+    """
+    df = (
+        raw_df[['idSegmento', 'idPlanilhaItens', 'VlUnitarioAprovado']]
+        .groupby(by=['idSegmento', 'idPlanilhaItens'])
+        .agg([np.mean, lambda x: np.std(x, ddof=0)])
+    )
+    df.columns = df.columns.droplevel(0)
+    return (
+        df
+        .rename(columns={'<lambda>': 'std'})
+    )
 
-        outlier = outliers_percentage > PERCENTAGE_THRESHOLD
-        response = {
-            "is_outlier": outlier,
-            "number_items_outliers": outliers,
-            "total_items": total_items,
-            "maximum_expected": PERCENTAGE_THRESHOLD * total_items,
-            "outlier_items": items_outlier,
-        }
-        return response
 
-    def _train(self):
-        """ TODO
-        """
+@data.lazy('items_with_price')
+def relevant_items(df):
+    """
+    Dataframe with items used by cultural projects,
+    filtered by date and price.
+    """
+    start_date = datetime(2013, 1, 1)
 
-        self.dt_train = self.dt_orcamentaria.copy()
+    df['DataProjeto'] = pd.to_datetime(df['DataProjeto'])
 
-        START_DATE = datetime(2013, 1, 1)
+    # get only projects newer than start_date
+    # and items with price > 0
+    df = df[df.DataProjeto >= start_date]
+    df = df[df.VlUnitarioAprovado > 0.0]
 
-        self.dt_train["DataProjeto"] = pd.to_datetime(self.dt_train["DataProjeto"])
-        self.dt_train = self.dt_train[self.dt_train.DataProjeto >= START_DATE]
-        self.dt_train = self.dt_train[self.dt_train.VlUnitarioAprovado > 0.0]
+    return df
 
-        PRICE_COLUMNS = ["idSegmento", "idPlanilhaItens", "VlUnitarioAprovado"]
-        self.dt_train_agg = (
-            self.dt_train[PRICE_COLUMNS]
-            .groupby(by=["idSegmento", "idPlanilhaItens"])
-            .agg([np.mean, lambda x: np.std(x, ddof=0)])
-        )
-        self.dt_train_agg.columns = self.dt_train_agg.columns.droplevel(0)
-        self.dt_train_agg.rename(columns={"<lambda>": "std"}, inplace=True)
 
-        self.pronacs_grp = self.dt_orcamentaria.groupby(["PRONAC"])
+@data.lazy('planilha_orcamentaria')
+def items_with_price(raw_df):
+    """
+    Dataframe with price as number.
+    """
+    df = (
+        raw_df
+        [['PRONAC', 'idPlanilhaAprovacao', 'Item',
+            'idPlanilhaItens', 'VlUnitarioAprovado',
+            'idSegmento', 'DataProjeto', 'idPronac',
+            'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
+    ).copy()
 
-    def is_item_outlier(self, id_planilha_item, id_segmento, price):
-        if (id_segmento, id_planilha_item) not in self.dt_train_agg.index:
-            return False
+    df['VlUnitarioAprovado'] = df['VlUnitarioAprovado'].apply(pd.to_numeric)
+    return df
 
-        mean = self.dt_train_agg.loc[(id_segmento, id_planilha_item)]["mean"]
-        std = self.dt_train_agg.loc[(id_segmento, id_planilha_item)]["std"]
-        outlier = gaussian_outlier.is_outlier(
-            x=price, mean=mean, standard_deviation=std
-        )
-        return outlier
 
-    def get_outliers_percentage(self, pronac):
-        items = self._get_pronac_data(pronac)
+def get_outliers_percentage(pronac):
+    """
+    Returns the percentage of items
+    of the project that are outliers.
+    """
+    items = (
+        data.items_with_price
+        .groupby(['PRONAC'])
+        .get_group(pronac)
+    )
 
-        outliers = 0
-        items_outliers = {}
+    df = data.aggregated_relevant_items
 
-        for row in items.itertuples():
-            item_id = getattr(row, "idPlanilhaItens")
-            unit_value = getattr(row, "VlUnitarioAprovado")
-            segment_id = getattr(row, "idSegmento")
-            item_name = getattr(row, "Item")
+    outlier_items = {}
+    url_prefix = '/prestacao-contas/analisar/comprovante'
 
-            is_outlier = self.is_item_outlier(
-                id_planilha_item=item_id, id_segmento=segment_id, price=unit_value
-            )
+    for _, item in items.iterrows():
+        item_id = item['idPlanilhaItens']
+        price = item['VlUnitarioAprovado']
+        segment_id = item['idSegmento']
+        item_name = item['Item']
 
-            if is_outlier:
-                outliers += 1
-                item_salic_url = self._item_salic_url(row)
-                has_receipt = self._item_has_receipt(row)
-                items_outliers[item_id] = {
-                    "name": item_name,
-                    "salic_url": item_salic_url,
-                    "has_receipt": has_receipt,
-                }
+        if is_outlier(df, item_id, segment_id, price):
+            outlier_items[item_id] = {
+                'name': item_name,
+                'salic_url': get_salic_url(item, url_prefix),
+                'has_receipt': has_receipt(item)
+            }
 
-        outliers_percentage = outliers / items.shape[0]
-        return outliers, items.shape[0], outliers_percentage, items_outliers
+    total_items = items.shape[0]
+    outliers_amount = len(outlier_items)
 
-    def _item_salic_url(self, item_info):
-        url_keys = [
-            ("pronac", "idPronac"),
-            ("uf", "uf"),
-            ("product", "produto"),
-            ("county", "idmunicipio"),
-            ("item_id", "idPlanilhaItem"),
-            ("stage", "etapa"),
-        ]
+    percentage = outliers_amount / total_items
 
-        url_values = {
-            "pronac": getattr(item_info, "idPronac"),
-            "uf": getattr(item_info, "UfItem"),
-            "product": getattr(item_info, "idProduto"),
-            "county": getattr(item_info, "cdCidade"),
-            "item_id": getattr(item_info, "idPlanilhaItens"),
-            "stage": getattr(item_info, "cdEtapa"),
-        }
-
-        item_data = []
-        for key, value in url_keys:
-            item_data.append((value, url_values[key]))
-
-        URL_PREFIX = "/prestacao-contas/analisar/comprovante"
-        url = URL_PREFIX
-        for key, value in item_data:
-            url += "/" + str(key) + "/" + str(value)
-
-        return url
-
-    def _item_has_receipt(self, item_info):
-        item_identifier = (
-            str(getattr(item_info, "idPronac"))
-            + "/"
-            + str(getattr(item_info, "idPlanilhaItens"))
-        )
-        return item_identifier in self.dt_comprovacao.index
-
-    def _process_receipt_data(self, dt_comprovacao):
-        dt_comprovacao = dt_comprovacao[["IdPRONAC", "idPlanilhaItem"]].astype(str)
-        dt_comprovacao["pronac_planilha_itens"] = (
-            dt_comprovacao["IdPRONAC"] + "/" + dt_comprovacao["idPlanilhaItem"]
-        )
-        dt_comprovacao.set_index(["pronac_planilha_itens"], inplace=True)
-        return dt_comprovacao
-
-    def _get_pronac_data(self, pronac):
-        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
-        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
-        sql_folder = os.path.join(sql_folder, "data", "scripts")
-
-        datasource = DataSource()
-        path = os.path.join(sql_folder, "planilha_orcamentaria.sql")
-
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
-
-        pronac_dataframe = pronac_dataframe[ItemsPrice.usecols]
-
-        pronac_grp = pronac_dataframe.groupby(["PRONAC"])
-
-        return pronac_grp.get_group(pronac)
+    return {
+        'outlier_items': outlier_items,
+        'outliers_amount': outliers_amount,
+        'total_items': total_items,
+        'percentage': percentage
+    }

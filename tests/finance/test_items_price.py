@@ -1,42 +1,29 @@
 import unittest
 
+from salicml.data.query import metrics
+from salicml.metrics.finance import item_prices
 
-from salicml.utils.read_csv import read_csv_with_different_type
-from salicml.metrics.finance.item_prices import ItemsPrice
 
-
-class TestItemsPrice(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        csv_name = "planilha_orcamentaria.csv"
-        usecols = ItemsPrice.usecols
-        super(TestItemsPrice, cls).setUpClass()
-
-        cls.dt_orcamentaria = read_csv_with_different_type(
-            csv_name, {"PRONAC": str}, usecols=usecols
-        )
-        cls.items_price = ItemsPrice(cls.dt_orcamentaria)
+class TestApprovedFunds(unittest.TestCase):
 
     def test_inlier_pronac(self):
-        pronac = "137225"
-        response = self.items_price.get_metrics(pronac)
-        print("response = {}".format(response))
-        self.assertFalse(response["is_outlier"])
+        project = metrics.get_project(137225)
+        assert not project.finance.item_prices['is_outlier']
 
     def test_outlier_pronac(self):
-        pronac = "120991"
-        response = self.items_price.get_metrics(pronac)
-        self.assertTrue(response["is_outlier"])
+        project = metrics.get_project(120991)
+        assert project.finance.item_prices['is_outlier'] 
 
     def test_get_metrics(self):
-        pronac = "137225"
-        response = self.items_price.get_metrics(pronac)
+        project = metrics.get_project(137225)
+        response = project.finance.item_prices
 
         expected_keys = [
-            "is_outlier",
-            "number_items_outliers",
-            "total_items",
-            "maximum_expected",
+            'is_outlier',
+            'outliers_amount',
+            'total_items',
+            'maximum_expected',
+            'percentage'
         ]
 
         for key in expected_keys:
