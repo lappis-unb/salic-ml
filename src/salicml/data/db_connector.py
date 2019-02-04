@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-import pyodbc as dbc
+import pymssql
 
 
 class DbConnector:
@@ -16,15 +16,12 @@ class DbConnector:
             "PASSWORD": os.environ.get("CONNECT_DB_PASSWORD", ""),
             "DATABASE": os.environ.get("CONNECT_DB_NAME", ""),
         }
-        db_parameters = "DRIVER=FreeTDS;SERVER={0};PORT={1};DATABASE=;UID={2};PWD={3};\
-             TDS_Version=8.0;".format(
-            db_credentials["HOST"],
-            db_credentials["PORT"],
-            db_credentials["USER"],
-            db_credentials["PASSWORD"],
-        )
 
-        print(db_credentials)
+        self.db = pymssql.connect(host=db_credentials["HOST"],
+                                  user=db_credentials["USER"],
+                                  password=db_credentials["PASSWORD"],
+                                  database=db_credentials["DATABASE"],
+                                  port=db_credentials["PORT"])
 
     def _database_disconnect(self):
         self.db.close()

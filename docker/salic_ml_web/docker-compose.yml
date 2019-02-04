@@ -17,26 +17,18 @@ services:
       - ./../../etc/env/db.env
     volumes:
       - ./../../:/api
-      - ./../../data:/usr/local/lib/python3.7/dist-packages/data
+      - ./../../data:/usr/local/lib/python3.5/dist-packages/data
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      - SALIC_DB_HOST=salic_db
-      - SALIC_DB_PORT=1435
-      - SALIC_DB_USER=
-      - SALIC_DB_PASSWORD=
       - PYTHONUNBUFFERED=1
 
   salic_db:
-    image: edsonma/openconnect-globalprotect
-    environment:
-      - VPN_PASSWORD=
-      - VPN_SERVER=
-      - VPN_USER=
-      - SERVICE_IP=
-      - SERVICE_PORT=
+    image: lappis/openconnect-globalprotect
+    env_file:
+      - ./../../etc/env/vpn.env
     ports:
       - "9000:1435"
     privileged: true

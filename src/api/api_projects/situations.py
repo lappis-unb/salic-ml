@@ -1,7 +1,3 @@
-from django.db import models
-from boogie.rest import rest_api
-
-
 SITUATIONS = (
     ("A01", "Projeto cultural cadastrado pelo sistema"),
     ("A02", "Projeto cadastrado"),
@@ -297,23 +293,3 @@ SITUATIONS = (
     ("L10", "Prestação de contas reprovada - Inabilitação Prescrita"),
     ("L11", "Prestação de contas reprovada – Inabilitação suspensa"),
 )
-
-
-@rest_api(['pronac', 'name', 'created_at'], lookup_field='pronac')
-class Project(models.Model):
-    pronac = models.IntegerField(default=0)
-    name = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    situation = models.CharField(
-        choices=SITUATIONS,
-        default="A01",
-        max_length=200,
-    )
-    step = models.CharField(max_length=200, null=True)
-
-    class Meta:
-        verbose_name_plural = "Projects"
-
-    def __str__(self):
-        return self.name

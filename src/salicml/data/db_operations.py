@@ -9,7 +9,6 @@ DATA_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "data"
 
 def test_connection():
     db = db_connector()
-    print('aee')
     data = db.execute_query("SELECT * FROM BDCORPORATIVO.scSAC.tbItemCusto")
     db.close()
     return data
