@@ -1,46 +1,33 @@
 import unittest
 
 
-from salicml.utils.read_csv import read_csv_with_different_type
-from salicml.metrics.finance.new_providers import NewProviders
+from salicml.data.query import metrics
+from salicml.metrics.finance import new_providers
 
 
 class TestNewProviders(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        csv_name = "planilha_comprovacao.csv"
-        usecols = NewProviders.usecols
-
-        super(TestNewProviders, cls).setUpClass()
-
-        cls.dt_comprovacao = read_csv_with_different_type(
-            csv_name, {"PRONAC": str, "nrCNPJCPF": str}, usecols=usecols
-        )
-        cls.new_providers = NewProviders(cls.dt_comprovacao)
 
     def test_outlier_pronac(self):
-        pronac = "153038"
+        project = metrics.get_project('153038')
 
-        response = self.new_providers.get_metrics(pronac)
-        self.assertTrue(response["is_outlier"])
-        self.assertTrue(response["new_providers"])
+        response = project.finance.new_providers
+        assert response['is_outlier']
+        assert response['new_providers']
 
     def test_inlier_pronac(self):
-        pronac = "130222"
-        response = self.new_providers.get_metrics(pronac)
-        self.assertFalse(response["is_outlier"])
+        project = metrics.get_project('130222')
+        response = project.finance.new_providers
+        assert not (response['is_outlier'])
 
     def test_get_metrics(self):
-        pronac = "130222"
-        response = self.new_providers.get_metrics(pronac)
+        project = metrics.get_project('130222')
+        response = project.finance.new_providers
 
         expected_keys = [
-            "new_providers",
-            "new_providers_percentage",
-            "segment_average_percentage",
-            "is_outlier",
-            "all_projects_average_percentage",
+            'new_providers',
+            'new_providers_percentage',
+            'segment_average_percentage',
+            'is_outlier',
+            'all_projects_average_percentage',
         ]
-
-        for key in expected_keys:
-            self.assertIn(key, response.keys())
+        assert all(key in response for key in expected_keys)

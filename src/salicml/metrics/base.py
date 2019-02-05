@@ -23,7 +23,7 @@ def get_segment_id(pronac):
     )
 
 
-def get_salic_url(item, prefix):
+def get_salic_url(item, prefix, df_values=None):
     """
     Mount a salic url for the given item.
     """
@@ -36,14 +36,20 @@ def get_salic_url(item, prefix):
         'stage': 'etapa',
     }
 
-    url_values = {
-        "pronac": item["idPronac"],
-        "uf": item["UfItem"],
-        "product": item["idProduto"],
-        "county": item["cdCidade"],
-        "item_id": item["idPlanilhaItens"],
-        "stage": item["cdEtapa"],
-    }
+    if df_values:
+        values = [item[v] for v in df_values]
+        url_values = dict(
+            zip(url_keys.keys(), values)
+        )
+    else:
+        url_values = {
+            "pronac": item["idPronac"],
+            "uf": item["UfItem"],
+            "product": item["idProduto"],
+            "county": item["cdCidade"],
+            "item_id": item["idPlanilhaItens"],
+            "stage": item["cdEtapa"],
+        }
 
     item_data = [(value, url_values[key]) for key, value in url_keys.items()]
     url = prefix

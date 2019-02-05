@@ -1,180 +1,160 @@
-import os
 import pandas as pd
 import numpy as np
 
-from salicml.data.data_source import DataSource
+from salicml.data.query import metrics
+from salicml.data import data
+from salicml.metrics.base import get_salic_url
 
 
-class NewProviders:
-    """ TODO
+@metrics.register('finance')
+def new_providers(pronac, data):
     """
+    Return the percentage of providers of a project
+    that are new to the providers database.
+    """
+    info = data.providers_info
+    df = info[info['PRONAC'] == int(pronac)]
+    providers_count = data.providers_count.to_dict()[0]
 
-    usecols = [
-        "PRONAC",
-        "IdPRONAC",
-        "nrCNPJCPF",
-        "DataProjeto",
-        "idPlanilhaAprovacao",
-        "Item",
-        "nmFornecedor",
-        "idSegmento",
-        "UF",
-        "cdProduto",
-        "cdCidade",
-        "idPlanilhaItem",
-        "cdEtapa",
+    new_providers = {}
+    segment_id = None
+    url_prefix = '/prestacao-contas/analisar/comprovante'
+    url_val = [
+        'IdPRONAC',
+        'UF',
+        'cdProduto',
+        'cdCidade',
+        'idPlanilhaItem',
+        'cdEtapa'
     ]
 
-    def __init__(self, dt_comprovacao):
-        """ TODO
-        """
-        print("*** NewProviders ***")
-        assert isinstance(dt_comprovacao, pd.DataFrame)
+    for _, row in df.iterrows():
+        cnpj = row['nrCNPJCPF']
+        cnpj_count = providers_count.get(cnpj, 0)
+        segment_id = row['idSegmento']
 
-        self.dt_comprovacao = dt_comprovacao[NewProviders.usecols].copy()
-        self._train()
+        if cnpj_count <= 1:
+            item_id = row['idPlanilhaAprovacao']
+            item_name = row['Item']
+            provider_name = row['nmFornecedor']
 
-    def item_salic_url(self, item_info):
-        url_keys = [
-            ("pronac", "idPronac"),
-            ("uf", "uf"),
-            ("product", "produto"),
-            ("county", "idmunicipio"),
-            ("item_id", "idPlanilhaItem"),
-            ("stage", "etapa"),
-        ]
+            new_providers[cnpj] = {
+                'name': provider_name,
+                'items': {
+                    item_id: {
+                        'name': item_name,
+                        'salic_url': get_salic_url(row, url_prefix, url_val),
+                        'has_receipt': True
+                    }
+                }
+            }
 
-        url_values = {
-            "pronac": item_info["IdPRONAC"],
-            "uf": item_info["UF"],
-            "product": item_info["cdProduto"],
-            "county": item_info["cdCidade"],
-            "item_id": item_info["idPlanilhaItem"],
-            "stage": item_info["cdEtapa"],
-        }
+    providers_amount = len(df['nrCNPJCPF'].unique())
 
-        item_data = []
-        for key, value in url_keys:
-            item_data.append((value, url_values[key]))
+    new_providers_amount = len(new_providers)
 
-        URL_PREFIX = "/prestacao-contas/analisar/comprovante"
-        url = URL_PREFIX
-        for key, value in item_data:
-            url += "/" + str(key) + "/" + str(value)
+    new_providers_percentage = new_providers_amount / providers_amount
 
-        return url
+    averages = data.average_percentage_of_new_providers.to_dict()
+    segments_average = averages['segments_average_percentage']
+    all_projects_average = list(averages['all_projects_average'].values())[0]
 
-    def get_metrics(self, pronac):
-        """ TODO
-        """
-        if not isinstance(pronac, str):
-            raise ValueError("PRONAC type must be str")
+    return {
+        'new_providers': new_providers,
+        'new_providers_percentage': new_providers_percentage,
+        'is_outlier': new_providers_percentage > segments_average[segment_id],
+        'segment_average_percentage': segments_average[segment_id],
+        'all_projects_average_percentage': all_projects_average
+    }
 
-        items = self._get_pronac_data(pronac)
 
-        response = {}
-        new_providers = {}
-        pronac_segment = None
+@data.lazy('providers_info', 'providers_count')
+def average_percentage_of_new_providers(providers_info, providers_count):
+    """
+    Return the average percentage of new providers
+    per segment and the average percentage of all projects.
+    """
+    segments_percentages = {}
+    all_projects_percentages = []
+    providers_count = providers_count.to_dict()[0]
 
-        for index, row in items.iterrows():
-            cnpj = row["nrCNPJCPF"]
-            cnpj_count = self.providers_count.get(cnpj, 0)
-            pronac_segment = row["idSegmento"]
-
+    for _, items in providers_info.groupby('PRONAC'):
+        cnpj_array = items['nrCNPJCPF'].unique()
+        new_providers = 0
+        for cnpj in cnpj_array:
+            cnpj_count = providers_count.get(cnpj, 0)
             if cnpj_count <= 1:
-                item_id = row["idPlanilhaAprovacao"]
-                item_name = row["Item"]
-                provider_name = row["nmFornecedor"]
+                new_providers += 1
 
-                new_providers.setdefault(cnpj, {})
-                new_providers[cnpj].setdefault("items", {})
-                new_providers[cnpj].setdefault("name", provider_name)
+        segment_id = items.iloc[0]['idSegmento']
+        new_providers_percent = new_providers / cnpj_array.size
+        segments_percentages.setdefault(segment_id, [])
+        segments_percentages[segment_id].append(new_providers_percent)
+        all_projects_percentages.append(new_providers_percent)
 
-                new_providers[cnpj]["items"].setdefault(item_id, {})
-                new_providers[cnpj]["items"][item_id]["name"] = item_name
+    segments_average_percentage = {}
+    for segment_id, percentages in segments_percentages.items():
+        mean = np.mean(percentages)
+        segments_average_percentage[segment_id] = mean
 
-                item_info = row
-                new_providers[cnpj]["items"][item_id][
-                    "salic_url"
-                ] = self.item_salic_url(item_info)
-                new_providers[cnpj]["items"][item_id]["has_receipt"] = True
+    return pd.DataFrame.from_dict({
+        'segments_average_percentage': segments_average_percentage,
+        'all_projects_average': np.mean(all_projects_percentages)
+    })
 
-        new_providers_percentage = len(new_providers) / len(items["nrCNPJCPF"].unique())
 
-        response["new_providers"] = new_providers
-        response["new_providers_percentage"] = new_providers_percentage
-        response["segment_average_percentage"] = self.segments_average[pronac_segment]
-        response["is_outlier"] = (
-            new_providers_percentage > self.segments_average[pronac_segment]
-        )
-        response["all_projects_average_percentage"] = self.all_projects_average
+@data.lazy('all_providers_cnpj')
+def providers_count(df):
+    """
+    Returns total occurrences of each provider
+    in the database.
+    """
+    providers_count = {}
+    cnpj_array = df.values
 
-        return response
+    for a in cnpj_array:
+        cnpj = a[0]
+        occurrences = providers_count.get(cnpj, 0)
+        providers_count[cnpj] = occurrences + 1
 
-    def _train(self):
-        """ TODO
-        """
-        self._set_projects_groupby()
-        self._set_providers_count()
-        self._train_average_percentage()
+    return pd.DataFrame.from_dict(providers_count, orient='index')
 
-    def _set_projects_groupby(self):
-        self.projects = self.dt_comprovacao.groupby("PRONAC")
 
-    def _set_providers_count(self):
-        self.providers_count = {}
+@data.lazy('planilha_comprovacao')
+def providers_info(df):
+    """
+    Relevant info for providers.
+    """
+    return df[[
+            "PRONAC", "IdPRONAC", "nrCNPJCPF",
+            "DataProjeto", "idPlanilhaAprovacao",
+            "Item", "nmFornecedor", "idSegmento",
+            "UF", "cdProduto", "cdCidade",
+            "idPlanilhaItem", "cdEtapa"
+        ]]
 
-        for pronac, items in self.projects:
-            cnpjs = items["nrCNPJCPF"].unique()
 
-            for cnpj in cnpjs:
-                count = self.providers_count.setdefault(cnpj, 0)
-                self.providers_count[cnpj] = count + 1
+@data.lazy('providers_info')
+def all_providers_cnpj(df):
+    """
+    Return CPF/CNPJ of all providers
+    in database.
+    """
+    cnpj_list = []
 
-    def _train_average_percentage(self):
-        segment_percentages = {}
-        all_projects_percentages = []
+    for _, items in df.groupby('PRONAC'):
+        unique_cnpjs = items['nrCNPJCPF'].unique()
+        cnpj_list += list(unique_cnpjs)
 
-        for pronac, items in self.projects:
-            cnpjs = items.nrCNPJCPF.unique()
-            new_providers = 0
-            for cnpj in cnpjs:
-                cnpj_count = self.providers_count.get(cnpj, 0)
-                if cnpj_count <= 1:  # if cnpj_count == 1
-                    # then the current pronac is the only one with the given provider
-                    new_providers += 1
+    return pd.DataFrame(cnpj_list)
 
-            id_segmento = items.iloc[0]["idSegmento"]
-            segment_percentages.setdefault(id_segmento, [])
-            providers_percent = new_providers / cnpjs.size
-            segment_percentages[id_segmento].append(providers_percent)
-            all_projects_percentages.append(providers_percent)
 
-        self.segments_average = {}
-        for segment_id, percentages in segment_percentages.items():
-            mean = np.mean(percentages)
-            self.segments_average[segment_id] = mean
+def get_providers_info(pronac):
+    """
+    Return all info about providers of a
+    project with the given pronac.
+    """
+    df = data.providers_info
+    grouped = df.groupby('PRONAC')
 
-        self.all_projects_average = np.mean(all_projects_percentages)
-
-    def get_averages(self):
-        averages = {
-            "segments_average": self.segments_average,
-            "all_projects_average": self.all_projects_average,
-        }
-        return averages
-
-    def _get_pronac_data(self, pronac):
-        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
-        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
-        sql_folder = os.path.join(sql_folder, "data", "scripts")
-
-        datasource = DataSource()
-        path = os.path.join(sql_folder, "planilha_comprovacao.sql")
-
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
-        pronac_dataframe = pronac_dataframe[NewProviders.usecols]
-
-        dataframe_grouped_by = pronac_dataframe.groupby("PRONAC")
-
-        return dataframe_grouped_by.get_group(pronac)
+    return grouped.get_group(pronac)

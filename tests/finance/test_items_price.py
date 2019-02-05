@@ -4,7 +4,7 @@ from salicml.data.query import metrics
 from salicml.metrics.finance import item_prices
 
 
-class TestApprovedFunds(unittest.TestCase):
+class TestItemsPrice(unittest.TestCase):
 
     def test_inlier_pronac(self):
         project = metrics.get_project(137225)
@@ -26,5 +26,4 @@ class TestApprovedFunds(unittest.TestCase):
             'percentage'
         ]
 
-        for key in expected_keys:
-            self.assertIn(key, response.keys())
+        assert all(key in response for key in expected_keys)
