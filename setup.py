@@ -22,7 +22,7 @@ setup(
         'markdown',
         'numpy~=1.15.1',
         'pandas',
-        'pyodbc~=4.0.22',
+        'pyodbc',
         'psycopg2',
         'pymssql',
         'requests',

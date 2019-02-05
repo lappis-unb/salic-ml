@@ -1,7 +1,6 @@
 import os
-
-import pandas as pd
 import pymssql
+import pandas as pd
 
 
 class DbConnector:

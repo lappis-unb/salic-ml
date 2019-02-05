@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM debian:buster-slim
 
 EXPOSE 8080
 
@@ -17,17 +17,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         freetds-bin \
         cron \
         curl \
+        apt-utils \
         gnupg2 \
         apt-transport-https
 
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get install msodbcsql17
 RUN apt-get install --reinstall -y locales tzdata && \
         sed -i 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen && \
         locale-gen pt_BR.UTF-8
 
+RUN odbcinst -i -d -f /usr/share/tdsodbc/odbcinst.ini
 ENV LANG pt_BR.UTF-8
 ENV LANGUAGE pt_BR
 ENV LC_ALL pt_BR.UTF-8
@@ -47,9 +49,7 @@ RUN mkdir /api
 
 ADD . /api/
 
-ADD etc/scripts/odbcinst.ini /etc/odbcinst.ini
-ADD etc/scripts/freetds.conf /etc/freetds.conf
-
+ADD /etc/scripts/odbcinst.ini /etc/odbcinst.ini
 
 WORKDIR /api
 

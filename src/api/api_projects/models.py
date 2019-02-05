@@ -3,9 +3,11 @@ from boogie.rest import rest_api
 import logging
 import datetime
 from polymorphic.models import PolymorphicModel
+from polymorphic.managers import PolymorphicManager
 from picklefield.fields import PickledObjectField
 from salicml.data.db_connector import db_connector
 from salicml.data.db_operations import DATA_PATH
+from salicml.data.query import metrics as metrics_calc
 from .situations import SITUATIONS
 
 log = logging.getLogger("salic-ml.data")
@@ -76,9 +78,6 @@ class Indicator(PolymorphicModel):
     def metric_weights(self, **kwargs):
             raise NotImplementedError('implement in subclass')
 
-    def calculate_indicator_metrics(self):
-        raise NotImplementedError('implement in subclass')
-
     def fetch_weighted_complexity(self, recalculate_metrics=False):
         """
         Calculates indicator value according to metrics weights
@@ -112,6 +111,24 @@ class Indicator(PolymorphicModel):
         return final_value
 
 
+class FinancialIndicatorManager(PolymorphicManager):
+    def create_indicator(self, project):
+        """
+        Creates FinancialIndicator object for a project, calculating
+        metrics and indicator value
+        """
+        # TODO:If update is True, update project metrics if already exists
+        indicator = FinancialIndicator.objects.create(project=project)
+        p_metrics = metrics_calc.get_project(project.pronac)
+        print(p_metrics.finance.approved_funds)
+        for metric_name in FinancialIndicator.METRICS_NAMES:
+            x = getattr(p_metrics.finance, metric_name)
+            Metric.create(metric_name, x, indicator)
+
+        indicator.fetch_weighted_complexity()
+        return indicator
+
+
 @rest_api(['value'], inline=True)
 class FinancialIndicator(Indicator):
     """
@@ -126,6 +143,12 @@ class FinancialIndicator(Indicator):
         - Common items ratio
         - Total receipts
     """
+    METRICS_NAMES = ['items', 'to_verify_funds', 'proponent_projects',
+                     'new_providers', 'verified_approved', 'raised_funds',
+                     'verified_funds', 'approved_funds', 'common_items_ratio',
+                     'total_receipts', 'items_prices']
+
+    objects = FinancialIndicatorManager()
 
     @property
     def metrics_weights(self):
@@ -133,7 +156,7 @@ class FinancialIndicator(Indicator):
             'items': 1,
             'to_verify_funds': 5,
             'proponent_projects': 2,
-            'new_provders': 1,
+            'new_providers': 1,
             'verified_approved': 2,
             'raised_funds': 0,
             'verified_funds': 0,
@@ -142,11 +165,6 @@ class FinancialIndicator(Indicator):
             'total_receipts': 0,
             'items_prices': 0
         }
-
-    def calculate_indicator_metrics(self):
-        project_metrics = metrics_calc.get_project(self.project.pronac)
-        metric.updated_at = datetime.datetime.now()
-        project_metrics.finance.approved_funds['is_outlier']
 
     def __str__(self):
         return self.project.name + " value: " + str(self.value)
@@ -164,26 +182,13 @@ class Metric(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
-
-    def clean_data(self, data):
-        self.is_outlier = data['is_outlier']
+    @classmethod
+    def create(cls, name, data, indicator):
+        is_outlier = data['is_outlier']
         del data['is_outlier']
-        self.data = data
-
-
-class Evidence(models.Model):
-    metric = models.ForeignKey(
-        Metric,
-        on_delete=models.CASCADE,
-        related_name='evidences')
-    slug = models.TextField(max_length=280)
-    name = models.CharField(max_length=200, default='Evidence')
-    is_valid = models.IntegerField(default=0)
-    is_invalid = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+        metric = cls(name=name, is_outlier=is_outlier, indicator=indicator,
+                     data=data)
+        return metric
 
     def __str__(self):
         return self.name
