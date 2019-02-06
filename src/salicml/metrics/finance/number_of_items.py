@@ -1,5 +1,5 @@
 from salicml.data.query import metrics
-from salic.data import data
+from salicml.data import data
 from salicml.metrics.base import get_info
 
 
