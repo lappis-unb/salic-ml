@@ -7,7 +7,7 @@ import pandas as pd
 import pyodbc
 
 from ftplib import FTP
-
+from salicml.data.db_connector import db_connector
 
 UPLOAD_KEY = 'upload_csv'
 
@@ -76,11 +76,9 @@ def execute_upload_csv(args):
 
 def execute_pandas_sql_query(query):
     '''Executes SQL query, returns the result as a DataFrame object.'''
-    db_parameters = 'DRIVER=FreeTDS;SERVER={0};PORT={1};DATABASE=;UID={2};PWD={3};TDS_Version=8.0;'.format(CREDENTIALS['HOST'], CREDENTIALS['PORT'], CREDENTIALS['USER'], CREDENTIALS['PASSWORD'])
-
-    db_conection = pyodbc.connect(db_parameters)
-    dataframe = pd.read_sql_query(query, db_conection)
-    db_conection.close()
+    db = db_connector()
+    dataframe = db.execute_pandas_sql_query(query)
+    db.close()
 
     return dataframe
 

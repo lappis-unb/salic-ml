@@ -1,77 +1,48 @@
-import os
+from salicml.data.query import metrics
+from salic.data import data
+from salicml.metrics.base import get_info
 
-from salicml.data.data_source import DataSource
+
+@metrics.register('finance')
+def number_of_items(pronac, data):
+    """
+    This metric calculates the project number of declared number of items
+    and compare it to projects in the same segment
+    output:
+            is_outlier: True if projects number of items is not compatible
+                        to others projects in the same segment
+            value: absolute number of items
+            mean: mean number of items of segment
+            std: standard deviation of number of items in project segment
+    """
+    df = data.items_by_project
+    project = df.loc[df['PRONAC'] == int(pronac)]
+    seg = project.iloc[0]["idSegmento"]
+    info = data.items_by_project_agg.to_dict(orient="index")[seg]
+    mean, std = info.values()
+    threshold = mean + 1.5 * std
+    project_items_count = project.shape[0]
+    is_outlier = project_items_count > threshold
+    return {
+       'is_outlier': is_outlier,
+       'value': project_items_count,
+       'mean': mean,
+       'std': std,
+    }
 
 
-class NumberOfItems:
-    def __init__(self, items):
-        """
-            This function receives a pandas.DataFrame with all items of all
-            Salic projects and generate the mean and variance of the 'number of
-            items' of the projects grouped by their artistical segment. It also
-            caches the 'number of items' of each project.
-            Input:
-                items: pandas.Dataframe containing the all items of all
-                       Salic projects. It must contain at least the columns
-                       'idSegmento', 'PRONAC', and 'idPlanilhaAprovacao'.
-            Output:
-                This function has no output, instead, it caches the metrics
-                found in its instance.
-        """
-        print("*** NumberOfItems ***")
-        items = items[["idSegmento", "PRONAC", "idPlanilhaAprovacao"]]
-        num_items = items.groupby(["idSegmento", "PRONAC"]).count()
-        metrics = num_items.groupby("idSegmento").agg(["mean", "std"])
-        self.cache = metrics["idPlanilhaAprovacao"].to_dict("index")
-        self.cache["projects"] = num_items.reset_index("idSegmento")
+@data.lazy('planilha_orcamentaria')
+def items_by_project(df):
+    """
+    Return a dataframe to verify project number of items
+    """
+    df = df[["idSegmento", "PRONAC", "idPlanilhaAprovacao"]]
+    return df
 
-    def get_metrics(self, pronac, k=1.5):
-        """
-            This function receives a project identifier and a constant 'k' and
-            verify if this project has an anomalous 'number os items' in its
-            budget spreadsheet, based on a gaussian distribution. The project
-            is said outlier if its:
-                (number of items) > (mean + k * std)
-            for this segment. It also return the project 'number of items' and
-            its segment 'mean' and 'standard deviation' for this metric.
-            Input:
-                pronac: the project identifier.
-                k: constant that defines the threshold to verify if a project
-                   is an outlier.
-            Output:
-                A dictionary containing the keys: is_outlier, value, mean, and
-                std.
-        """
-        if not isinstance(pronac, str):
-            raise ValueError("PRONAC type must be str")
 
-        pronac_data = self._get_pronac_data(pronac)
-
-        metrics = self.cache[pronac_data["segment_id"]]
-        threshold = metrics["mean"] + k * metrics["std"]
-
-        results = {}
-        results["is_outlier"] = pronac_data["items_count"] > threshold
-        results["value"] = pronac_data["items_count"]
-        results["mean"] = metrics["mean"]
-        results["std"] = metrics["std"]
-
-        return results
-
-    def _get_pronac_data(self, pronac):
-
-        __FILE__FOLDER = os.path.dirname(os.path.realpath(__file__))
-        sql_folder = os.path.join(__FILE__FOLDER, os.pardir, os.pardir, os.pardir)
-        sql_folder = os.path.join(sql_folder, "data", "scripts")
-
-        datasource = DataSource()
-        path = os.path.join(sql_folder, "planilha_orcamentaria.sql")
-
-        pronac_dataframe = datasource.get_dataset(path, pronac=pronac)
-
-        pronac_data = {
-            "segment_id": pronac_dataframe.iloc[0]["idSegmento"],
-            "items_count": pronac_dataframe.shape[0],
-        }
-
-        return pronac_data
+@data.lazy('items_by_project')
+def items_by_project_agg(df):
+    """
+    Return Agreggate mean and standard deviantion of project number of items
+    """
+    return get_info(df.groupby(["idSegmento", "PRONAC"]).count(), 'idSegmento')

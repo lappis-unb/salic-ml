@@ -117,13 +117,12 @@ class FinancialIndicatorManager(PolymorphicManager):
         Creates FinancialIndicator object for a project, calculating
         metrics and indicator value
         """
-        # TODO:If update is True, update project metrics if already exists
-        indicator = FinancialIndicator.objects.create(project=project)
+        indicator = FinancialIndicator.objects.get_or_create(project=project)
         p_metrics = metrics_calc.get_project(project.pronac)
         print(p_metrics.finance.approved_funds)
         for metric_name in FinancialIndicator.METRICS_NAMES:
             x = getattr(p_metrics.finance, metric_name)
-            Metric.create(metric_name, x, indicator)
+            Metric.objects.create_metric(metric_name, x, indicator)
 
         indicator.fetch_weighted_complexity()
         return indicator
@@ -170,6 +169,21 @@ class FinancialIndicator(Indicator):
         return self.project.name + " value: " + str(self.value)
 
 
+class MetricManager(models.Manager):
+    def create_metric(self, name, data, indicator):
+        """
+        Creates FinancialIndicator object for a project, calculating
+        metrics and indicator value
+        """
+        is_outlier = data['is_outlier']
+        del data['is_outlier']
+        metric = Metric.objects.update_or_create(name=name,
+                                                 is_outlier=is_outlier,
+                                                 indicator=indicator, data=data
+                                                 )
+        return metric
+
+
 class Metric(models.Model):
     indicator = models.ForeignKey(
         Indicator,
@@ -182,13 +196,7 @@ class Metric(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @classmethod
-    def create(cls, name, data, indicator):
-        is_outlier = data['is_outlier']
-        del data['is_outlier']
-        metric = cls(name=name, is_outlier=is_outlier, indicator=indicator,
-                     data=data)
-        return metric
+    objects = MetricManager()
 
     def __str__(self):
         return self.name

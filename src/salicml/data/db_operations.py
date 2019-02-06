@@ -34,8 +34,9 @@ def save_sql_to_files():
     pickle files into /data/raw/
     """
     ext_size = len(SQL_EXTENSION)
-    for file in os.listdir(DATA_PATH / 'scripts'):
-        with open(file, 'r') as file_content:
+    path = DATA_PATH / 'scripts'
+    for file in os.listdir(path):
+        with open(path / file, 'r') as file_content:
             query = file_content.read()
             sql_filename = os.path.basename(file)
             print('Downloading query [{}]...'.format(sql_filename))

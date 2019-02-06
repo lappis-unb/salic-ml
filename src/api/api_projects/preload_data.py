@@ -9,13 +9,13 @@ from salicml.metrics.finance import approved_funds
 # AUXILIAR FUNCTIONS
 
 
-def load_project_metrics(project, update=False):
+def load_project_metrics():
     """
     Create project metrics for financial indicator
+    Updates them if already exists
     """
-    # TODO:If update is True, update project metrics if already exists
-    indicator = FinancialIndicator.objects.create_indicator(project=project)
-    return indicator
+    for project in Project.objects.all():
+        FinancialIndicator.objects.create_indicator(project=project)
 
 
 def test_load_project_metrics():
