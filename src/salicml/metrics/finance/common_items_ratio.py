@@ -3,7 +3,10 @@ import pandas as pd
 
 from salicml.data import data
 from salicml.data.query import metrics
-from salicml.metrics.base import get_salic_url, get_segment_id, get_segment_projects, has_receipt
+from salicml.metrics.base import (
+    get_salic_url, get_segment_id, get_segment_projects, has_receipt
+)
+
 from functools import lru_cache
 
 
@@ -125,7 +128,6 @@ def all_items(df):
             'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
         .drop_duplicates()
     )
-
 
 
 @lru_cache(maxsize=128)

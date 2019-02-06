@@ -59,6 +59,21 @@ def get_salic_url(item, prefix, df_values=None):
     return url
 
 
+def get_cpf_cnpj_by_pronac(pronac):
+    """
+    Return the CNPF/CNPJ of the proponent
+    of the project with the given pronac.
+    """
+    df = data.planilha_projetos
+    cpf_cnpj = None
+    row_df = df[df['PRONAC'].astype(str) == str(pronac)]
+
+    if not row_df.empty:
+        cpf_cnpj = row_df.iloc[0]['CgcCpf']
+
+    return str(cpf_cnpj)
+
+
 def has_receipt(item):
     """
     Verify if a item has a receipt.

@@ -9,7 +9,7 @@ class InvalidMetricError(ValueError):
 class Project(Mapping):
     """
     A immutable mapping from metric names to their corresponding value.
-    
+
     Metrics can also be retrieved by attribute access.
     """
 
@@ -82,7 +82,7 @@ class Metrics:
 
         assert isinstance(metric, str)
         assert '.' in metric, 'metric must declare a namespace'
-        
+
         try:
             func = self._metrics[metric]
             return func(pronac, self._data)
@@ -90,7 +90,7 @@ class Metrics:
             raise InvalidMetricError('metric does not exist')
 
     def get_project(self, pronac):
-        """Return a new object representing all metrics for a given project."""  
+        """Return a new object representing all metrics for a given project."""
         return Project(pronac, self)
 
     def iter_metrics(self):
@@ -111,5 +111,7 @@ class Metrics:
             return func
         return decorator
 
+
 # Global metrics attribute
 metrics = Metrics()
+from salicml.metrics import finance  # NOQA: F401, F403
