@@ -1,7 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
 
-import warnings
 import matplotlib.cbook
 
 
@@ -16,7 +15,6 @@ from salicml.utils.dates import Dates
 class Plotter:
     @staticmethod
     def plot_histogram(y_axis, x_label="", y_label="", title=""):
-        fig = plt.figure()
         Plotter.set_plot_style(x_label, y_label, title)
 
         result = plt.hist(

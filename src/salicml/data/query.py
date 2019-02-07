@@ -22,7 +22,7 @@ class Project(Mapping):
         try:
             return self._data[item]
         except KeyError:
-            pass 
+            pass
         try:
             result = self._metrics.get_metric(self.pronac, item)
         except InvalidMetricError:
@@ -48,7 +48,7 @@ class Project(Mapping):
 
 class Namespace:
     """
-    A simple reference for a collection of metrics. It provides access to 
+    A simple reference for a collection of metrics. It provides access to
     dotted metrics, e.g., ``project.finance.approved_funds``
     """
     def __init__(self, project, base):
@@ -106,7 +106,7 @@ class Metrics:
         """
         def decorator(func):
             name = func.__name__
-            key = f'{category}.{name}' 
+            key = f'{category}.{name}'
             self._metrics[key] = func
             return func
         return decorator

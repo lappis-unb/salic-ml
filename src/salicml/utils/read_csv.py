@@ -7,14 +7,12 @@ PROJECT_ROOT = os.path.join(FILE_PATH, os.pardir, os.pardir)
 DATA_FOLDER = os.path.join(PROJECT_ROOT, "data", "raw")
 
 
-
-
 def read_csv(csv_name, usecols=None):
     """Returns a DataFrame from a .csv file stored in /data/raw/"""
     csv_path = os.path.join(DATA_FOLDER, csv_name)
-    csv = pd.read_csv(csv_path, low_memory=False, usecols=usecols, encoding="utf-8")
+    csv = pd.read_csv(csv_path, low_memory=False,
+                      usecols=usecols, encoding="utf-8")
     return csv
-
 
 
 def read_csv_with_different_type(csv_name, column_types_dict, usecols=None):
@@ -31,7 +29,7 @@ def read_csv_with_different_type(csv_name, column_types_dict, usecols=None):
 
     for key_column, val_type in column_types_dict.items():
         if val_type == str:
-            csv[key_column] = csv[key_column].str.strip()  # str.replace(' ', '')
+            csv[key_column] = csv[key_column].str.strip()
 
     return csv
 

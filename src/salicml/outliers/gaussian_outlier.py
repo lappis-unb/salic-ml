@@ -10,5 +10,6 @@ def maximum_expected_value(mean, standard_deviation, c=1.5):
 
 
 def outlier_probability(mean, standard_deviation, c=1.5):
-    probability = norm(mean, standard_deviation).cdf(mean + c * standard_deviation)
+    probability = norm(mean,
+                       standard_deviation).cdf(mean + c * standard_deviation)
     return probability

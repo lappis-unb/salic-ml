@@ -1,5 +1,7 @@
 from salicml.utils.read_csv import read_csv_with_different_type
 
+URL_INFO = "prestacao-contas/prestacao-contas/tipo-avaliacao/idPronac/"
+
 
 class GetProjectInfoFromPronac:
     def __init__(self):
@@ -21,7 +23,7 @@ class GetProjectInfoFromPronac:
         ]
         project_name_id[
             "IdPRONAC"
-        ] = "prestacao-contas/prestacao-contas/tipo-avaliacao/idPronac/" + project_name_id[
+        ] = URL_INFO + project_name_id[
             "IdPRONAC"
         ].astype(
             str

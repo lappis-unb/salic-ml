@@ -27,14 +27,14 @@ class TestProponentProjects(unittest.TestCase):
         project = metrics.get_project(pronac)
 
         # Testing metric
-        proponent_pronacs = project.finance.proponent_projects
+        proponentpronacs = project.finance.proponent_projects
 
-        assert proponent_pronacs['submitted_projects']['number_of_projects'] > 0
+        assert proponentpronacs['submitted_projects']['number_of_projects'] > 0
 
         assert any(
-            proponent_pronacs['submitted_projects']['pronacs_of_this_proponent']
+            proponentpronacs['submitted_projects']['pronacs_of_this_proponent']
         )
 
         assert pronac in (
-            proponent_pronacs['submitted_projects']['pronacs_of_this_proponent']
+            proponentpronacs['submitted_projects']['pronacs_of_this_proponent']
         )

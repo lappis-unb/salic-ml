@@ -11,4 +11,4 @@ class TestApprovedFunds(unittest.TestCase):
 
     def test_outlier_pronac(self):
         project = metrics.get_project('121386')
-        assert project.finance.approved_funds['is_outlier'] 
+        assert project.finance.approved_funds['is_outlier']

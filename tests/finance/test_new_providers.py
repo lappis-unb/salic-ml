@@ -2,7 +2,6 @@ import unittest
 
 
 from salicml.data.query import metrics
-from salicml.metrics.finance import new_providers
 
 
 class TestNewProviders(unittest.TestCase):
