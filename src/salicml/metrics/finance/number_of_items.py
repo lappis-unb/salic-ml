@@ -3,34 +3,6 @@ from salicml.data import data
 from salicml.metrics.base import get_info
 
 
-@metrics.register('finance')
-def number_of_items(pronac, data):
-    """
-    This metric calculates the project number of declared number of items
-    and compare it to projects in the same segment
-    output:
-            is_outlier: True if projects number of items is not compatible
-                        to others projects in the same segment
-            value: absolute number of items
-            mean: mean number of items of segment
-            std: standard deviation of number of items in project segment
-    """
-    df = data.items_by_project
-    project = df.loc[df['PRONAC'] == int(pronac)]
-    seg = project.iloc[0]["idSegmento"]
-    info = data.items_by_project_agg.to_dict(orient="index")[seg]
-    mean, std = info.values()
-    threshold = mean + 1.5 * std
-    project_items_count = project.shape[0]
-    is_outlier = project_items_count > threshold
-    return {
-       'is_outlier': is_outlier,
-       'value': project_items_count,
-       'mean': mean,
-       'std': std,
-    }
-
-
 @data.lazy('planilha_orcamentaria')
 def items_by_project(df):
     """
@@ -46,3 +18,31 @@ def items_by_project_agg(df):
     Return Agreggate mean and standard deviantion of project number of items
     """
     return get_info(df.groupby(["idSegmento", "PRONAC"]).count(), 'idSegmento')
+
+
+@metrics.register('finance')
+def number_of_items(pronac, data):
+    """
+    This metric calculates the project number of declared number of items
+    and compare it to projects in the same segment
+    output:
+            is_outlier: True if projects number of items is not compatible
+                        to others projects in the same segment
+            value: absolute number of items
+            mean: mean number of items of segment
+            std: standard deviation of number of items in project segment
+    """
+    df = data.items_by_project
+    project = df.loc[df['PRONAC'] == pronac]
+    seg = project.iloc[0]["idSegmento"]
+    info = data.items_by_project_agg.to_dict(orient="index")[seg]
+    mean, std = info.values()
+    threshold = mean + 1.5 * std
+    project_items_count = project.shape[0]
+    is_outlier = project_items_count > threshold
+    return {
+       'is_outlier': is_outlier,
+       'value': project_items_count,
+       'mean': mean,
+       'std': std,
+    }

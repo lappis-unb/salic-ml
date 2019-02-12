@@ -18,7 +18,7 @@ def get_segment_id(pronac):
     """
     df = data.planilha_orcamentaria
     return (
-        df[df['PRONAC'] == int(pronac)]
+        df[df['PRONAC'] == pronac]
         .iloc[0]['idSegmento']
     )
 
@@ -113,21 +113,3 @@ def receipt(df):
         mutated_df
         .set_index(['pronac_planilha_itens'])
     )
-
-
-@data.lazy('planilha_orcamentaria')
-def approved_funds_by_segments(df):
-    df = df[["PRONAC", "idSegmento", "VlTotalAprovado"]]
-    return df.groupby(['idSegmento', 'PRONAC']).sum()
-
-
-@data.lazy('approved_funds_by_segments')
-def approved_funds_agg(df):
-    return get_info(df, 'idSegmento')
-
-
-@data.lazy('planilha_orcamentaria')
-def approved_funds_by_projects(df):
-    return df[['PRONAC', 'idSegmento', 'VlTotalAprovado']] \
-            .groupby(['PRONAC', 'idSegmento']).sum() \
-            .reset_index()
