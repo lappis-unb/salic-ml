@@ -35,7 +35,7 @@ def verified_approved(pronac, data):
         items_df[APPROVED_COLUMN] * THRESHOLD
     )
 
-    features = items_df[bigger_than_approved].shape[0]
+    features = items_df[bigger_than_approved]
     outlier_items = outlier_items_(features)
     features_size = features.shape[0]
     is_outlier = features_size > 0
