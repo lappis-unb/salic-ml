@@ -30,20 +30,34 @@ def save_dataframe_as_pickle(df, dir_path):
 
 def save_sql_to_files():
     """
-    Executes every .sql files in /data/scripts/ using salic db vpn and then saves
-    pickle files into /data/raw/
+    Executes every .sql files in /data/scripts/ using salic db vpn and
+    then saves pickle files into /data/raw/
     """
     ext_size = len(SQL_EXTENSION)
     path = DATA_PATH / 'scripts'
     for file in os.listdir(path):
-        with open(path / file, 'r') as file_content:
-            query = file_content.read()
-            sql_filename = os.path.basename(file)
-            print('Downloading query [{}]...'.format(sql_filename))
-            db = db_connector()
-            query_result = db.execute_pandas_sql_query(query)
-            db.close()
-            save_dir = DATA_PATH / "raw"
-            file_path = os.path.join(save_dir,
-                                     file[:-ext_size] + '.' + FILE_EXTENSION)
-            save_dataframe_as_pickle(query_result, file_path)
+        query_result = make_query(path / file)
+        save_dir = DATA_PATH / "raw"
+        file_path = os.path.join(save_dir,
+                                 file[:-ext_size] + '.' + FILE_EXTENSION)
+        save_dataframe_as_pickle(query_result, file_path)
+
+
+def save_sql_to_file(sql, dest):
+    query_result = make_query(sql)
+    ext_size = len(SQL_EXTENSION)
+    file_name = os.path.basename(sql)
+    file_path = os.path.join(dest,
+                             file_name[:-ext_size] + '.' + FILE_EXTENSION)
+    save_dataframe_as_pickle(query_result, file_path)
+
+
+def make_query(sql_file):
+    with open(sql_file, 'r') as file_content:
+        query = file_content.read()
+        sql_filename = os.path.basename(sql_file)
+        print('Downloading query [{}]...'.format(sql_filename))
+        db = db_connector()
+        query_result = db.execute_pandas_sql_query(query)
+        db.close()
+        return query_result
