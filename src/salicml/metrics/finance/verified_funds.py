@@ -11,8 +11,7 @@ def verified_funds(pronac, data):
     Responsable for detecting anomalies in projects total verified funds.
     """
     dataframe = data.planilha_comprovacao
-    project = dataframe.loc[dataframe['PRONAC'] == int(pronac)]
-    print(project)
+    project = dataframe.loc[dataframe['PRONAC'] == pronac]
     segment_id = project.iloc[0]["idSegmento"]
     pronac_funds = project[
         ["idPlanilhaAprovacao", "PRONAC", "vlComprovacao", "idSegmento"]
@@ -20,7 +19,7 @@ def verified_funds(pronac, data):
     funds_grp = pronac_funds.drop(columns=["idPlanilhaAprovacao"]).groupby(
         ["PRONAC"]
     )
-    project_funds = funds_grp.sum().loc[int(pronac)]["vlComprovacao"]
+    project_funds = funds_grp.sum().loc[pronac]["vlComprovacao"]
 
     segments_info = data.verified_funds_by_segment_agg.to_dict(orient="index")
     mean = segments_info[segment_id]["mean"]

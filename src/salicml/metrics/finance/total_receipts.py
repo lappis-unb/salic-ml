@@ -17,7 +17,7 @@ def total_receipts(pronac, data):
             maximum_expected_in_segment: maximum receipts expected in segment
     """
     dataframe = data.planilha_comprovacao
-    project = dataframe.loc[dataframe['PRONAC'] == int(pronac)]
+    project = dataframe.loc[dataframe['PRONAC'] == pronac]
 
     segment_id = project.iloc[0]["idSegmento"]
     segments_cache = data.segment_projects_agg

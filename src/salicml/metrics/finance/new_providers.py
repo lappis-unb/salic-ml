@@ -13,7 +13,7 @@ def new_providers(pronac, data):
     that are new to the providers database.
     """
     info = data.providers_info
-    df = info[info['PRONAC'] == int(pronac)]
+    df = info[info['PRONAC'] == pronac]
     providers_count = data.providers_count.to_dict()[0]
 
     new_providers = {}

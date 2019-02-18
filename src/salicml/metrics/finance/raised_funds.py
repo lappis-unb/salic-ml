@@ -77,7 +77,7 @@ def get_outlier_info(pronac):
     df = data.planilha_captacao
     raised_funds_averages = data.segment_raised_funds_average.to_dict('index')
 
-    segment_id = df[df['Pronac'] == int(pronac)]['Segmento'].iloc[0]
+    segment_id = df[df['Pronac'] == pronac]['Segmento'].iloc[0]
 
     mean = raised_funds_averages[segment_id]['mean']
     std = raised_funds_averages[segment_id]['std']
@@ -96,6 +96,6 @@ def get_project_raised_funds(pronac):
     """
     return(
         data.raised_funds_by_project
-        .loc[int(pronac)]
+        .loc[pronac]
         ['CaptacaoReal']
     )
