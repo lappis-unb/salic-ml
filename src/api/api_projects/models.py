@@ -16,7 +16,7 @@ LOG = log.info
 MODEL_FILE = DATA_PATH / 'scripts' / 'models' / 'general_project_data.sql'
 
 
-@rest_api(['pronac', 'name', 'start_execution'], lookup_field='pronac')
+@rest_api(['pronac', 'name', 'analist'], lookup_field='pronac')
 class Project(models.Model):
     pronac = models.CharField(max_length=200, unique=True)
     name = models.CharField(max_length=200)
@@ -31,7 +31,7 @@ class Project(models.Model):
     analist = models.CharField(max_length=200, null=True)
 
     class Meta:
-        verbose_name_plural = "Projects"
+        verbose_name_plural = "projetos"
 
     def __str__(self):
         return self.name
@@ -134,29 +134,6 @@ class FinancialIndicatorManager(PolymorphicManager):
             indicator.fetch_weighted_complexity()
         return indicator
 
-    def create_metrics(self, metrics, pronacs_planilha):
-        """
-        Creates FinancialIndicator object for a project, calculating
-        metrics and indicator value
-        """
-        project_list = Project.objects.all().values_list('pronac', flat=True)
-        intersection = set(project_list).intersection(pronacs_planilha)
-        for metric_name in metrics:
-            for project in intersection:
-                project = Project.objects.get(pronac=project)
-                indicator = (FinancialIndicator
-                             .objects.update_or_create(project=project)[0])
-                metric = Metric.objects.filter(name=metric_name,
-                                               indicator=indicator)
-                if not metric.exists():
-                    p_metrics = metrics_calc.get_project(project.pronac)
-                    x = getattr(p_metrics.finance, metric_name)
-                    Metric.objects.create_metric(metric_name, x, indicator)
-                    indicator.fetch_weighted_complexity()
-                    indicator.is_valid = True
-                else:
-                    print('já existe')
-
 
 @rest_api(['value'], inline=True)
 class FinancialIndicator(Indicator):
@@ -172,11 +149,16 @@ class FinancialIndicator(Indicator):
         - Common items ratio
         - Total receipts
     """
-    METRICS_NAMES = ['common_items_ratio']
-    METRICS_ORCAMENTARIA = ['approved_funds', 'item_prices', 'number_of_items']
-    METRICS_COMPROVACAO = ['proponent_projects', 'new_providers',
-                           'total_receipts', 'verified_funds']
-    METRICS_CAPTACAO = 'raised_funds',
+    METRICS = {
+                'planilha_orcamentaria': ['item_prices', 'number_of_items',
+                                          'approved_funds',
+                                          'common_items_ratio'],
+                'planilha_comprovacao': ['proponent_projects', 'new_providers',
+                                         'total_receipts', 'verified_funds'],
+                'planilha_captacao': ['raised_funds'],
+                'planilha_aprovacao_comprovacao': ['verified_approved']
+    }
+
     objects = FinancialIndicatorManager()
 
     @property
@@ -204,16 +186,19 @@ class MetricManager(models.Manager):
         """
         Creates Metric object for an Indicator
         """
-        is_outlier = data['is_outlier']
-        del data['is_outlier']
+        if 'is_outlier' in data:
+            is_outlier = data['is_outlier']
+            del data['is_outlier']
+        else:
+            is_outlier = None
         metric = Metric.objects.update_or_create(name=name,
                                                  is_outlier=is_outlier,
                                                  indicator=indicator,
-                                                 data=data
-                                                 )
+                                                 data=data)
         return metric
 
 
+@rest_api(['is_outlier', 'name'])
 class Metric(models.Model):
     indicator = models.ForeignKey(
         Indicator,
@@ -230,3 +215,35 @@ class Metric(models.Model):
 
     def __str__(self):
         return self.name + " " + self.indicator.project.pronac + ' ' + str(self.is_outlier)
+
+
+def create_finance_metrics(metrics, pronacs_planilha):
+    """
+    Creates metrics, creating an Indicator if it doesn't already exists
+    Metrics are created for projects that are in pronacs_planilha and saved in
+    database.
+    args:
+            metrics: list of names of metrics that will be calculated
+            pronacs_planilha: pronacs in dataset that is used to calculate
+            those metrics
+    """
+    project_list = Project.objects.all().values_list('pronac', flat=True)
+    intersection = set(project_list).intersection(pronacs_planilha)
+    for metric_name in metrics:
+        for project in intersection:
+            project = Project.objects.get(pronac=project)
+            indicator = (FinancialIndicator
+                         .objects.update_or_create(project=project)[0])
+            metric = Metric.objects.filter(name=metric_name,
+                                           indicator=indicator)
+
+            if not metric.exists():
+                p_metrics = metrics_calc.get_project(project.pronac)
+                x = getattr(p_metrics.finance, metric_name)
+                Metric.objects.create_metric(metric_name, x, indicator)
+                indicator.fetch_weighted_complexity()
+                indicator.is_valid = True
+            else:
+                LOG('metric already exists: ', metric)
+
+    return len(intersection)
