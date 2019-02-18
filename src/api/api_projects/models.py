@@ -214,7 +214,8 @@ class Metric(models.Model):
     objects = MetricManager()
 
     def __str__(self):
-        return self.name + " " + self.indicator.project.pronac + ' ' + str(self.is_outlier)
+        return (self.name + " " + self.indicator.project.pronac + ' ' +
+                str(self.is_outlier))
 
 
 def create_finance_metrics(metrics, pronacs_planilha):

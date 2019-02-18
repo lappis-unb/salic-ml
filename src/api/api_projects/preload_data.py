@@ -12,7 +12,7 @@ def load_project_metrics():
     Create project metrics for financial indicator
     Updates them if already exists
     """
-    all_metrics = FinancialIndicator.METRICS.keys()
+    all_metrics = FinancialIndicator.METRICS
     for key in all_metrics:
         df = getattr(data, key)
         pronac = 'PRONAC'

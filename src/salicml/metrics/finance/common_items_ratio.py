@@ -10,78 +10,6 @@ from salicml.metrics.base import (
 from functools import lru_cache
 
 
-@metrics.register('finance')
-def common_items_ratio(pronac, data):
-    """
-    Calculates the common items on projects in a cultural segment,
-    calculates the uncommon items on projects in a cultural segment and
-    verify if a project is an outlier compared to the other projects
-    in his segment.
-    """
-    segment_id = get_segment_id(pronac)
-    ratio = common_items_percentage(pronac, segment_id)
-    metrics = data.common_items_metrics.to_dict(orient='index')[segment_id]
-
-    # constant that defines the threshold to verify if a project
-    # is an outlier.
-    k = 1.5
-
-    threshold = metrics['mean'] - k * metrics['std']
-
-    uncommon_items = get_uncommon_items(pronac)
-
-    pronac_filter = data.all_items['PRONAC'] == pronac
-    uncommon_items_filter = (
-        data.all_items['idPlanilhaItens']
-        .isin(uncommon_items)
-    )
-    items_filter = (pronac_filter & uncommon_items_filter)
-
-    filtered_items = (
-        data
-        .all_items[items_filter]
-        .drop_duplicates(subset='idPlanilhaItens')
-    )
-    uncommon_items = add_info_to_uncommon_items(filtered_items, uncommon_items)
-
-    return {
-        'is_outlier': ratio < threshold,
-        'value': ratio,
-        'mean': metrics['mean'],
-        'std': metrics['std'],
-        'uncommon_items': uncommon_items,
-        'common_items_not_present': get_common_items_not_present(pronac),
-    }
-
-
-@data.lazy('all_items', 'common_items')
-def common_items_metrics(all_items, common_items):
-    """
-    Calculates the percentage of common items for each project
-    in each segment and calculates the mean and std of this percentage
-    for each segment.
-    """
-    segments = common_items.index.unique()
-    metrics = {}
-    for seg in segments:
-        common_items = segment_common_items(seg)
-        projects = get_segment_projects(seg)
-
-        metric_values = []
-
-        for proj in projects:
-            pronac = proj[0]
-            percentage = common_items_percentage(pronac, seg)
-            metric_values.append(percentage)
-
-        metrics[seg] = {
-            'mean': np.mean(metric_values),
-            'std': np.std(metric_values)
-        }
-
-    return pd.DataFrame.from_dict(metrics, orient='index')
-
-
 @data.lazy('all_items')
 def common_items(df):
     """
@@ -128,6 +56,33 @@ def all_items(df):
             'UfItem', 'idProduto', 'cdCidade', 'cdEtapa']]
         .drop_duplicates()
     )
+
+
+@data.lazy('all_items', 'common_items')
+def common_items_metrics(all_items, common_items):
+    """
+    Calculates the percentage of common items for each project
+    in each segment and calculates the mean and std of this percentage
+    for each segment.
+    """
+    segments = common_items.index.unique()
+    metrics = {}
+    for seg in segments:
+        common_items = segment_common_items(seg)
+        projects = get_segment_projects(seg)
+
+        metric_values = []
+
+        for proj in projects:
+            pronac = proj[0]
+            percentage = common_items_percentage(pronac, seg)
+            metric_values.append(percentage)
+
+        metrics[seg] = {
+            'mean': np.mean(metric_values),
+            'std': np.std(metric_values)
+        }
+    return pd.DataFrame.from_dict(metrics, orient='index')
 
 
 @lru_cache(maxsize=128)
@@ -252,3 +207,46 @@ def add_info_to_uncommon_items(filtered_items, uncommon_items):
         }
 
     return result
+
+
+@metrics.register('finance')
+def common_items_ratio(pronac, data):
+    """
+    Calculates the common items on projects in a cultural segment,
+    calculates the uncommon items on projects in a cultural segment and
+    verify if a project is an outlier compared to the other projects
+    in his segment.
+    """
+    segment_id = get_segment_id(pronac)
+    ratio = common_items_percentage(pronac, segment_id)
+    metrics = data.common_items_metrics.to_dict(orient='index')[segment_id]
+
+    # constant that defines the threshold to verify if a project
+    # is an outlier.
+    k = 1.5
+
+    threshold = metrics['mean'] - k * metrics['std']
+    uncommon_items = get_uncommon_items(pronac)
+
+    pronac_filter = data.all_items['PRONAC'] == pronac
+    uncommon_items_filter = (
+        data.all_items['idPlanilhaItens']
+        .isin(uncommon_items)
+    )
+    items_filter = (pronac_filter & uncommon_items_filter)
+
+    filtered_items = (
+        data
+        .all_items[items_filter]
+        .drop_duplicates(subset='idPlanilhaItens')
+    )
+    uncommon_items = add_info_to_uncommon_items(filtered_items, uncommon_items)
+
+    return {
+        'is_outlier': ratio < threshold,
+        'value': ratio,
+        'mean': metrics['mean'],
+        'std': metrics['std'],
+        'uncommon_items': uncommon_items,
+        'common_items_not_present': get_common_items_not_present(pronac),
+    }
