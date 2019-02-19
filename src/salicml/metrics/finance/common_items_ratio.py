@@ -75,7 +75,7 @@ def common_items_metrics(all_items, common_items):
 
         for proj in projects:
             pronac = proj[0]
-            percentage = common_items_percentage(pronac, seg)
+            percentage = common_items_percentage(pronac, seg, common_items)
             metric_values.append(percentage)
 
         metrics[seg] = {
@@ -112,13 +112,11 @@ def segment_common_items(segment_id):
 
 
 @lru_cache(maxsize=128)
-def common_items_percentage(pronac, segment_id):
+def common_items_percentage(pronac, seg_common_items):
     """
     Returns the percentage of items in a project that are
     common in the cultural segment.
     """
-    seg_common_items = segment_common_items(segment_id)
-
     if len(seg_common_items) == 0:
         return 0
 
