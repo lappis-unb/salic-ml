@@ -6,7 +6,7 @@ from salicml.data import data
 
 
 @metrics.register('finance')
-def total_receipts(pronac, data):
+def total_receipts(pronac, dt):
     """
     This metric calculates the project total of receipts
     and compare it to projects in the same segment
