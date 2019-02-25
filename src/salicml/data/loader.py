@@ -1,7 +1,7 @@
 import logging
 import os
 import pathlib
-from weakref import WeakValueDictionary
+from functools import lru_cache
 
 import pandas as pd
 
@@ -23,7 +23,7 @@ class Loader:
 
     def __init__(self, root=ROOT):
         self._root = pathlib.Path(root)
-        self._cache = WeakValueDictionary()
+        self._cache = {}
         self._registry = {}
 
     def __getattr__(self, attr):
@@ -124,6 +124,11 @@ def _file_attributes(path):
     for file in os.listdir(path):
         if file.endswith(base_ext):
             yield file[:-ext_size]
+
+
+@lru_cache(maxsize=128)
+def get_data():
+    return Loader()
 
 
 data = Loader()

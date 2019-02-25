@@ -1,5 +1,5 @@
 from collections import Mapping
-from .loader import data
+from .loader import get_data
 
 
 class InvalidMetricError(ValueError):
@@ -68,8 +68,8 @@ class Metrics:
     Register all metrics in Salic-ML.
     """
 
-    def __init__(self, data=data):
-        self._data = data
+    def __init__(self, data=get_data):
+        self._data = get_data()
         self._metrics = {}
 
     def get_metric(self, pronac, metric):

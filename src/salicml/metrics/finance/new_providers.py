@@ -7,7 +7,7 @@ from salicml.metrics.base import get_salic_url
 
 
 @metrics.register('finance')
-def new_providers(pronac, data):
+def new_providers(pronac, dt):
     """
     Return the percentage of providers of a project
     that are new to the providers database.

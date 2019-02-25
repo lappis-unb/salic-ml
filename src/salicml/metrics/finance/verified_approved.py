@@ -9,7 +9,7 @@ MAX_EXPECTED_ITEMS = 0
 
 
 @metrics.register('finance')
-def verified_approved(pronac, data):
+def verified_approved(pronac, dt):
     """
     This metric compare budgetary items of SALIC projects in terms of
     verified versus approved value

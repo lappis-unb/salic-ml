@@ -58,6 +58,27 @@ def all_items(df):
     )
 
 
+def common_items_percentage(pronac, seg_common_items):
+    """
+    Returns the percentage of items in a project that are
+    common in the cultural segment.
+    """
+    if len(seg_common_items) == 0:
+        return 0
+
+    project_items = get_project_items(pronac).values[:, 0]
+    project_items_amount = len(project_items)
+
+    if project_items_amount == 0:
+        return 1
+
+    common_found_items = sum(
+        seg_common_items.isin(project_items)['idPlanilhaItens']
+    )
+
+    return common_found_items / project_items_amount
+
+
 @data.lazy('all_items', 'common_items')
 def common_items_metrics(all_items, common_items):
     """
@@ -68,14 +89,14 @@ def common_items_metrics(all_items, common_items):
     segments = common_items.index.unique()
     metrics = {}
     for seg in segments:
-        common_items = segment_common_items(seg)
+        seg_common_items = segment_common_items(seg)
         projects = get_segment_projects(seg)
 
         metric_values = []
 
         for proj in projects:
             pronac = proj[0]
-            percentage = common_items_percentage(pronac, seg, common_items)
+            percentage = common_items_percentage(pronac, seg_common_items)
             metric_values.append(percentage)
 
         metrics[seg] = {
@@ -109,28 +130,6 @@ def segment_common_items(segment_id):
         .reset_index(drop=1)
         .drop(columns=["itemOccurrences"])
     )
-
-
-@lru_cache(maxsize=128)
-def common_items_percentage(pronac, seg_common_items):
-    """
-    Returns the percentage of items in a project that are
-    common in the cultural segment.
-    """
-    if len(seg_common_items) == 0:
-        return 0
-
-    project_items = get_project_items(pronac).values[:, 0]
-    project_items_amount = len(project_items)
-
-    if project_items_amount == 0:
-        return 1
-
-    common_found_items = sum(
-        seg_common_items.isin(project_items)['idPlanilhaItens']
-    )
-
-    return common_found_items / project_items_amount
 
 
 @lru_cache(maxsize=128)
@@ -208,7 +207,7 @@ def add_info_to_uncommon_items(filtered_items, uncommon_items):
 
 
 @metrics.register('finance')
-def common_items_ratio(pronac, data):
+def common_items_ratio(pronac, dt):
     """
     Calculates the common items on projects in a cultural segment,
     calculates the uncommon items on projects in a cultural segment and
@@ -216,8 +215,8 @@ def common_items_ratio(pronac, data):
     in his segment.
     """
     segment_id = get_segment_id(pronac)
-    ratio = common_items_percentage(pronac, segment_id)
     metrics = data.common_items_metrics.to_dict(orient='index')[segment_id]
+    ratio = common_items_percentage(pronac, segment_common_items(segment_id))
 
     # constant that defines the threshold to verify if a project
     # is an outlier.

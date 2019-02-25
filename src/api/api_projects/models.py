@@ -150,9 +150,9 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['item_prices', 'number_of_items',
-                                          'approved_funds',
-                                          'common_items_ratio'],
+                'planilha_orcamentaria': ['common_items_ratio',
+                                          'approved_funds', 'number_of_items',
+                                          'item_prices'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts', 'verified_funds'],
                 'planilha_captacao': ['raised_funds'],
@@ -164,7 +164,7 @@ class FinancialIndicator(Indicator):
     @property
     def metrics_weights(self):
         return {
-            'items': 1,
+            'number_of_items': 1,
             'to_verify_funds': 5,
             'proponent_projects': 2,
             'new_providers': 1,
@@ -176,6 +176,16 @@ class FinancialIndicator(Indicator):
             'total_receipts': 0,
             'items_prices': 0
         }
+
+    def calculate_indicator_metrics(self):
+        p_metrics = metrics_calc.get_project(self.project.pronac)
+        metrics = FinancialIndicator.METRICS
+        for metric_name in metrics:
+            for metric in metrics[metric_name]:
+                print('calculando a metrica  ', metric)
+                x = getattr(p_metrics.finance, metric)
+                print('do projeto: ', self.project)
+                Metric.objects.create_metric(metric, x, self)
 
     def __str__(self):
         return self.project.name + " value: " + str(self.value)
@@ -213,6 +223,9 @@ class Metric(models.Model):
 
     objects = MetricManager()
 
+    class Meta:
+        unique_together = (("name", "indicator"),)
+
     def __str__(self):
         return (self.name + " " + self.indicator.project.pronac + ' ' +
                 str(self.is_outlier))
@@ -230,6 +243,7 @@ def create_finance_metrics(metrics, pronacs_planilha):
     """
     project_list = Project.objects.all().values_list('pronac', flat=True)
     intersection = set(project_list).intersection(pronacs_planilha)
+    p_metrics = None
     for metric_name in metrics:
         for project in intersection:
             project = Project.objects.get(pronac=project)
@@ -246,5 +260,6 @@ def create_finance_metrics(metrics, pronacs_planilha):
                 indicator.is_valid = True
             else:
                 LOG('metric already exists: ', metric)
-
+    if p_metrics:
+        p_metrics.clear()
     return len(intersection)
