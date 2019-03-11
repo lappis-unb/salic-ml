@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api_projects.models import Project, FinancialIndicator, Metric
+from projects.models import Project, FinancialIndicator, Metric
 
 
 admin.site.register(Project)

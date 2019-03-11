@@ -3,19 +3,19 @@ PER_PAGE = 15
 
 
 # Project aditional attributes
-@rest_api.property('api_projects.Project')
+@rest_api.property('projects.Project')
 def indicators(obj):
     return [{'value': i.value,
              'type': type(i).__name__}
             for i in obj.indicator_set.all()]
 
 
-@rest_api.property('api_projects.Metric')
+@rest_api.property('projects.Metric')
 def detail(obj):
     return obj.data
 
 
-@rest_api.detail_action('api_projects.Project')
+@rest_api.detail_action('projects.Project')
 def details(project):
     """
     List of authors.

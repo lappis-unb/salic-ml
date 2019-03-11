@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 
-class ApiProjectsConfig(AppConfig):
-    name = 'api_projects'
+class ProjectsConfig(AppConfig):
+    name = 'projects'
     api = None
 
     def ready(self):

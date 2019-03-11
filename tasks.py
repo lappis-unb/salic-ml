@@ -16,7 +16,7 @@ sys.path.append('src')
 def manage(ctx, cmd, env=None, **kwargs):
     ags = {k.replace('_', '-'): v for k, v in kwargs.items() if v is not False}
     opts = ' '.join(f'--{k} {"" if v is True else v}' for k, v in ags.items())
-    cmd = f'{python} manage.py {cmd} {opts}'
+    cmd = f'{python} src/api/manage.py {cmd} {opts}'
     env = {**os.environ, **(env or {})}
     path = env.get("PYTHONPATH", ":".join(sys.path))
     env.setdefault('PYTHONPATH', f'src:{path}')

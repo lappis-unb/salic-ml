@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api_projects.models import execute_project_models_sql_scripts
+from projects.models import execute_project_models_sql_scripts
 
 
 class Command(BaseCommand):
