@@ -1,39 +1,5 @@
-FROM debian:buster-slim
+FROM salicml/requirements:latest
 
-EXPOSE 8080
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        python3-crypto \
-        python3-setuptools \
-        python3-pyodbc \
-        python3-dev \
-        tdsodbc \
-        unixodbc-dev \
-        # libmysqlclient-dev \
-        unixodbc \
-        freetds-dev \
-        freetds-bin \
-        cron \
-        curl \
-        apt-utils \
-        gnupg2 \
-        apt-transport-https
-
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get install msodbcsql17
-RUN apt-get install --reinstall -y locales tzdata && \
-        sed -i 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen && \
-        locale-gen pt_BR.UTF-8
-
-RUN odbcinst -i -d -f /usr/share/tdsodbc/odbcinst.ini
-ENV LANG pt_BR.UTF-8
-ENV LANGUAGE pt_BR
-ENV LC_ALL pt_BR.UTF-8
-ENV TZ=America/Sao_Paulo
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
         echo $TZ > /etc/timezone && \
@@ -49,10 +15,6 @@ RUN mkdir /api
 
 ADD . /api/
 
-ADD /etc/scripts/odbcinst.ini /etc/odbcinst.ini
-
 WORKDIR /api
 
 
-RUN pip3 install --upgrade setuptools
-RUN pip3 install -r requirements.txt
