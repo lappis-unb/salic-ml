@@ -2,9 +2,9 @@ from invoke import task
 import os
 import sys
 
-from src.salicml.data import csv_to_pickle
-from src.salicml.data.db_operations import save_sql_to_files, save_sql_to_file
-from src.salicml.data.ftp_updater import execute_upload_pickle
+from src.api.salicml.data import csv_to_pickle
+from src.api.salicml.data.db_operations import save_sql_to_files, save_sql_to_file
+from src.api.salicml.data.ftp_updater import execute_upload_pickle
 
 python = sys.executable
 sys.path.append('src')

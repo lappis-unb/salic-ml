@@ -3,7 +3,7 @@
 import os
 
 from ftplib import FTP
-from salicml.data.loader import FILE_EXTENSION
+from .loader import FILE_EXTENSION
 
 CREDENTIALS = {
     'FTP_USER': os.environ.get('FTP_USER', ''),
