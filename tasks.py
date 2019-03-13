@@ -2,9 +2,9 @@ from invoke import task
 import os
 import sys
 
-from src.api.salicml.data import csv_to_pickle
-from src.api.salicml.data.db_operations import save_sql_to_files, save_sql_to_file
-from src.api.salicml.data.ftp_updater import execute_upload_pickle
+from src.salicml.data import csv_to_pickle
+from src.salicml.data.db_operations import save_sql_to_files, save_sql_to_file
+from src.salicml.data.ftp_updater import execute_upload_pickle
 
 python = sys.executable
 sys.path.append('src')
@@ -16,7 +16,7 @@ sys.path.append('src')
 def manage(ctx, cmd, env=None, **kwargs):
     ags = {k.replace('_', '-'): v for k, v in kwargs.items() if v is not False}
     opts = ' '.join(f'--{k} {"" if v is True else v}' for k, v in ags.items())
-    cmd = f'{python} src/api/manage.py {cmd} {opts}'
+    cmd = f'{python} api/manage.py {cmd} {opts}'
     env = {**os.environ, **(env or {})}
     path = env.get("PYTHONPATH", ":".join(sys.path))
     env.setdefault('PYTHONPATH', f'src:{path}')
