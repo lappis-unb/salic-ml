@@ -9,15 +9,16 @@ services:
       - POSTGRES_DB=postgres
 
   web:
+    image: salicml/backend:latest
     build:
-       context: ./../../
-       dockerfile: ./docker/salic_ml_web/Dockerfile
+       context: ../
+       dockerfile: ./docker/Dockerfile
     command: ["./etc/scripts/init_dev.sh"]
     env_file:
-      - ./../../etc/env/db.env
+      - ../etc/env/db.env
     volumes:
-      - ./../../:/api
-      - ./../../data:/usr/local/lib/python3.5/dist-packages/data
+      - ../src:/src
+      - ../data:/usr/local/lib/python3.5/dist-packages/data
     ports:
       - "8080:8080"
     depends_on:
@@ -28,7 +29,7 @@ services:
   salic_db:
     image: lappis/openconnect-globalprotect
     env_file:
-      - ./../../etc/env/vpn.env
+      - ../etc/env/vpn.env
     ports:
       - "9000:1435"
     privileged: true
