@@ -9,6 +9,6 @@ COPY . /salic-ml-frontend/
 
 RUN npm install
 
-expose 8080
+EXPOSE 8080
 
 CMD ["npm", "run", "serve"]
