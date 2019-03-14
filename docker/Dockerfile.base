@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip \
         python3-crypto \
         python3-pyodbc \
+        python3-setuptools \
         python3-dev \
         tdsodbc \
         unixodbc-dev \
@@ -19,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg2 \
         apt-transport-https
 
-COPY development.txt development.txt
-COPY production.txt production.txt
+COPY src/requirements/development.txt development.txt
+COPY src/requirements/production.txt production.txt
 
 RUN pip3 install -r development.txt
