@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg2 \
         apt-transport-https
 
-COPY src/requirements/development.txt development.txt
-COPY src/requirements/production.txt production.txt
+COPY setup.py setup.py
+COPY src/ /src/
 
-RUN pip3 install -r development.txt
+RUN pip3 install -e .
