@@ -19,7 +19,7 @@ MODEL_FILE = DATA_PATH / 'scripts' / 'models' / 'general_project_data.sql'
 
 @rest_api(['pronac', 'name', 'analist'], lookup_field='pronac')
 class Project(models.Model):
-    pronac = models.CharField(max_length=200, unique=True)
+    pronac = models.IntegerField(unique=True)
     name = models.CharField(max_length=200)
     start_execution = models.CharField(null=True, max_length=200)
     end_execution = models.CharField(null=True, max_length=200)
@@ -151,12 +151,11 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['common_items_ratio',
-                                          'approved_funds', 'number_of_items',
-                                          'item_prices'],
+                'planilha_orcamentaria': ['number_of_items', # 'approved_funds', DEPRECATED
+                                          'item_prices', 'common_items_ratio'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts', 'verified_funds'],
-                'planilha_captacao': ['raised_funds'],
+                # 'planilha_captacao': ['raised_funds'], DEPRECATED
                 'planilha_aprovacao_comprovacao': ['verified_approved']
     }
 
@@ -170,9 +169,9 @@ class FinancialIndicator(Indicator):
             'proponent_projects': 2,
             'new_providers': 1,
             'verified_approved': 2,
-            'raised_funds': 0,
+            # 'raised_funds': 0, DEPRECATED
             'verified_funds': 0,
-            'approved_funds': 0,
+            # 'approved_funds': 0, DEPRECATED
             'common_items_ratio': 0,
             'total_receipts': 0,
             'items_prices': 0
@@ -218,7 +217,6 @@ class Metric(models.Model):
     is_outlier = models.BooleanField(null=True)
     data = PickledObjectField(null=True)
     name = models.CharField(max_length=200, default='Metric')
-    reason = models.CharField(max_length=500, default='Any reason')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -228,7 +226,7 @@ class Metric(models.Model):
         unique_together = (("name", "indicator"),)
 
     def __str__(self):
-        return (self.name + " " + self.indicator.project.pronac + ' ' +
+        return (self.name + " " + str(self.indicator.project.pronac) + ' ' +
                 str(self.is_outlier))
 
 

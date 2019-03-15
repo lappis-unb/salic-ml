@@ -6,6 +6,7 @@ import salicml.outliers.gaussian_outlier as gaussian_outlier
 
 
 @metrics.register('finance')
+#@deprecated(version='0.1.0', reason="This metric doesn't agreggate value to financial indicator")
 def raised_funds(pronac, data):
     """
     Returns the total raised funds of a project

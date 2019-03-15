@@ -138,7 +138,7 @@ def get_uncommon_items(pronac):
     Return all uncommon items of a project
     (related to segment common items).
     """
-    segment_id = get_segment_id(pronac)
+    segment_id = get_segment_id(str(pronac))
     seg_common_items = (
         segment_common_items(segment_id)
         .set_index('idPlanilhaItens')
@@ -165,7 +165,7 @@ def get_common_items_not_present(pronac):
     Returns all segment common items that are not
     present in the project.
     """
-    segment_id = get_segment_id(pronac)
+    segment_id = get_segment_id(str(pronac))
     seg_common_items = (
         segment_common_items(segment_id)
         .set_index('idPlanilhaItens')
@@ -214,7 +214,7 @@ def common_items_ratio(pronac, dt):
     verify if a project is an outlier compared to the other projects
     in his segment.
     """
-    segment_id = get_segment_id(pronac)
+    segment_id = get_segment_id(str(pronac))
     metrics = data.common_items_metrics.to_dict(orient='index')[segment_id]
     ratio = common_items_percentage(pronac, segment_common_items(segment_id))
 
@@ -241,9 +241,9 @@ def common_items_ratio(pronac, dt):
 
     return {
         'is_outlier': ratio < threshold,
-        'value': ratio,
-        'mean': metrics['mean'],
-        'std': metrics['std'],
-        'uncommon_items': uncommon_items,
-        'common_items_not_present': get_common_items_not_present(pronac),
+        'valor': ratio,
+        'maximo_esperado': metrics['mean'],
+        'desvio_padrao': metrics['std'],
+        'items_incomuns': uncommon_items,
+        'items_comuns_que_o_projeto_nao_possui': get_common_items_not_present(pronac),
     }

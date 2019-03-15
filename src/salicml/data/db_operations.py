@@ -36,11 +36,12 @@ def save_sql_to_files():
     ext_size = len(SQL_EXTENSION)
     path = DATA_PATH / 'scripts'
     for file in os.listdir(path):
-        query_result = make_query(path / file)
-        save_dir = DATA_PATH / "raw"
-        file_path = os.path.join(save_dir,
-                                 file[:-ext_size] + '.' + FILE_EXTENSION)
-        save_dataframe_as_pickle(query_result, file_path)
+        if file != 'models':
+            query_result = make_query(path / file)
+            save_dir = DATA_PATH / "raw"
+            file_path = os.path.join(save_dir,
+                                     file[:-ext_size] + '.' + FILE_EXTENSION)
+            save_dataframe_as_pickle(query_result, file_path)
 
 
 def save_sql_to_file(sql, dest):

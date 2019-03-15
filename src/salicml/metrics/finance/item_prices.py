@@ -133,8 +133,8 @@ def get_outliers_percentage(pronac):
     percentage = outliers_amount / total_items
 
     return {
-        'outlier_items': outlier_items,
-        'outliers_amount': outliers_amount,
+        'items': outlier_items,
+        'valor': outliers_amount,
         'total_items': total_items,
-        'percentage': percentage
+        'percentage': percentage,
     }
