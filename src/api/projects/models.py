@@ -1,13 +1,14 @@
-from django.db import models, transaction, IntegrityError
-from boogie.rest import rest_api
 import logging
 import datetime
+
+from django.db import models, transaction, IntegrityError
+from boogie.rest import rest_api
 from polymorphic.models import PolymorphicModel
 from polymorphic.managers import PolymorphicManager
 from picklefield.fields import PickledObjectField
+
 from salicml.data.db_connector import db_connector
 from salicml.data.db_operations import DATA_PATH
-from salicml.metrics import finance
 from salicml.data.query import metrics as metrics_calc
 from .situations import SITUATIONS
 
