@@ -19,7 +19,7 @@ MODEL_FILE = DATA_PATH / 'scripts' / 'models' / 'general_project_data.sql'
 
 @rest_api(['pronac', 'name', 'analist'], lookup_field='pronac')
 class Project(models.Model):
-    pronac = models.IntegerField(unique=True)
+    pronac = models.CharField(max_length=200, unique=True)
     name = models.CharField(max_length=200)
     start_execution = models.CharField(null=True, max_length=200)
     end_execution = models.CharField(null=True, max_length=200)
@@ -151,11 +151,10 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['number_of_items'], # 'approved_funds', DEPRECATED
-                                        #  'item_prices'] # 'common_items_ratio'],
+                'planilha_orcamentaria': ['number_of_items'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
-                                         'total_receipts', 'verified_funds'],
-                # 'planilha_captacao': ['raised_funds'], DEPRECATED
+                                         'total_receipts'],
+                'planilha_captacao': ['to_verify_funds'],
                 'planilha_aprovacao_comprovacao': ['verified_approved']
     }
 
