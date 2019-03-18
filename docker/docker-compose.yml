@@ -13,7 +13,7 @@ services:
     build:
        context: ../
        dockerfile: ./docker/Dockerfile
-    command: ["./etc/scripts/init_dev.sh"]
+    command: inv run
     env_file:
       - ../etc/env/db.env
     volumes:

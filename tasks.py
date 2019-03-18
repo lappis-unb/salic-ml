@@ -32,6 +32,22 @@ def run(ctx):
 
 
 @task
+def make(ctx):
+    """
+    Make project migrations
+    """
+    manage(ctx, 'makemigrations', env={})
+
+
+@task
+def migrate(ctx):
+    """
+    Excute project migrations
+    """
+    manage(ctx, 'migrate', env={})
+
+
+@task
 def pickle(ctx, clean=False):
     """
     Converts csv files in data/raw/ to pickle files

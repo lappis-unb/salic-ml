@@ -24,3 +24,4 @@ COPY setup.py setup.py
 RUN mkdir /src
 
 RUN pip3 install -e .
+RUN pip3 install -e .[dev]
