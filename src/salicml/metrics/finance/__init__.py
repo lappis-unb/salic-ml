@@ -9,3 +9,4 @@ from .raised_funds import raised_funds
 from .total_receipts import total_receipts
 from .verified_funds import verified_funds
 from .verified_approved import verified_approved
+from .to_verify_funds import to_verify_funds

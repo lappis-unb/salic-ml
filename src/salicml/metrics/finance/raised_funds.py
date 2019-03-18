@@ -6,7 +6,6 @@ import salicml.outliers.gaussian_outlier as gaussian_outlier
 
 
 @metrics.register('finance')
-#@deprecated(version='0.1.0', reason="This metric doesn't agreggate value to financial indicator")
 def raised_funds(pronac, data):
     """
     Returns the total raised funds of a project
@@ -23,17 +22,6 @@ def raised_funds(pronac, data):
     }
 
 
-@data.lazy('planilha_captacao')
-def all_raised_funds(df):
-    """
-    All raised funds.
-    """
-    df['CaptacaoReal'] = df['CaptacaoReal'].apply(
-        pd.to_numeric
-    )
-    return df
-
-
 @data.lazy('all_raised_funds')
 def raised_funds_by_segment(df):
     """
@@ -42,18 +30,6 @@ def raised_funds_by_segment(df):
     return (
         df[['Pronac', 'Segmento', 'CaptacaoReal']]
         .groupby(['Segmento', 'Pronac'])
-        .sum()
-    )
-
-
-@data.lazy('all_raised_funds')
-def raised_funds_by_project(df):
-    """
-    Raised funds organized by project.
-    """
-    return (
-        df[['Pronac', 'CaptacaoReal']]
-        .groupby(['Pronac'])
         .sum()
     )
 

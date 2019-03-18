@@ -20,7 +20,7 @@ def verified_approved(pronac, dt):
             outlier_items: Outlier items detail
     """
     items_df = data.approved_verified_items
-    items_df = items_df.loc[items_df['PRONAC'] == int(pronac)]
+    items_df = items_df.loc[items_df['PRONAC'] == pronac]
     items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]] = items_df[
         [APPROVED_COLUMN, VERIFIED_COLUMN]
     ].astype(float)

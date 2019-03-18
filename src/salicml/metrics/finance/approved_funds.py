@@ -4,7 +4,6 @@ from salicml.data.query import metrics
 from salicml.data import data
 from salicml.metrics.base import get_info
 
-#from deprecated import deprecated
 
 
 @data.lazy('planilha_orcamentaria')
@@ -26,7 +25,6 @@ def approved_funds_by_projects(df):
 
 
 @metrics.register('finance')
-#@deprecated(version='0.1.0', reason="This metric doesn't agreggate value to financial indicator")
 def approved_funds(pronac, dt):
     """
     Verifica se o valor total de um projeto é um
@@ -38,7 +36,7 @@ def approved_funds(pronac, dt):
 
     project = (
         funds_df
-        .loc[funds_df['PRONAC'] == str(pronac)]
+        .loc[funds_df['PRONAC'] == pronac]
     )
     project = project.to_dict('records')[0]
     info = (
