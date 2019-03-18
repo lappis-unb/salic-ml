@@ -151,8 +151,8 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['number_of_items', # 'approved_funds', DEPRECATED
-                                          'item_prices', 'common_items_ratio'],
+                'planilha_orcamentaria': ['number_of_items'], # 'approved_funds', DEPRECATED
+                                        #  'item_prices'] # 'common_items_ratio'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts', 'verified_funds'],
                 # 'planilha_captacao': ['raised_funds'], DEPRECATED
@@ -169,9 +169,7 @@ class FinancialIndicator(Indicator):
             'proponent_projects': 2,
             'new_providers': 1,
             'verified_approved': 2,
-            # 'raised_funds': 0, DEPRECATED
             'verified_funds': 0,
-            # 'approved_funds': 0, DEPRECATED
             'common_items_ratio': 0,
             'total_receipts': 0,
             'items_prices': 0
@@ -201,9 +199,13 @@ class MetricManager(models.Manager):
             del data['is_outlier']
         else:
             is_outlier = None
+        if 'valor' in data:
+            value = data['valor']
+            del data['valor']
         metric = Metric.objects.update_or_create(name=name,
                                                  is_outlier=is_outlier,
                                                  indicator=indicator,
+                                                 value=value,
                                                  data=data)
         return metric
 
@@ -217,6 +219,7 @@ class Metric(models.Model):
     is_outlier = models.BooleanField(null=True)
     data = PickledObjectField(null=True)
     name = models.CharField(max_length=200, default='Metric')
+    value = models.CharField(max_length=200, default='0')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

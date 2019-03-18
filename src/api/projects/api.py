@@ -1,17 +1,17 @@
 from boogie.rest import rest_api
+from .utils import default_metrics
 PER_PAGE = 15
 
 metrics_name_map = {
     'number_of_items': 'itens_orcamentarios',
-    'raised_funds': 'valor_captado',
-    'approved_funds': 'valor_aprovado', # DEPRECATED
-    'common_items_ratio': 'itens_orcamentarios_fora_do_comum',
+    'to_verify_funds': 'valor_a_ser_comprovado',
+    'verified_approved': 'comprovantes_acima_de_50',
     'total_receipts': 'comprovantes_pagamento',
+    'approved_funds': 'valor_aprovado', # DEPRECATED
+    'common_items_ratio': 'itens_orcamentarios_fora_do_comum', # DEPRECATED
+    'item_prices': 'precos_acima_media', # DEPRECATED
     'new_providers': 'novos_fornecedores',
     'proponent_projects': 'projetos_mesmo_proponente',
-    'item_prices': 'precos_acima_media',
-    'verified_approved': 'comprovantes_acima_de_50',
-    'to_verify_funds': 'valor_a_ser_comprovado',
 }
 
 # Project aditional attributes
@@ -30,33 +30,47 @@ def detail(obj):
 @rest_api.detail_action('projects.Project')
 def details(project):
     """
-    List of authors.
+    Project detail endpoint,
+    Returns project pronac, name,
+    and indicators with details
     """
+    indicators = project.indicator_set.all()
+    indicators_detail = [(indicator_details(i)
+                    for i in indicators)]
+    if not indicators:
+        indicators_detail = [{'nome': 'FinancialIndicator',
+                        'valor': None,
+                        'metrics': default_metrics}]
     return {'pronac': project.pronac,
             'nome': project.name,
-            'indicadores': [(indicator_details(i)
-                            for i in project.indicator_set.all())]
+            'indicadores': indicators_detail
             }
 
 
 def indicator_details(indicator):
-    # LISTA PRA {}
-    # SRC/UTILS/METRICS.JS
-    # VALOR valido: para todas as métricas, se  tiver false é pq não existe
-    # a métrica
-    # minimo esperado: quando não existir passar zero
-    # valores de todas as métricas: máximo, mínimo, valor_valido
+    """
+    Return a list of all metrics in FinancialIndicator,
+    if there aren't values for that Indicator, it is filled with default values
+    """
+    # LISTA PRA {} DONE
     # métrica valor a ser comprovado
-    # metricas melhor não ser uma lista, tem que ser algo mais fácil de acessar
+    metrics_list = set(indicator.metrics.all().values_list('name', flat=True))
+    null_metrics = default_metrics
+    for keys in metrics_list:
+        null_metrics.pop(keys, None)
+    metrics =  [
+                {metrics_name_map[m.name]: {
+                      'valor': m.value,
+                      'data': m.data,
+                      'valor_valido': True,
+                      'is_outlier': m.is_outlier,
+                      'minimo_esperado': m.data.get('minimo_esperado', 0),
+                      'maximo_esperado': m.data.get('maximo_esperado', 0)
+                  },
+                 } for m in indicator.metrics.all()]
+    metrics = dict((key,d[key]) for d in metrics for key in d)
+    metrics.update(null_metrics)
     return {'nome': type(indicator).__name__,
             'valor': indicator.value,
-            'metricas': [{metrics_name_map[m.name]: {
-                              'valor': m.value,
-                              'data': m.data,
-                              'valor_valido': True,
-                              'is_outlier': m.is_outlier,
-                              'minimo_esperado': data.get('minimo_esperado', 0),
-                              'maximo_esperado': data.get('maximo_esperado', 0)
-                          }
-                          } for m in indicator.metrics.all()]
+            'metricas': metrics,
             }
