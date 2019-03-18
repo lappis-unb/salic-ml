@@ -17,10 +17,10 @@ LOG = log.info
 MODEL_FILE = DATA_PATH / 'scripts' / 'models' / 'general_project_data.sql'
 
 
-@rest_api(['pronac', 'name', 'analist'], lookup_field='pronac')
+@rest_api(['pronac', 'nome', 'responsavel'], lookup_field='pronac')
 class Project(models.Model):
     pronac = models.CharField(max_length=200, unique=True)
-    name = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200)
     start_execution = models.CharField(null=True, max_length=200)
     end_execution = models.CharField(null=True, max_length=200)
     situation = models.CharField(
@@ -29,13 +29,13 @@ class Project(models.Model):
         max_length=200,
     )
     stage = models.CharField(max_length=200, null=True)
-    analist = models.CharField(max_length=200, null=True)
+    responsavel = models.CharField(max_length=200, null=True)
 
     class Meta:
         verbose_name_plural = "projetos"
 
     def __str__(self):
-        return self.name
+        return self.nome
 
 
 def execute_project_models_sql_scripts():
@@ -151,7 +151,7 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['number_of_items'],
+                'planilha_orcamentaria': ['number_of_items', 'items_prices'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts'],
                 'planilha_captacao': ['to_verify_funds'],

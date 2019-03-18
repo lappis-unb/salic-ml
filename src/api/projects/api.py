@@ -16,10 +16,13 @@ metrics_name_map = {
 
 # Project aditional attributes
 @rest_api.property('projects.Project')
-def indicators(obj):
-    return [{'value': i.value,
-             'type': type(i).__name__}
-            for i in obj.indicator_set.all()]
+def complexidade(obj):
+    indicators = obj.indicator_set.all()
+    if not indicators:
+        value = 0
+    else:
+        value = indicators.first()
+    return value
 
 
 @rest_api.property('projects.Metric')
@@ -40,13 +43,12 @@ def details(project):
     if not indicators:
         indicators_detail = [
                         {'FinancialIndicator':
-                        {'valor': 10,
+                        {'valor': 0,
                         'metrics': default_metrics,},}]
     indicators_detail = dict((key,d[key]) for d in indicators_detail for key in d)
 
-    print(indicators_detail)
     return {'pronac': project.pronac,
-            'nome': project.name,
+            'nome': project.nome,
             'indicadores': indicators_detail,
             }
 

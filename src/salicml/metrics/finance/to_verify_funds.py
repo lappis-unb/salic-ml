@@ -49,5 +49,7 @@ def to_verify_funds(pronac, dt):
     return {
         'is_outlier': is_outlier,
         'valor': to_verify_value,
+        'valor_captado': project_raised_funds,
+        'valor_comprovado': project_verified_funds,
         'minimo_esperado': 0,
     }

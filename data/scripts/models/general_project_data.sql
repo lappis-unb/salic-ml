@@ -13,7 +13,7 @@
 
 */
 
-SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as name, MAX(Analista) as analist,
+SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
        MAX(Situacao) as situation, MAX(verificacao.Descricao) as stage,
        MAX(DtInicioExecucao) as start_execution, MAX(DtFimExecucao) as end_execution
        FROM SAC.dbo.Projetos
