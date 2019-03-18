@@ -18,7 +18,7 @@ services:
       - ../etc/env/db.env
     volumes:
       - ../src:/src
-      - ../data:/usr/local/lib/python3.5/dist-packages/data
+      - ../data:/data
     ports:
       - "8080:8080"
     depends_on:

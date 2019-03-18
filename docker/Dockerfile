@@ -1,8 +1,6 @@
 FROM salicml/requirements:latest
 
 COPY tasks.py /tasks.py
-COPY src/ /src/
-COPY data/ /data/
 COPY etc/ /etc/
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
