@@ -37,10 +37,12 @@ def details(project):
     indicators = project.indicator_set.all()
     indicators_detail = [(indicator_details(i)
                     for i in indicators)]
+    print(indicators)
     if not indicators:
-        indicators_detail = [{'nome': 'FinancialIndicator',
-                        'valor': None,
-                        'metrics': default_metrics}]
+        indicators_detail = [
+                        {'FinancialIndicator':
+                        {'valor': 10,
+                        'metrics': default_metrics,},}]
     return {'pronac': project.pronac,
             'nome': project.name,
             'indicadores': indicators_detail
@@ -57,7 +59,7 @@ def indicator_details(indicator):
     metrics_list = set(indicator.metrics.all().values_list('name', flat=True))
     null_metrics = default_metrics
     for keys in metrics_list:
-        null_metrics.pop(keys, None)
+        null_metrics.pop(metrics_name_map[keys], None)
     metrics =  [
                 {metrics_name_map[m.name]: {
                       'valor': m.value,
@@ -70,7 +72,7 @@ def indicator_details(indicator):
                  } for m in indicator.metrics.all()]
     metrics = dict((key,d[key]) for d in metrics for key in d)
     metrics.update(null_metrics)
-    return {'nome': type(indicator).__name__,
+    return {type(indicator).__name__:{
             'valor': indicator.value,
-            'metricas': metrics,
+            'metricas': metrics,},
             }
