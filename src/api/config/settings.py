@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'polymorphic',
     'projects',
-    'corshearders',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {

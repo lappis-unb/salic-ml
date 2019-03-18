@@ -36,22 +36,24 @@ def details(project):
     """
     indicators = project.indicator_set.all()
     indicators_detail = [(indicator_details(i)
-                    for i in indicators)]
-    print(indicators)
+                    for i in indicators)][0]
     if not indicators:
         indicators_detail = [
                         {'FinancialIndicator':
                         {'valor': 10,
                         'metrics': default_metrics,},}]
+    indicators_detail = dict((key,d[key]) for d in indicators_detail for key in d)
+
+    print(indicators_detail)
     return {'pronac': project.pronac,
             'nome': project.name,
-            'indicadores': indicators_detail
+            'indicadores': indicators_detail,
             }
 
 
 def indicator_details(indicator):
     """
-    Return a list of all metrics in FinancialIndicator,
+    Return a dictionary with all metrics in FinancialIndicator,
     if there aren't values for that Indicator, it is filled with default values
     """
     # LISTA PRA {} DONE
