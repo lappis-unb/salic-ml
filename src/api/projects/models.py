@@ -155,7 +155,7 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['number_of_items', 'items_prices'],
+                'planilha_orcamentaria': ['item_prices', 'number_of_items'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts'],
                 'planilha_captacao': ['to_verify_funds'],
