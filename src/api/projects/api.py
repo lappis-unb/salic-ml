@@ -1,18 +1,6 @@
 from boogie.rest import rest_api
-from .utils import default_metrics
-PER_PAGE = 15
+from .utils import default_metrics, metrics_name_map
 
-metrics_name_map = {
-    'number_of_items': 'itens_orcamentarios',
-    'to_verify_funds': 'valor_a_ser_comprovado',
-    'verified_approved': 'comprovantes_acima_de_50',
-    'total_receipts': 'comprovantes_pagamento',
-    'approved_funds': 'valor_aprovado', # DEPRECATED
-    'common_items_ratio': 'itens_orcamentarios_fora_do_comum', # DEPRECATED
-    'item_prices': 'precos_acima_media', # DEPRECATED
-    'new_providers': 'novos_fornecedores',
-    'proponent_projects': 'projetos_mesmo_proponente',
-}
 
 # Project aditional attribute
 @rest_api.property('projects.Project')
@@ -24,9 +12,9 @@ def complexidade(obj):
     """
     indicators = obj.indicator_set.all()
     if not indicators:
-        value = 0
+        value = 0.0
     else:
-        value = indicators.first()
+        value = indicators.first().value
     return value
 
 
@@ -45,7 +33,6 @@ def detail(obj):
     return obj.data
 
 
-
 # Project aditional end point /projects/PRONAC_NUMBER/details
 @rest_api.detail_action('projects.Project')
 def details(project):
@@ -60,9 +47,9 @@ def details(project):
     if not indicators:
         indicators_detail = [
                         {'FinancialIndicator':
-                        {'valor': 0,
+                        {'valor': 0.0,
                         'metrics': default_metrics,},}]
-    indicators_detail = dict((key,d[key]) for d in indicators_detail for key in d)
+    indicators_detail = convert_list_into_dict(indicators_detail)
 
     return {'pronac': project.pronac,
             'nome': project.nome,
@@ -75,11 +62,26 @@ def indicator_details(indicator):
     Return a dictionary with all metrics in FinancialIndicator,
     if there aren't values for that Indicator, it is filled with default values
     """
+    metrics =  format_metrics_json(indicator)
+
     metrics_list = set(indicator.metrics.all().values_list('name', flat=True))
     null_metrics = default_metrics
     for keys in metrics_list:
         null_metrics.pop(metrics_name_map[keys], None)
-    metrics =  [
+    metrics.update(null_metrics)
+
+    return {type(indicator).__name__:{
+            'valor': indicator.value,
+            'metricas': metrics,},
+            }
+
+
+# utils
+def convert_list_into_dict(list):
+    return dict((key,d[key]) for d in list for key in d)
+
+def format_metrics_json(indicator):
+    metrics = [
                 {metrics_name_map[m.name]: {
                       'valor': m.value,
                       'data': m.data,
@@ -89,9 +91,4 @@ def indicator_details(indicator):
                       'maximo_esperado': m.data.get('maximo_esperado', 0)
                   },
                  } for m in indicator.metrics.all()]
-    metrics = dict((key,d[key]) for d in metrics for key in d)
-    metrics.update(null_metrics)
-    return {type(indicator).__name__:{
-            'valor': indicator.value,
-            'metricas': metrics,},
-            }
+    return convert_list_into_dict(metrics)
