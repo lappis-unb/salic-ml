@@ -14,9 +14,14 @@ metrics_name_map = {
     'proponent_projects': 'projetos_mesmo_proponente',
 }
 
-# Project aditional attributes
+# Project aditional attribute
 @rest_api.property('projects.Project')
 def complexidade(obj):
+    """
+    Returns a value that indicates project health, currently FinancialIndicator
+    is used as this value, but it can be a result of calculation with other
+    indicators in future
+    """
     indicators = obj.indicator_set.all()
     if not indicators:
         value = 0
@@ -25,11 +30,23 @@ def complexidade(obj):
     return value
 
 
+# Metric aditional attributes #
+@rest_api.property('projects.Metric')
+def project_pronac(obj):
+    return obj.indicator.project.pronac
+
+
 @rest_api.property('projects.Metric')
 def detail(obj):
+    """
+    Returns data as json (since it is a picklefield in database, it has
+    serialization issues)
+    """
     return obj.data
 
 
+
+# Project aditional end point /projects/PRONAC_NUMBER/details
 @rest_api.detail_action('projects.Project')
 def details(project):
     """
@@ -58,8 +75,6 @@ def indicator_details(indicator):
     Return a dictionary with all metrics in FinancialIndicator,
     if there aren't values for that Indicator, it is filled with default values
     """
-    # LISTA PRA {} DONE
-    # métrica valor a ser comprovado
     metrics_list = set(indicator.metrics.all().values_list('name', flat=True))
     null_metrics = default_metrics
     for keys in metrics_list:

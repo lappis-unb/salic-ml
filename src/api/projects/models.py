@@ -28,7 +28,7 @@ class Project(models.Model):
         default="A01",
         max_length=200,
     )
-    stage = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True)
     responsavel = models.CharField(max_length=200, null=True)
 
     class Meta:
@@ -38,7 +38,7 @@ class Project(models.Model):
         return self.nome
 
 
-def execute_project_models_sql_scripts():
+def execute_project_models_sql_scripts(force_update=False):
     """
         Used to get project information from MinC database
         and convert to this application Project models.
@@ -60,8 +60,12 @@ def execute_project_models_sql_scripts():
             # happens when there are duplicated projects
             LOG('Projects bulk_create failed, creating one by one...')
             with transaction.atomic():
-                for item in query_result.to_dict('records'):
-                    Project.objects.get_or_create(**item)
+                if force_update:
+                    for item in query_result.to_dict('records'):
+                        Project.objects.update_or_create(**item)
+                else:
+                    for item in query_result.to_dict('records'):
+                        Project.objects.get_or_create(**item)
 
 
 class Indicator(PolymorphicModel):
