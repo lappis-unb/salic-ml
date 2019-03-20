@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-crypto \
         python3-pyodbc \
         python3-setuptools \
-        python3-dev \
         tdsodbc \
         unixodbc-dev \
         unixodbc \
@@ -23,5 +22,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY setup.py setup.py
 RUN mkdir /src
 
-RUN pip3 install -e .
-RUN pip3 install -e .[dev]
+RUN pip3 install --no-cache-dir -e .
+RUN pip3 install --no-cache-dir -e .[dev]
