@@ -155,9 +155,9 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['item_prices', 'number_of_items'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts'],
+                'planilha_orcamentaria': ['number_of_items'],
                 'planilha_captacao': ['to_verify_funds'],
                 'planilha_aprovacao_comprovacao': ['verified_approved']
     }
@@ -265,6 +265,4 @@ def create_finance_metrics(metrics, pronacs_planilha):
                 indicator.is_valid = True
             else:
                 LOG('metric already exists: ', metric)
-    if p_metrics:
-        p_metrics.clear()
     return len(intersection)
