@@ -42,8 +42,7 @@ def to_verify_funds(pronac, dt):
         )
         project_verified_funds = funds_grp.sum().loc[pronac]["vlComprovacao"]
 
-
-    to_verify_value = project_raised_funds - project_verified_funds
+    to_verify_value = project_raised_funds - float(project_verified_funds)
     is_outlier = to_verify_value != 0
 
     return {
