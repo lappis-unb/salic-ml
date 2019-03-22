@@ -104,7 +104,6 @@ class Indicator(PolymorphicModel):
                 total += self.metrics_weights[metric.name]
 
         value = total/max_total
-        value = 1 - value
 
         final_value = "{:.1f}".format(value * 10)
 
@@ -113,8 +112,9 @@ class Indicator(PolymorphicModel):
             final_value = int(final_value)
         else:
             final_value = float(final_value)
-        self.value = final_value
+        self.value = float(final_value)
         self.updated_at = datetime.datetime.now()
+        self.save()
         return final_value
 
 
@@ -155,11 +155,11 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
+                'planilha_aprovacao_comprovacao': ['verified_approved'],
+                'planilha_captacao': ['to_verify_funds'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
                                          'total_receipts'],
-                'planilha_orcamentaria': ['number_of_items'],
-                'planilha_captacao': ['to_verify_funds'],
-                'planilha_aprovacao_comprovacao': ['verified_approved']
+                'planilha_orcamentaria': ['number_of_items']
     }
 
     objects = FinancialIndicatorManager()
@@ -189,7 +189,7 @@ class FinancialIndicator(Indicator):
                 Metric.objects.create_metric(metric, x, self)
 
     def __str__(self):
-        return self.project.name + " value: " + str(self.value)
+        return self.project.nome + " value: " + str(self.value)
 
 
 class MetricManager(models.Manager):

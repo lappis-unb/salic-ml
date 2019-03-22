@@ -43,12 +43,12 @@ def details(project):
     """
     indicators = project.indicator_set.all()
     indicators_detail = [(indicator_details(i)
-                    for i in indicators)][0]
+                         for i in indicators)][0]
     if not indicators:
         indicators_detail = [
                         {'FinancialIndicator':
-                        {'valor': 0.0,
-                        'metrics': default_metrics,},}]
+                            {'valor': 0.0,
+                             'metrics': default_metrics, }, }]
     indicators_detail = convert_list_into_dict(indicators_detail)
 
     return {'pronac': project.pronac,
@@ -62,23 +62,27 @@ def indicator_details(indicator):
     Return a dictionary with all metrics in FinancialIndicator,
     if there aren't values for that Indicator, it is filled with default values
     """
-    metrics =  format_metrics_json(indicator)
+    metrics = format_metrics_json(indicator)
 
-    metrics_list = set(indicator.metrics.all().values_list('name', flat=True))
+    metrics_list = set(indicator.metrics
+                       .filter(name__in=metrics_name_map.keys())
+                       .values_list('name', flat=True))
     null_metrics = default_metrics
     for keys in metrics_list:
         null_metrics.pop(metrics_name_map[keys], None)
+
     metrics.update(null_metrics)
 
-    return {type(indicator).__name__:{
+    return {type(indicator).__name__: {
             'valor': indicator.value,
-            'metricas': metrics,},
+            'metricas': metrics, },
             }
 
 
 # utils
 def convert_list_into_dict(list):
-    return dict((key,d[key]) for d in list for key in d)
+    return dict((key, d[key]) for d in list for key in d)
+
 
 def format_metrics_json(indicator):
     metrics = [
@@ -90,5 +94,6 @@ def format_metrics_json(indicator):
                       'minimo_esperado': m.data.get('minimo_esperado', 0),
                       'maximo_esperado': m.data.get('maximo_esperado', 0)
                   },
-                 } for m in indicator.metrics.all()]
+                 } for m in indicator
+                .metrics.filter(name__in=metrics_name_map.keys())]
     return convert_list_into_dict(metrics)

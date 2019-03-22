@@ -137,4 +137,5 @@ def get_outliers_percentage(pronac):
         'valor': outliers_amount,
         'total_items': total_items,
         'percentage': percentage,
+        'is_outlier': outliers_amount > 0,
     }
