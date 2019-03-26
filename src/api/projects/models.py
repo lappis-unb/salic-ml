@@ -17,6 +17,13 @@ LOG = log.info
 MODEL_FILE = DATA_PATH / 'scripts' / 'models' / 'general_project_data.sql'
 
 
+class ProjectManager(models.Manager):
+    def get_queryset(self):
+        ordered = (super(ProjectManager, self)
+                   .get_queryset().all().order_by('-indicator_set__value'))
+        return ordered
+
+
 @rest_api(['pronac', 'nome', 'responsavel'], lookup_field='pronac')
 class Project(models.Model):
     pronac = models.CharField(max_length=200, unique=True)
@@ -30,6 +37,8 @@ class Project(models.Model):
     )
     description = models.CharField(max_length=200, null=True)
     responsavel = models.CharField(max_length=200, null=True)
+
+    objects = ProjectManager()
 
     class Meta:
         verbose_name_plural = "projetos"
