@@ -17,10 +17,17 @@ LOG = log.info
 MODEL_FILE = DATA_PATH / 'scripts' / 'models' / 'general_project_data.sql'
 
 
-@rest_api(['pronac', 'name', 'analist'], lookup_field='pronac')
+class ProjectManager(models.Manager):
+    def get_queryset(self):
+        ordered = (super(ProjectManager, self)
+                   .get_queryset().all().order_by('-indicator_set__value'))
+        return ordered
+
+
+@rest_api(['pronac', 'nome', 'responsavel'], lookup_field='pronac')
 class Project(models.Model):
     pronac = models.CharField(max_length=200, unique=True)
-    name = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200)
     start_execution = models.CharField(null=True, max_length=200)
     end_execution = models.CharField(null=True, max_length=200)
     situation = models.CharField(
@@ -28,17 +35,19 @@ class Project(models.Model):
         default="A01",
         max_length=200,
     )
-    stage = models.CharField(max_length=200, null=True)
-    analist = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True)
+    responsavel = models.CharField(max_length=200, null=True)
+
+    objects = ProjectManager()
 
     class Meta:
         verbose_name_plural = "projetos"
 
     def __str__(self):
-        return self.name
+        return self.nome
 
 
-def execute_project_models_sql_scripts():
+def execute_project_models_sql_scripts(force_update=False):
     """
         Used to get project information from MinC database
         and convert to this application Project models.
@@ -60,8 +69,12 @@ def execute_project_models_sql_scripts():
             # happens when there are duplicated projects
             LOG('Projects bulk_create failed, creating one by one...')
             with transaction.atomic():
-                for item in query_result.to_dict('records'):
-                    Project.objects.get_or_create(**item)
+                if force_update:
+                    for item in query_result.to_dict('records'):
+                        Project.objects.update_or_create(**item)
+                else:
+                    for item in query_result.to_dict('records'):
+                        Project.objects.get_or_create(**item)
 
 
 class Indicator(PolymorphicModel):
@@ -100,7 +113,6 @@ class Indicator(PolymorphicModel):
                 total += self.metrics_weights[metric.name]
 
         value = total/max_total
-        value = 1 - value
 
         final_value = "{:.1f}".format(value * 10)
 
@@ -109,8 +121,9 @@ class Indicator(PolymorphicModel):
             final_value = int(final_value)
         else:
             final_value = float(final_value)
-        self.value = final_value
+        self.value = float(final_value)
         self.updated_at = datetime.datetime.now()
+        self.save()
         return final_value
 
 
@@ -151,13 +164,11 @@ class FinancialIndicator(Indicator):
         - Total receipts
     """
     METRICS = {
-                'planilha_orcamentaria': ['common_items_ratio',
-                                          'approved_funds', 'number_of_items',
-                                          'item_prices'],
+                'planilha_aprovacao_comprovacao': ['verified_approved'],
+                'planilha_captacao': ['to_verify_funds'],
                 'planilha_comprovacao': ['proponent_projects', 'new_providers',
-                                         'total_receipts', 'verified_funds'],
-                'planilha_captacao': ['raised_funds'],
-                'planilha_aprovacao_comprovacao': ['verified_approved']
+                                         'total_receipts'],
+                'planilha_orcamentaria': ['number_of_items']
     }
 
     objects = FinancialIndicatorManager()
@@ -170,9 +181,7 @@ class FinancialIndicator(Indicator):
             'proponent_projects': 2,
             'new_providers': 1,
             'verified_approved': 2,
-            'raised_funds': 0,
             'verified_funds': 0,
-            'approved_funds': 0,
             'common_items_ratio': 0,
             'total_receipts': 0,
             'items_prices': 0
@@ -189,7 +198,7 @@ class FinancialIndicator(Indicator):
                 Metric.objects.create_metric(metric, x, self)
 
     def __str__(self):
-        return self.project.name + " value: " + str(self.value)
+        return self.project.nome + " value: " + str(self.value)
 
 
 class MetricManager(models.Manager):
@@ -202,9 +211,13 @@ class MetricManager(models.Manager):
             del data['is_outlier']
         else:
             is_outlier = None
+        if 'valor' in data:
+            value = data['valor']
+            del data['valor']
         metric = Metric.objects.update_or_create(name=name,
                                                  is_outlier=is_outlier,
                                                  indicator=indicator,
+                                                 value=value,
                                                  data=data)
         return metric
 
@@ -218,7 +231,7 @@ class Metric(models.Model):
     is_outlier = models.BooleanField(null=True)
     data = PickledObjectField(null=True)
     name = models.CharField(max_length=200, default='Metric')
-    reason = models.CharField(max_length=500, default='Any reason')
+    value = models.CharField(max_length=200, default='0')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -228,7 +241,7 @@ class Metric(models.Model):
         unique_together = (("name", "indicator"),)
 
     def __str__(self):
-        return (self.name + " " + self.indicator.project.pronac + ' ' +
+        return (self.name + " " + str(self.indicator.project.pronac) + ' ' +
                 str(self.is_outlier))
 
 
@@ -261,6 +274,4 @@ def create_finance_metrics(metrics, pronacs_planilha):
                 indicator.is_valid = True
             else:
                 LOG('metric already exists: ', metric)
-    if p_metrics:
-        p_metrics.clear()
     return len(intersection)

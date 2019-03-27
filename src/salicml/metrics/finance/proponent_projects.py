@@ -40,8 +40,9 @@ def proponent_projects(pronac, data):
 
     return {
         'cpf_cnpj': cpf_cnpj,
-        'submitted_projects': proponent_submitted_projects,
-        'analyzed_projects': proponent_analyzed_projects
+        'valor': len(proponent_submitted_projects),
+        'projetos_submetidos': proponent_submitted_projects,
+        'projetos_analizados': proponent_analyzed_projects,
     }
 
 

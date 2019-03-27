@@ -16,11 +16,11 @@ def verified_approved(pronac, dt):
     Items that have vlComprovacao > vlAprovacao * 1.5 are considered outliers
     output:
             is_outlier: True if any item is outlier
-            number_of_outliers: Absolute number of items that are outliers
+            valor: Absolute number of items that are outliers
             outlier_items: Outlier items detail
     """
     items_df = data.approved_verified_items
-    items_df = items_df.loc[items_df['PRONAC'] == int(pronac)]
+    items_df = items_df.loc[items_df['PRONAC'] == pronac]
     items_df[[APPROVED_COLUMN, VERIFIED_COLUMN]] = items_df[
         [APPROVED_COLUMN, VERIFIED_COLUMN]
     ].astype(float)
@@ -41,10 +41,10 @@ def verified_approved(pronac, dt):
     is_outlier = features_size > 0
     return {
         "is_outlier": is_outlier,
-        "number_of_outliers": features_size,
-        "minimum_expected": MIN_EXPECTED_ITEMS,
-        "maximum_expected": MAX_EXPECTED_ITEMS,
-        "outlier_items": outlier_items,
+        "valor": features_size,
+        "maximo_esperado": MIN_EXPECTED_ITEMS,
+        "minimo_esperado": MAX_EXPECTED_ITEMS,
+        "lista_de_comprovantes": outlier_items,
     }
 
 

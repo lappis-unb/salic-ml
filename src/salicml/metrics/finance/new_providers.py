@@ -60,11 +60,12 @@ def new_providers(pronac, dt):
     all_projects_average = list(averages['all_projects_average'].values())[0]
 
     return {
-        'new_providers': new_providers,
+        'lista_de_novos_fornecedores': new_providers,
+        'valor': new_providers_amount,
         'new_providers_percentage': new_providers_percentage,
         'is_outlier': new_providers_percentage > segments_average[segment_id],
         'segment_average_percentage': segments_average[segment_id],
-        'all_projects_average_percentage': all_projects_average
+        'all_projects_average_percentage': all_projects_average,
     }
 
 

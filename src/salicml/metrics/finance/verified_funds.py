@@ -28,8 +28,9 @@ def verified_funds(pronac, dt):
     maximum_expected_funds = gaussian_outlier.maximum_expected_value(mean, std)
     return {
             "is_outlier": is_outlier,
-            "total_verified_funds": project_funds,
-            "maximum_expected_funds": maximum_expected_funds,
+            "valor": project_funds,
+            "maximo_esperado": maximum_expected_funds,
+            "minimo_esperado": 0,
     }
 
 

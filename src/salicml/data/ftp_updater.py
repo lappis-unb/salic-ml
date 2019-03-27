@@ -8,6 +8,7 @@ from .loader import FILE_EXTENSION
 CREDENTIALS = {
     'FTP_USER': os.environ.get('FTP_USER', ''),
     'FTP_PASSWORD': os.environ.get('FTP_PASSWORD', ''),
+    'FTP_HOST': os.environ.get('FTP_HOST', '138.68.73.247')
 }
 
 
@@ -35,7 +36,7 @@ def save_file_in_ftp(ftp, source_file_path, dest_file_path):
 
 
 def init_ftp():
-    host = '138.68.73.247'
+    host = CREDENTIALS['FTP_HOST']
     user = CREDENTIALS['FTP_USER']
     passwd = CREDENTIALS['FTP_PASSWORD']
 

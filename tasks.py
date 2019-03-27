@@ -51,8 +51,9 @@ def train_metrics(ctx):
 
 
 @task(help={'models': "Default is True, updates api models",
-            'pickles': "Default is True, save queries in pickles"})
-def update_data(ctx, models=True, pickles=True):
+            'pickles': "Default is False, save queries in pickles",
+            'f': "Default is False, force to save files even if already exists"})
+def update_data(ctx, models=True, pickles=False, f=False):
     """
     Updates local django db projects and pickle files using salic database from
     MinC
@@ -60,8 +61,23 @@ def update_data(ctx, models=True, pickles=True):
     Models are created from /data/scripts/models/
     """
     if pickles:
-        save_sql_to_files()
+        save_sql_to_files(f)
     if models:
+        if f:
+            manage(ctx, 'create_models_from_sql --force True', env={})
+        else:
+            manage(ctx, 'create_models_from_sql', env={})
+
+
+@task(help={'f': "Default is False, force to update model even if already exists"})
+def update_models(ctx, f=False):
+    """
+    Updates local django db projects models using salic database from
+    MinC
+    """
+    if f:
+        manage(ctx, 'create_models_from_sql --force True', env={})
+    else:
         manage(ctx, 'create_models_from_sql', env={})
 
 
@@ -70,7 +86,7 @@ def run_sql(ctx, sql_file, dest):
     """
     Runs a sql script file and saves its result as a pickle
     Example of usage:
-    $ inv run-sql --sql-file='./data/scripts/planilha_projetos.sql' --dest='.'
+        $ inv run-sql --sql-file='./data/scripts/planilha_projetos.sql' --dest='.'
     """
     save_sql_to_file(sql_file, dest)
 
@@ -81,3 +97,13 @@ def update_ftp(ctx, file):
     Uploads pickle file to ftp /data/ folder
     """
     execute_upload_pickle(file)
+
+
+@task(help={'c': 'command to be run with manage.py'})
+def manager(ctx, c):
+    """
+    Runs commands that needs manage.py context
+    Example of usage:
+        $ inv manager createsuperuser
+    """
+    manage(ctx, c, env={})
