@@ -25,6 +25,11 @@ Contribuição
 
 Antes de mais nada, sinta-se à vontade para nos contactar sempre que precisar. Nosso grupo de comunicação no [RocketChat](https://chat.lappis.rocks/channel/salic-ml) está sempre aberto para discussões. Para acompanhar nosso _roadmap_, instale o plugin [ZenHub](https://www.zenhub.com/) para o GitHub.
 
+#### Requisitos
+
+- Python 3.6
+- Virtualenv ou virtualenvwrapper
+
 #### Instalação
 
 As pesquisas deste repositório são realizadas em notebooks do [Jupyter Notebook](http://jupyter.org/). Para reproduzir nossas pesquisas e estudos, é preciso baixar os dados do servidor FTP e instalar o Jupyter Notebook.
@@ -40,6 +45,9 @@ Este comando baixará todos os arquivos de dados do servidor e pode demorar algu
 Onde _FILE_ deve ser substituído pelo caminho e nome do arquivo desejado.
 
 Para instalar o Jupyter Notebook, é possível utilizar a plataforma [Anaconda](https://www.anaconda.com/) ou o [pip](http://jupyter.org/install).
+Para instalar todas as dependências deste projeto, esteja em um ambiente virtual do python e rode o seguinte comando:
+
+    $ pip install -r requirements.txt
 
 #### Reprodução de pesquisas
 
@@ -57,6 +65,13 @@ Seguem o formato <Descrição do Notebook>-<Versão>.
 
 * **Report:** Notebooks com os resultados das pesquisas. Esta pasta contém as
 versões de notebooks estáveis e atualizados das pesquisas realizadas.
+
+
+#### API
+
+Para rodar a api, execute o comando a partir da raiz do diretório:
+
+    $ inv run
 
 #### Passo a passo de contribuições
 
@@ -88,6 +103,20 @@ $ git push origin <USERNAME>-new-research
 
 6. Crie o seu _pull request_: na plataforma GitHub, a partir do seu _fork_, terá um botão para abrir um _pull request_.
 
+#### Outros comandos
+
+Alguns comandos foram criados para facilitar o desenvolvimento, para rodar a API, popular dados entre outros.
+- Para que tenha acesso a lista de comandos digite em seu terminal:
+
+     $ invoke --list
+
+ - Para ler a descrição de um comando específico (exemplo comando run):
+
+     $ invoke --help run
+
+ - Para executá-lo (exemplo comando run):
+
+     $ inv run
 
 Licença
 -------

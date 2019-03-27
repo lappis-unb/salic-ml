@@ -137,3 +137,12 @@ tags
 
 ### MacOS FS
 .DS_Store
+
+### Sqlite
+
+*.sqlite3
+
+# vscode
+.vscode
+
+src/api/db\.sqlite3-journal

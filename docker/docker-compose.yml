@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+  web:
+    image: salicml/api:latest
+    build:
+       context: ../
+       dockerfile: ./docker/Dockerfile
+    command: inv run
+    env_file:
+      - ../etc/env/db.env
+    volumes:
+      - ../src:/src
+      - ../data:/data
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  salic_db:
+    image: lappis/openconnect-globalprotect
+    env_file:
+      - ../etc/env/vpn.env
+    ports:
+      - "9000:1435"
+    privileged: true
+    cap_add:
+      - NET-ADMIN

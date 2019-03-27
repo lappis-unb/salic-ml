@@ -37,5 +37,12 @@ As bibliotecas do python utilizadas para fazer estão disponíves no arquivo [re
 Recomendamos utilizar o `pip3` como gerenciador de pacotes python.
 
 1. `$ git clone https://github.com/lappis-unb/salic-ml` (caso ainda não tenha clonado o repositório)
-2. `$ cd research/` (diretório de pesquisa)
-3. `$ pip3 install -f requirements.txt`
+2. `$ cd salicml/research/` (diretório de pesquisa)
+3. `$ pip3 install -r requirements.txt
+
+**Usando salicml data handler**
+Para usar o salicml nos notebooks, basta executar o `setup.py` localizado na raiz do projeto de preferência em modo de desenvolvimento.
+
+1. `$ git clone https://github.com/lappis-unb/salic-ml` (caso ainda não tenha clonado o repositório)
+2. `$ cd salicml` (diretório de pesquisa)
+3. `$ python setup.py develop`

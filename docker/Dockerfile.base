@@ -1,0 +1,26 @@
+FROM debian:buster-slim
+
+EXPOSE 8080
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        python3-crypto \
+        python3-pyodbc \
+        python3-setuptools \
+        tdsodbc \
+        unixodbc-dev \
+        unixodbc \
+        freetds-dev \
+        freetds-bin \
+        freetds-common \
+        cron \
+        apt-utils \
+        gnupg2 \
+        apt-transport-https
+
+COPY setup.py setup.py
+RUN mkdir /src
+
+RUN pip3 install --no-cache-dir -e .
+RUN pip3 install --no-cache-dir -e .[dev]
