@@ -5,16 +5,16 @@
    - Nome do Projeto
    - Analista
    - Situação
+   - Descrição da verificação
    - Data de inicio de execucação
    - Data de Fim de execução
-   - Etapa
 
    Obs: É usado o GROUP BY para remoção de projetos duplicados
 
 */
 
-SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as name, MAX(Analista) as analist,
-       MAX(Situacao) as situation, MAX(verificacao.Descricao) as stage,
+SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
+       MAX(Situacao) as situation, MAX(verificacao.Descricao) as description,
        MAX(DtInicioExecucao) as start_execution, MAX(DtFimExecucao) as end_execution
        FROM SAC.dbo.Projetos
        INNER JOIN SAC.dbo.tbProjetoFase fase ON (fase.idPronac = projetos.IdPRONAC)

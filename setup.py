@@ -42,6 +42,7 @@ setup(
             'pytest~=3.8.0',
             'pytest-django',
             'seaborn~=0.9.0',
+            'Deprecated',
         ],
     },
     python_requires='>=3.5',

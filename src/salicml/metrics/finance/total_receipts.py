@@ -30,8 +30,9 @@ def total_receipts(pronac, dt):
     maximum_expected = gaussian_outlier.maximum_expected_value(mean, std)
     return {
             "is_outlier": is_outlier,
-            "total_receipts": total_receipts,
-            "maximum_expected_in_segment": maximum_expected,
+            "valor": total_receipts,
+            "maximo_esperado": maximum_expected,
+            "minimo_esperado": 0,
         }
 
 

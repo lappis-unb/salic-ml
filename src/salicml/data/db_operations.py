@@ -28,19 +28,25 @@ def save_dataframe_as_pickle(df, dir_path):
     print('pickle saved in path \'{}\'.'.format(dir_path))
 
 
-def save_sql_to_files():
+def save_sql_to_files(overwrite=False):
     """
     Executes every .sql files in /data/scripts/ using salic db vpn and
     then saves pickle files into /data/raw/
     """
     ext_size = len(SQL_EXTENSION)
     path = DATA_PATH / 'scripts'
+    save_dir = DATA_PATH / "raw"
+
     for file in os.listdir(path):
-        query_result = make_query(path / file)
-        save_dir = DATA_PATH / "raw"
-        file_path = os.path.join(save_dir,
-                                 file[:-ext_size] + '.' + FILE_EXTENSION)
-        save_dataframe_as_pickle(query_result, file_path)
+        if file.endswith(SQL_EXTENSION):
+            file_path = os.path.join(save_dir,
+                                     file[:-ext_size] + '.' + FILE_EXTENSION)
+            if not os.path.isfile(file_path) or overwrite:
+                query_result = make_query(path / file)
+                save_dataframe_as_pickle(query_result, file_path)
+            else:
+                print(("file {} already exists, if you would like to update"
+                       " it, use -f flag\n").format(file_path))
 
 
 def save_sql_to_file(sql, dest):

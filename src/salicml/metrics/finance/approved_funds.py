@@ -5,6 +5,7 @@ from salicml.data import data
 from salicml.metrics.base import get_info
 
 
+
 @data.lazy('planilha_orcamentaria')
 def approved_funds_by_segments(df):
     df = df[["PRONAC", "idSegmento", "VlTotalAprovado"]]

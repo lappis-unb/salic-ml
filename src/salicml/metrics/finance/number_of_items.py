@@ -11,9 +11,9 @@ def number_of_items(pronac, dt):
     output:
             is_outlier: True if projects number of items is not compatible
                         to others projects in the same segment
-            value: absolute number of items
-            mean: mean number of items of segment
-            std: standard deviation of number of items in project segment
+            valor: absolute number of items
+            maximo_esperado: mean number of items of segment
+            desvio_padrao: standard deviation of number of items in project segment
     """
     df = data.items_by_project
     project = df.loc[df['PRONAC'] == pronac]
@@ -25,9 +25,9 @@ def number_of_items(pronac, dt):
     is_outlier = project_items_count > threshold
     return {
        'is_outlier': is_outlier,
-       'value': project_items_count,
-       'mean': mean,
-       'std': std,
+       'valor': project_items_count,
+       'maximo_esperado': mean,
+       'desvio_padrao': std,
     }
 
 

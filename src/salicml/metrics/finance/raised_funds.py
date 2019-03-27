@@ -22,17 +22,6 @@ def raised_funds(pronac, data):
     }
 
 
-@data.lazy('planilha_captacao')
-def all_raised_funds(df):
-    """
-    All raised funds.
-    """
-    df['CaptacaoReal'] = df['CaptacaoReal'].apply(
-        pd.to_numeric
-    )
-    return df
-
-
 @data.lazy('all_raised_funds')
 def raised_funds_by_segment(df):
     """
@@ -41,18 +30,6 @@ def raised_funds_by_segment(df):
     return (
         df[['Pronac', 'Segmento', 'CaptacaoReal']]
         .groupby(['Segmento', 'Pronac'])
-        .sum()
-    )
-
-
-@data.lazy('all_raised_funds')
-def raised_funds_by_project(df):
-    """
-    Raised funds organized by project.
-    """
-    return (
-        df[['Pronac', 'CaptacaoReal']]
-        .groupby(['Pronac'])
         .sum()
     )
 
