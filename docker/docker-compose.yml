@@ -1,21 +1,22 @@
 version: '2'
 
 services:
-  db:
+  postgres:
     image: postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+    env_file:
+      - ../etc/env/postgres.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-  web:
+  django:
     image: salicml/api:latest
     build:
        context: ../
        dockerfile: ./docker/Dockerfile
-    command: inv run
+    command: inv make migrate run
     env_file:
-      - ../etc/env/db.env
+      - ../etc/env/db.env # salic_db
+      - ../etc/env/postgres.env
     volumes:
       - ../src:/src
       - ../data:/data
@@ -23,6 +24,8 @@ services:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - postgres
 
   salic_db:
     image: lappis/openconnect-globalprotect
@@ -33,3 +36,6 @@ services:
     privileged: true
     cap_add:
       - NET-ADMIN
+
+volumes:
+  postgres_data:
