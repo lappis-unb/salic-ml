@@ -20,9 +20,7 @@ services:
       - ../src:/src
       - ../data:/data
     ports:
-      - "8080:8080"
-    depends_on:
-      - mongo
+      - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
 

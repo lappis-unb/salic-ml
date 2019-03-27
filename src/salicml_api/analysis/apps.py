@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 
-class ProjectsConfig(AppConfig):
-    name = 'projects'
+class AnalysisConfig(AppConfig):
+    name = 'analysis'
     api = None
 
     def ready(self):

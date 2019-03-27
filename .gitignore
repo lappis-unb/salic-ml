@@ -144,3 +144,5 @@ tags
 
 # vscode
 .vscode
+
+src/api/db\.sqlite3-journal

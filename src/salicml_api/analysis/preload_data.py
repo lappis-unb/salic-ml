@@ -1,7 +1,7 @@
 """
 Pre loads measurements from database saved projects
 """
-from projects.models import create_finance_metrics, FinancialIndicator
+from .models import create_finance_metrics, FinancialIndicator
 from salicml.data import data
 # ==============================================================================
 # AUXILIAR FUNCTIONS

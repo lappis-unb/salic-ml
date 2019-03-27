@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from projects.preload_data import load_project_metrics
+from analysis.preload_data import load_project_metrics
 
 
 class Command(BaseCommand):
