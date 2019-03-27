@@ -3,7 +3,7 @@ from .utils import default_metrics, metrics_name_map
 
 
 # Project aditional attribute
-@rest_api.property('projects.Project')
+@rest_api.property('analysis.Project')
 def complexidade(obj):
     """
     Returns a value that indicates project health, currently FinancialIndicator
@@ -19,12 +19,12 @@ def complexidade(obj):
 
 
 # Metric aditional attributes #
-@rest_api.property('projects.Metric')
+@rest_api.property('analysis.Metric')
 def project_pronac(obj):
     return obj.indicator.project.pronac
 
 
-@rest_api.property('projects.Metric')
+@rest_api.property('analysis.Metric')
 def detail(obj):
     """
     Returns data as json (since it is a picklefield in database, it has
@@ -34,7 +34,7 @@ def detail(obj):
 
 
 # Project aditional end point /projects/PRONAC_NUMBER/details
-@rest_api.detail_action('projects.Project')
+@rest_api.detail_action('analysis.Project')
 def details(project):
     """
     Project detail endpoint,

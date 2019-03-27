@@ -39,12 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'polymorphic',
-    'projects',
+    'analysis',
     'corsheaders',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'api.config.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS':
+        'salicml_api.config.pagination.CustomPagination',
     'PAGE_SIZE': 15
 }
 
