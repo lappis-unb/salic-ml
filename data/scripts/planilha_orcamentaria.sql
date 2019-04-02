@@ -19,10 +19,10 @@ area.Descricao as Area,
 a.Segmento AS idSegmento,
 segmento.Descricao AS Segmento,
 k.idProduto,
-case 
+case
     when k.idProduto = 0
        then 'Administracao do Projeto'
-       else c.Descricao 
+       else c.Descricao
 end as Produto,
 a.DtProtocolo as DataProjeto,
 k.idEtapa AS cdEtapa,
@@ -39,5 +39,4 @@ INNER JOIN SAC.dbo.Verificacao x on (b.FonteRecurso = x.idVerificacao)
 INNER JOIN agentes.dbo.vUfMunicipio f on (b.UfDespesa = f.idUF and b.MunicipioDespesa = f.idMunicipio)
 INNER JOIN SAC.dbo.Area area ON (a.Area = area.Codigo)
 INNER JOIN SAC.dbo.Segmento segmento ON (a.segmento = segmento.Codigo)
-WHERE k.stAtivo = 'S' AND
-      a.DtProtocolo >='2013-01-01 00:00:00'
+WHERE k.stAtivo = 'S'
