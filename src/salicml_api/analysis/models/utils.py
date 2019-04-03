@@ -1,5 +1,6 @@
 import logging
 from django.db import IntegrityError, transaction
+from itertools import product, chain
 
 from salicml.data.db_connector import db_connector
 from salicml.data.db_operations import DATA_PATH
@@ -54,21 +55,39 @@ def create_finance_metrics(metrics, pronacs_planilha):
             pronacs_planilha: pronacs in dataset that is used to calculate
             those metrics
     """
-    project_list = Project.objects.all().values_list("pronac", flat=True)
-    intersection = set(project_list).intersection(pronacs_planilha)
-    p_metrics = None
-    for metric_name in metrics:
-        for project in intersection:
-            project = Project.objects.get(pronac=project)
-            indicator = FinancialIndicator.objects.update_or_create(project=project)[0]
-            metric = Metric.objects.filter(name=metric_name, indicator=indicator)
 
-            if not metric.exists():
-                p_metrics = metrics_calc.get_project(project.pronac)
-                x = getattr(p_metrics.finance, metric_name)
-                Metric.objects.create_metric(metric_name, x, indicator)
-                indicator.fetch_weighted_complexity()
-                indicator.is_valid = True
-            else:
-                LOG("metric already exists: ", metric)
-    return len(intersection)
+    for pronac, metric_name in missing_metrics():
+        indicator, _ = FinancialIndicator.objects.update_or_create(project=pronac)
+        p_metrics = metrics_calc.get_project(pronac)
+        x = getattr(p_metrics.finance, metric_name)
+        Metric.objects.create_metric(metric_name, x, indicator)
+        indicator.fetch_weighted_complexity()
+        indicator.is_valid = True
+        indicator.save()
+
+    # project_list = Project.objects.all().values_list("pronac", flat=True)
+    # intersection = set(project_list).intersection(pronacs_planilha)
+    # p_metrics = None
+    # for metric_name in metrics:
+    #     for project in intersection:
+    #         project = Project.objects.get(pronac=project)
+    #         indicator = FinancialIndicator.objects.update_or_create(project=project)[0]
+    #         metric = Metric.objects.filter(name=metric_name, indicator=indicator)
+    #
+    #         if not metric.exists():
+    #             p_metrics = metrics_calc.get_project(project.pronac)
+    #             x = getattr(p_metrics.finance, metric_name)
+    #             Metric.objects.create_metric(metric_name, x, indicator)
+    #             indicator.fetch_weighted_complexity()
+    #             indicator.is_valid = True
+    #         else:
+    #             LOG("metric already exists: ", metric)
+    # return len(intersection)
+
+
+def missing_metrics():
+    existent_metrics = Project.objects.values_list("pk", "indicator_set__metrics__name")
+    all_projects = [pk for pk, _ in existent_metrics]
+    all_metrics = list(chain.from_iterable(FinancialIndicator.METRICS.values()))
+
+    return set(product(all_projects, all_metrics)) - set(existent_metrics)
