@@ -45,19 +45,21 @@ def execute_project_models_sql_scripts(force_update=False):
                         Project.objects.get_or_create(**item)
 
 
-def create_finance_metrics(metrics, pronacs_planilha):
+def create_finance_metrics(metrics: list, pronacs: list):
     """
     Creates metrics, creating an Indicator if it doesn't already exists
-    Metrics are created for projects that are in pronacs_planilha and saved in
+    Metrics are created for projects that are in pronacs and saved in
     database.
-    args:
+
+        args:
             metrics: list of names of metrics that will be calculated
-            pronacs_planilha: pronacs in dataset that is used to calculate
-            those metrics
+            pronacs: pronacs in dataset that is used to calculate those metrics
     """
 
-    for pronac, metric_name in missing_metrics():
-        indicator, _ = FinancialIndicator.objects.update_or_create(project=pronac)
+    for metric_name, pronac in missing_metrics(metrics, pronacs):
+        indicator, _ = FinancialIndicator.objects.update_or_create(
+            project_id=pronac
+        )
         p_metrics = metrics_calc.get_project(pronac)
         x = getattr(p_metrics.finance, metric_name)
         Metric.objects.create_metric(metric_name, x, indicator)
@@ -85,9 +87,18 @@ def create_finance_metrics(metrics, pronacs_planilha):
     # return len(intersection)
 
 
-def missing_metrics():
-    existent_metrics = Project.objects.values_list("pk", "indicator_set__metrics__name")
-    all_projects = [pk for pk, _ in existent_metrics]
-    all_metrics = list(chain.from_iterable(FinancialIndicator.METRICS.values()))
+def missing_metrics(metrics, pronacs):
+    projects_metrics = Project.objects.filter(pronac__in=pronacs).values_list(
+        "pronac", "indicator__metrics"
+    )
+    projects_pronacs = [p for p, _ in projects_metrics]
 
-    return set(product(all_projects, all_metrics)) - set(existent_metrics)
+    return set(product(metrics, projects_pronacs)) - set(projects_metrics)
+
+    # return projects
+
+    # existent_metrics = Project.objects.values_list("pk", "indicator_set__metrics__name")
+    # all_projects = [pk for pk, _ in existent_metrics]
+    # all_metrics = list(chain.from_iterable(FinancialIndicator.METRICS.values()))
+
+    # return set(product(all_projects, all_metrics)) - set(existent_metrics)

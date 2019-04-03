@@ -14,9 +14,7 @@ class Indicator(PolymorphicModel):
     value = models.FloatField(default=0.0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="indicator_set"
-    )
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     is_valid = models.BooleanField(null=True)
 
     class Meta:

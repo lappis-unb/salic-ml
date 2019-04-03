@@ -16,7 +16,7 @@ class ProjectManager(models.Manager):
             super(ProjectManager, self)
             .get_queryset()
             .all()
-            .order_by("-indicator_set__value")
+            .order_by("-indicator__value")
         )
         return ordered
 
