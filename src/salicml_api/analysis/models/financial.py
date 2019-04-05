@@ -57,6 +57,8 @@ class FinancialIndicator(Indicator):
 
     class Meta:
         app_label = "analysis"
+        proxy = True
+
 
     @property
     def metrics_weights(self):

@@ -29,10 +29,12 @@ def execute_project_models_sql_scripts(force_update=False):
         query_result = db.execute_pandas_sql_query(query)
         db.close()
         try:
-            Project.objects.bulk_create(
+            projects = Project.objects.bulk_create(
                 (Project(**vals) for vals in query_result.to_dict("records")),
                 # ignore_conflicts=True available on django 2.2.
             )
+            indicators = [FinancialIndicator(project=p) for p in projects]
+            FinancialIndicator.objects.bulk_create(indicators)
         except IntegrityError:
             # happens when there are duplicated projects
             LOG("Projects bulk_create failed, creating one by one...")
@@ -56,13 +58,21 @@ def create_finance_metrics(metrics: list, pronacs: list):
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
 
-    for metric_name, pronac in missing_metrics(metrics, pronacs):
-        indicator, _ = FinancialIndicator.objects.update_or_create(
-            project_id=pronac
-        )
+    missing = missing_metrics(metrics, pronacs)
+    indicators_qs = FinancialIndicator.objects.filter(project_id__in=[p for _, p in missing])
+    indicators = {i.project_id: i for i in indicators_qs}
+    metrics = []
+
+    for metric_name, pronac in missing:
+        indicator = indicators[pronac]
         p_metrics = metrics_calc.get_project(pronac)
         x = getattr(p_metrics.finance, metric_name)
-        Metric.objects.create_metric(metric_name, x, indicator)
+
+        metrics.append(Metric(name=metric_name, value=x, indicator=indicator))
+
+    Metric.objects.bulk_create(metrics)
+
+    for indicator in indicators.values():
         indicator.fetch_weighted_complexity()
         indicator.is_valid = True
         indicator.save()
