@@ -12,7 +12,7 @@ services:
       - "443:443"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
-      - web
+      - django
 
   certbot:
     image: certbot/certbot
@@ -22,25 +22,27 @@ services:
       - ../data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
-  db:
+  postgres:
     image: postgres
     env_file:
       - ../etc/env/deploy.env 
 
-  web:
+  django:
     image: salicml/api:latest
-    command: inv run
+    command: inv make migrate run
     env_file:
       - ../etc/env/db.env
+      - ../etc/env/deploy.env
     volumes:
-      - ../src:/src
       - ../data:/data
     ports:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
-      - db
+      - postgres
+      - salic_db
+
   salic_db:
     image: lappis/openconnect-globalprotect
     env_file:
