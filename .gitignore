@@ -8,6 +8,9 @@ data/processed/*
 data/raw/*
 !data/raw/.gitkeep
 
+# Deploy HTTPS Certificate files
+data/certbot
+
 ### Jupyter notebook files
 */.ipynb_checkpoints/*
 
