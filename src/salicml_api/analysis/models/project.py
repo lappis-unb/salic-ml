@@ -39,33 +39,3 @@ class Project(models.Model):
 
     def __str__(self):
         return self.nome
-
-
-"""
-     1 - project.Project.objects.values_list('pk', 'indicator_set__metrics__name')
-    
-     2 - product(set(project.Project.objects.all().values_list('pk', flat=True)), set(['a', 'b']))
-    
-    set(project.Project.objects.values_list('pk', 'indicator_set__metrics__name')) 
-    - 
-    set(product(set(project.Project.objects.values_list('pk', flat=True)), set(['metric teste2', 'metric teste'])))
-    
-    #################
-    
-    projects_tp = project.Project.objects.values_list('pk', 'indicator_set__metrics__name')
-    projects = [ p for p, _ in projects_tp]
-    
-    set(product(projects, ['metric teste2', 'metric teste']))
-    - 
-    set(projects_tp)
-    
-    def missing_metrics():
-        existent_metrics = project.Project.objects.values_list('pk', 'indicator_set__metrics__name')
-        all_projects = [ pk for pk, _ in existent_metrics]
-        all_metrics = ['metric teste2', 'metric teste']
-        
-        return (
-            set(product(all_projects, all_metrics)) - 
-            set(existent_metrics)
-        )
-"""
