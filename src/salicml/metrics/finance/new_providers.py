@@ -39,12 +39,12 @@ def new_providers(pronac, dt):
             provider_name = row['nmFornecedor']
 
             new_providers[cnpj] = {
-                'name': provider_name,
-                'items': {
+                'nome': provider_name,
+                'itens': {
                     item_id: {
-                        'name': item_name,
-                        'salic_url': get_salic_url(row, url_prefix, url_val),
-                        'has_receipt': True
+                        'nome': item_name,
+                        'link': get_salic_url(row, url_prefix, url_val),
+                        'tem_comprovante': True
                     }
                 }
             }
