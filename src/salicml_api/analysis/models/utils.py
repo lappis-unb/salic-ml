@@ -41,10 +41,13 @@ def execute_project_models_sql_scripts(force_update=False):
             with transaction.atomic():
                 if force_update:
                     for item in query_result.to_dict("records"):
-                        Project.objects.update_or_create(**item)
+                        p, _ = Project.objects.update_or_create(**item)
+                        FinancialIndicator.objects.update_or_create(project=p)
                 else:
+
                     for item in query_result.to_dict("records"):
-                        Project.objects.get_or_create(**item)
+                        p, _ = Project.objects.get_or_create(**item)
+                        FinancialIndicator.objects.update_or_create(project=p)
 
 
 def create_finance_metrics(metrics: list, pronacs: list):
@@ -68,14 +71,13 @@ def create_finance_metrics(metrics: list, pronacs: list):
         p_metrics = metrics_calc.get_project(pronac)
         x = getattr(p_metrics.finance, metric_name)
 
-        metrics.append(Metric(name=metric_name, value=x, indicator=indicator))
+        metrics.append(Metric.create_metric(name=metric_name,
+                                            data=x, indicator=indicator))
 
     Metric.objects.bulk_create(metrics)
 
     for indicator in indicators.values():
         indicator.fetch_weighted_complexity()
-        indicator.is_valid = True
-        indicator.save()
 
 
 def missing_metrics(metrics, pronacs):

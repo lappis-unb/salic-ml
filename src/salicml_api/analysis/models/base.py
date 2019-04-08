@@ -53,6 +53,7 @@ class Indicator(PolymorphicModel):
         else:
             final_value = float(final_value)
         self.value = float(final_value)
+        self.is_valid = True
         self.updated_at = datetime.datetime.now()
         self.save()
         return final_value

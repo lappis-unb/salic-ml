@@ -23,7 +23,7 @@ class ProjectManager(models.Manager):
 
 @rest_api(["pronac", "nome", "responsavel"], lookup_field="pronac")
 class Project(models.Model):
-    pronac = models.CharField(max_length=10, primary_key=True)
+    pronac = models.CharField(max_length=15, primary_key=True)
     nome = models.CharField(max_length=200)
     start_execution = models.CharField(null=True, max_length=200)
     end_execution = models.CharField(null=True, max_length=200)
