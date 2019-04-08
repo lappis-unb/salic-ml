@@ -16,14 +16,14 @@ class ProjectManager(models.Manager):
             super(ProjectManager, self)
             .get_queryset()
             .all()
-            .order_by("-indicator_set__value")
+            .order_by("-indicator__value")
         )
         return ordered
 
 
 @rest_api(["pronac", "nome", "responsavel"], lookup_field="pronac")
 class Project(models.Model):
-    pronac = models.CharField(max_length=200, unique=True)
+    pronac = models.CharField(max_length=10, primary_key=True)
     nome = models.CharField(max_length=200)
     start_execution = models.CharField(null=True, max_length=200)
     end_execution = models.CharField(null=True, max_length=200)

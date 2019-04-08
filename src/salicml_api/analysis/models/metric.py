@@ -33,7 +33,7 @@ class Metric(models.Model):
     indicator = models.ForeignKey(
         Indicator, on_delete=models.CASCADE, related_name="metrics"
     )
-    is_outlier = models.BooleanField(null=True)
+    is_outlier = models.BooleanField(default=False)
     data = PickledObjectField(null=True)
     name = models.CharField(max_length=200, default="Metric")
     value = models.CharField(max_length=200, default="0")
