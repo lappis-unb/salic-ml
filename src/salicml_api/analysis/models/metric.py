@@ -38,7 +38,7 @@ class Metric(models.Model):
             is_outlier = data["is_outlier"]
             del data["is_outlier"]
         else:
-            is_outlier = None
+            is_outlier = False
         if "valor" in data:
             value = data["valor"]
             del data["valor"]
