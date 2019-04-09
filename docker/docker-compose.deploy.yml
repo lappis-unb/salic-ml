@@ -25,7 +25,9 @@ services:
   postgres:
     image: postgres
     env_file:
-      - ../etc/env/deploy.env 
+      - ../etc/env/deploy.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   django:
     image: salicml/api:latest
@@ -52,3 +54,6 @@ services:
     privileged: true
     cap_add:
       - NET-ADMIN
+
+  volumes:
+    postgres_data:
