@@ -61,9 +61,11 @@ def outlier_items_(features):
         verified_value = getattr(row, "vlComprovacao")
 
         item = {
-            "item": item_name,
-            "approved_value": approved_value,
-            "verified_value": verified_value,
+            "nome": item_name,
+            "valor_aprovado": approved_value,
+            "valor_comprovado": verified_value,
+            "porcentagem": (approved_value / verified_value) * 100,
+            # link do comprovante pro salic
         }
         outlier_items.append(item)
     return outlier_items
