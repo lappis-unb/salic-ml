@@ -77,7 +77,7 @@ def create_finance_metrics(metrics: list, pronacs: list):
     Metric.objects.bulk_create(metrics)
 
     for indicator in indicators.values():
-        indicator.fetch_weighted_complexity()
+        indicator.fetch_weighted_complexity_without_proponent_projects()
 
 
 def missing_metrics(metrics, pronacs):

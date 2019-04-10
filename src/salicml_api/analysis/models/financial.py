@@ -1,7 +1,9 @@
 from boogie.rest import rest_api
 from polymorphic.managers import PolymorphicManager
+import statistics
 
 from salicml.data.query import metrics as metrics_calc
+from salicml.outliers.gaussian_outlier import is_outlier
 from .metric import Metric
 from .base import Indicator
 from .project import Project
@@ -49,6 +51,7 @@ class FinancialIndicator(Indicator):
             "proponent_projects",
             "new_providers",
             "total_receipts",
+            "verified_funds",
         ],
         "planilha_orcamentaria": ["number_of_items"],
     }
@@ -58,7 +61,6 @@ class FinancialIndicator(Indicator):
     class Meta:
         app_label = "analysis"
         proxy = True
-
 
     @property
     def metrics_weights(self):
@@ -82,7 +84,31 @@ class FinancialIndicator(Indicator):
                 print("calculando a metrica  ", metric)
                 x = getattr(p_metrics.finance, metric)
                 print("do projeto: ", self.project)
-                Metric.objects.create_metric(metric, x, self)
+                Metric.create_metric(metric, x, self)
+
+    def fetch_weighted_complexity_without_proponent_projects(self):
+        metrics_weights = self.metrics_weights()
+        del metrics_weights["proponent_projects"]
+        return self.calculate_weighted_complexity(metrics_weights)
+
+    def calculate_proponent_projects_weight(self):
+        metric = self.metrics.filter(name="proponent_projects")
+        if metric.exists():
+            pronacs = (metric["data"]["projetos_submetidos"]
+                       ["pronacs_of_this_proponent"])
+            indicators = (FinancialIndicator.objects
+                          .filter(project__pronac__in=pronacs))
+            values_list = []
+            for indicator in indicators:
+                val = (indicator
+                       .fetch_weighted_complexity_without_proponent_projects())
+                values_list.append(val)
+            std = statistics.stdev(values_list)
+            mean = statistics.mean(values_list)
+            self_value = self.fetch_weighted_complexity_without_proponent_projects()
+            outlier = is_outlier(self_value, mean, std)
+            metric.is_outlier = outlier
+        return None
 
     def __str__(self):
         return self.project.nome + " value: " + str(self.value)
