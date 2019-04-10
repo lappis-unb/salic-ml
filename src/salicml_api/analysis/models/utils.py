@@ -12,7 +12,10 @@ from . import Project
 
 log = logging.getLogger("salic-ml.data")
 LOG = log.info
-MODEL_FILE = DATA_PATH / "scripts" / "models" / "general_project_data.sql"
+MODEL_PATH = DATA_PATH / "scripts" / "models"
+MODEL_FILE = MODEL_PATH / "general_project_data.sql"
+VERIFIED_FUNDS_FILE = MODEL_PATH / "project_verified_funds.sql"
+RAISED_FUNDS_FILE = MODEL_PATH / "project_raised_funds.sql"
 
 
 def execute_project_models_sql_scripts(force_update=False):
@@ -48,6 +51,7 @@ def execute_project_models_sql_scripts(force_update=False):
                     for item in query_result.to_dict("records"):
                         p, _ = Project.objects.get_or_create(**item)
                         FinancialIndicator.objects.update_or_create(project=p)
+
 
 
 def create_finance_metrics(metrics: list, pronacs: list):

@@ -51,7 +51,6 @@ class FinancialIndicator(Indicator):
             "proponent_projects",
             "new_providers",
             "total_receipts",
-            "verified_funds",
         ],
         "planilha_orcamentaria": ["number_of_items"],
     }
@@ -96,6 +95,7 @@ class FinancialIndicator(Indicator):
         if metric.exists():
             pronacs = (metric["data"]["projetos_submetidos"]
                        ["pronacs_of_this_proponent"])
+            metric["data"]["projetos_submetidos"] = []
             indicators = (FinancialIndicator.objects
                           .filter(project__pronac__in=pronacs))
             values_list = []
@@ -103,12 +103,26 @@ class FinancialIndicator(Indicator):
                 val = (indicator
                        .fetch_weighted_complexity_without_proponent_projects())
                 values_list.append(val)
+                (metric["data"]["projetos_submetidos"]
+                 .append(indicator.get_project_info()))
             std = statistics.stdev(values_list)
             mean = statistics.mean(values_list)
-            self_value = self.fetch_weighted_complexity_without_proponent_projects()
-            outlier = is_outlier(self_value, mean, std)
+            value = self.fetch_weighted_complexity_without_proponent_projects()
+            outlier = is_outlier(value, mean, std)
             metric.is_outlier = outlier
         return None
+
+    def get_project_info(self):
+        start_execution = self.project.start_execution
+        end_execution = self.project.end_execution
+        return {
+            "complexidade": self.value,
+            "pronac": self.project.pronac,
+            "nome": self.project.nome,
+            "periodo_de_execucao": f'{start_execution} a {end_execution}',
+            "valor_comprovado": self.project.verified_funds,
+            "valor_captado": self.project.raised_funds,
+        }
 
     def __str__(self):
         return self.project.nome + " value: " + str(self.value)

@@ -17,14 +17,13 @@ def proponent_projects(pronac, data):
 
     proponent_submitted_projects = {}
     proponent_analyzed_projects = {}
-
+    submitted_projects = {}
     if cpf_cnpj:
         submitted_projects = get_proponent_submitted_projects(cpf_cnpj)
         analyzed_projects = get_proponent_analyzed_projects(cpf_cnpj)
 
         try:
             proponent_submitted_projects = {
-                'number_of_projects': submitted_projects['num_pronacs'],
                 'pronacs_of_this_proponent': submitted_projects['pronac_list']
             }
         except KeyError:
@@ -40,7 +39,7 @@ def proponent_projects(pronac, data):
 
     return {
         'cpf_cnpj': cpf_cnpj,
-        'valor': len(proponent_submitted_projects),
+        'valor': submitted_projects.get('num_pronacs', 0),
         'projetos_submetidos': proponent_submitted_projects,
         'projetos_analizados': proponent_analyzed_projects,
     }

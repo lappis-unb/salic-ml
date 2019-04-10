@@ -13,12 +13,17 @@
 
 */
 
-SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
+SELECT CONCAT(projetos.AnoProjeto, projetos.Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
        MAX(Situacao) as situation, MAX(verificacao.Descricao) as description,
-       MAX(DtInicioExecucao) as start_execution, MAX(DtFimExecucao) as end_execution
+       MAX(DtInicioExecucao) as start_execution, MAX(DtFimExecucao) as end_execution,
+       SUM(capt.CaptacaoReal) AS raised_funds,
+       SUM(comprovacao.vlComprovado) AS verified_funds
        FROM SAC.dbo.Projetos
        INNER JOIN SAC.dbo.tbProjetoFase fase ON (fase.idPronac = projetos.IdPRONAC)
        INNER JOIN SAC.dbo.Verificacao verificacao ON (fase.idFase = verificacao.idVerificacao)
+       FULL JOIN SAC.dbo.Captacao capt ON (capt.AnoProjeto = projetos.AnoProjeto AND capt.Sequencial = projetos.Sequencial)
+       FULL JOIN SAC.dbo.tbPlanilhaAprovacao aprovacao ON (aprovacao.IdPRONAC = projetos.IdPRONAC)
+       FULL JOIN BDCorporativo.scSAC.tbComprovantePagamentoxPlanilhaAprovacao comprovacao ON (aprovacao.idPlanilhaAprovacao = comprovacao.idPlanilhaAprovacao)
        WHERE DtFimExecucao < GETDATE()
        AND Situacao NOT IN ('A09', 'A13', 'A14', 'A16', 'A17', 'A18', 'A20',
                               'A23', 'A24', 'A26', 'A40', 'A41', 'A42', 'C09',
@@ -26,4 +31,4 @@ SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(A
                               'E64', 'E65', 'G16', 'G25', 'G26', 'G29', 'G30',
                               'G56', 'K00', 'K01', 'K02', 'L01', 'L02', 'L03',
                               'L04', 'L05', 'L06', 'L08', 'L09', 'L10', 'L11')
-        GROUP BY CONCAT(AnoProjeto, Sequencial)
+        GROUP BY CONCAT(projetos.AnoProjeto, projetos.Sequencial)
