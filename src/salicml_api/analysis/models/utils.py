@@ -60,12 +60,11 @@ def create_finance_metrics(metrics: list, pronacs: list):
             metrics: list of names of metrics that will be calculated
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
-
     missing = missing_metrics(metrics, pronacs)
-    indicators_qs = FinancialIndicator.objects.filter(project_id__in=[p for _, p in missing])
+    indicators_qs = (FinancialIndicator.objects
+                     .filter(project_id__in=[p for _, p in missing]))
     indicators = {i.project_id: i for i in indicators_qs}
     metrics = []
-
     for metric_name, pronac in missing:
         indicator = indicators[pronac]
         p_metrics = metrics_calc.get_project(pronac)
