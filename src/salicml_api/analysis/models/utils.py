@@ -62,10 +62,11 @@ def create_finance_metrics(metrics: list, pronacs: list):
     """
     missing = missing_metrics(metrics, pronacs)
     indicators_qs = (FinancialIndicator.objects
-                     .filter(project_id__in=[p for _, p in missing]))
+                     .filter(project_id__in=[p for p, _ in missing]))
     indicators = {i.project_id: i for i in indicators_qs}
+    print(indicators)
     metrics = []
-    for metric_name, pronac in missing:
+    for pronac, metric_name in missing:
         indicator = indicators[pronac]
         p_metrics = metrics_calc.get_project(pronac)
         x = getattr(p_metrics.finance, metric_name)
@@ -81,8 +82,8 @@ def create_finance_metrics(metrics: list, pronacs: list):
 
 def missing_metrics(metrics, pronacs):
     projects_metrics = Project.objects.filter(pronac__in=pronacs).values_list(
-        "pronac", "indicator__metrics"
+        "pronac", "indicator__metrics__name"
     )
     projects_pronacs = [p for p, _ in projects_metrics]
 
-    return set(product(metrics, projects_pronacs)) - set(projects_metrics)
+    return set(product(projects_pronacs, metrics)) - set(projects_metrics)
