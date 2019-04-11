@@ -86,7 +86,7 @@ class FinancialIndicator(Indicator):
                 Metric.create_metric(metric, x, self)
 
     def fetch_weighted_complexity_without_proponent_projects(self):
-        metrics_weights = self.metrics_weights()
+        metrics_weights = self.metrics_weights
         del metrics_weights["proponent_projects"]
         return self.calculate_weighted_complexity(metrics_weights)
 
@@ -122,6 +122,7 @@ class FinancialIndicator(Indicator):
             "periodo_de_execucao": f'{start_execution} a {end_execution}',
             "valor_comprovado": self.project.verified_funds,
             "valor_captado": self.project.raised_funds,
+            "situacao": self.project.situation,
         }
 
     def __str__(self):
