@@ -1,6 +1,6 @@
 import logging
 from django.db import IntegrityError, transaction
-from itertools import product, chain
+from itertools import product
 
 from salicml.data.db_connector import db_connector
 from salicml.data.db_operations import DATA_PATH
@@ -64,7 +64,6 @@ def create_finance_metrics(metrics: list, pronacs: list):
     indicators_qs = (FinancialIndicator.objects
                      .filter(project_id__in=[p for p, _ in missing]))
     indicators = {i.project_id: i for i in indicators_qs}
-    print(indicators)
     metrics = []
     for pronac, metric_name in missing:
         indicator = indicators[pronac]
