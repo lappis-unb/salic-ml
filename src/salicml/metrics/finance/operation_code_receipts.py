@@ -3,7 +3,13 @@ from salicml.data import data
 import numpy as np
 
 COLUMNS = ['PRONAC', 'idComprovantePagamento', 'tpFormaDePagamento', 'Item',
-           'nmFornecedor', 'vlComprovacao']
+           'nmFornecedor', 'vlComprovacao', 'nrCNPJCPF']
+COLUMNS_RENAME = {
+                    'nmFornecedor': 'nome_fornecedor',
+                    'Item': 'item',
+                    'vlComprovacao': 'valor_comprovado',
+                    'nrCNPJCPF': 'cpf_cnpj_fornecedor',
+}
 new_tpFormaDePagamento = {0.0: np.nan, 1.0: "Cheque",
                           2.0: "Transferência Bancária", 3.0: 'Saque/Dinheiro'}
 
@@ -73,10 +79,11 @@ def metric_return(dataframe):
         is_outlier = False
         dataframe = []
     else:
+        dataframe.rename(columns=COLUMNS_RENAME)
         dataframe = dataframe.to_dict('records')
         is_outlier = True
     return {
         'is_outlier': is_outlier,
         'valor': value,
-        'itens_que_compartilham_comprovantes': dataframe,
+        'comprovantes': dataframe,
     }
