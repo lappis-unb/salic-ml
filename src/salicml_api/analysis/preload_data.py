@@ -22,5 +22,5 @@ def load_project_metrics():
         create_finance_metrics(all_metrics[key], pronacs)
 
     indicators = FinancialIndicator.objects.all()
-    for indicator in indicators():
+    for indicator in indicators:
         indicator.calculate_proponent_projects_weight()

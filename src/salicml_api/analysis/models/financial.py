@@ -91,11 +91,11 @@ class FinancialIndicator(Indicator):
         return self.calculate_weighted_complexity(metrics_weights)
 
     def calculate_proponent_projects_weight(self):
-        metric = self.metrics.filter(name="proponent_projects")
-        if metric.exists():
-            pronacs = (metric["data"]["projetos_submetidos"]
+        metric = self.metrics.filter(name="proponent_projects").first()
+        if metric:
+            pronacs = (metric.data["projetos_submetidos"]
                        ["pronacs_of_this_proponent"])
-            metric["data"]["projetos_submetidos"] = []
+            metric.data["projetos_submetidos"] = []
             indicators = (FinancialIndicator.objects
                           .filter(project__pronac__in=pronacs))
             values_list = []
@@ -103,7 +103,7 @@ class FinancialIndicator(Indicator):
                 val = (indicator
                        .fetch_weighted_complexity_without_proponent_projects())
                 values_list.append(val)
-                (metric["data"]["projetos_submetidos"]
+                (metric.data["projetos_submetidos"]
                  .append(indicator.get_project_info()))
             std = statistics.stdev(values_list)
             mean = statistics.mean(values_list)
