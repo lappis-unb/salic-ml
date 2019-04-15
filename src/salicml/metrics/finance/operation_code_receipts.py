@@ -1,6 +1,7 @@
 from salicml.data.query import metrics
 from salicml.data import data
 import numpy as np
+import toolz
 
 COLUMNS = ['PRONAC', 'idComprovantePagamento', 'tpFormaDePagamento', 'Item',
            'nmFornecedor', 'vlComprovacao', 'nrCNPJCPF']
@@ -79,8 +80,9 @@ def metric_return(dataframe):
         is_outlier = False
         dataframe = []
     else:
-        dataframe.rename(columns=COLUMNS_RENAME)
+        dataframe.rename(columns=COLUMNS_RENAME, inplace=True)
         dataframe = dataframe.to_dict('records')
+        dataframe = toolz.groupby('idComprovantePagamento', dataframe )
         is_outlier = True
     return {
         'is_outlier': is_outlier,
