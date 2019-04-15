@@ -80,7 +80,7 @@ def create_finance_metrics(metrics: list, pronacs: list):
     ]
 
     calculated_metrics = [p.get() for p in results]
-    if len(calculated_metrics):
+    if calculated_metrics:
         Metric.objects.bulk_create(calculated_metrics)
         print("Bulk completed")
 
@@ -108,7 +108,3 @@ def create_metric(indicators, metric_name, pronac):
     x = getattr(p_metrics.finance, metric_name)
 
     return Metric.create_metric(name=metric_name, data=x, indicator=indicator)
-
-
-def update_indicator(indicator):
-    indicator.fetch_weighted_complexity()
