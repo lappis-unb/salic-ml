@@ -1,4 +1,6 @@
 import logging
+import multiprocessing as mp
+
 from django.db import IntegrityError, transaction
 from itertools import product, chain
 
@@ -60,7 +62,6 @@ def create_finance_metrics(metrics: list, pronacs: list):
             metrics: list of names of metrics that will be calculated
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
-    import multiprocessing as mp
 
     missing = missing_metrics(metrics, pronacs)
     print(f"There are {len(missing)} missing metrics!")
