@@ -3,7 +3,6 @@ import numpy as np
 
 from salicml.data.query import metrics
 from salicml.data import data
-from salicml.metrics.base import get_salic_url
 
 
 @metrics.register('finance')
@@ -18,15 +17,6 @@ def new_providers(pronac, dt):
 
     new_providers = []
     segment_id = None
-    url_prefix = '/prestacao-contas/analisar/comprovante'
-    url_val = [
-        'IdPRONAC',
-        'UF',
-        'cdProduto',
-        'cdCidade',
-        'idPlanilhaItem',
-        'cdEtapa'
-    ]
 
     for _, row in df.iterrows():
         cnpj = row['nrCNPJCPF']
@@ -44,7 +34,6 @@ def new_providers(pronac, dt):
                 'itens': {
                     item_id: {
                         'nome': item_name,
-                        'link': get_salic_url(row, url_prefix, url_val),
                         'tem_comprovante': True
                     }
                 }
