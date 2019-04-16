@@ -16,7 +16,7 @@ def new_providers(pronac, dt):
     df = info[info['PRONAC'] == pronac]
     providers_count = data.providers_count.to_dict()[0]
 
-    new_providers = {}
+    new_providers = []
     segment_id = None
     url_prefix = '/prestacao-contas/analisar/comprovante'
     url_val = [
@@ -38,8 +38,9 @@ def new_providers(pronac, dt):
             item_name = row['Item']
             provider_name = row['nmFornecedor']
 
-            new_providers[cnpj] = {
+            new_provider = {
                 'nome': provider_name,
+                'cnpj': cnpj,
                 'itens': {
                     item_id: {
                         'nome': item_name,
@@ -48,6 +49,7 @@ def new_providers(pronac, dt):
                     }
                 }
             }
+            new_providers.append(new_provider)
 
     providers_amount = len(df['nrCNPJCPF'].unique())
 
