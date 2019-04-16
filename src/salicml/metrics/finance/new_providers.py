@@ -60,6 +60,8 @@ def new_providers(pronac, dt):
     averages = data.average_percentage_of_new_providers.to_dict()
     segments_average = averages['segments_average_percentage']
     all_projects_average = list(averages['all_projects_average'].values())[0]
+    if new_providers:
+        new_providers.sort(key=lambda provider: provider['nome'])
 
     return {
         'lista_de_novos_fornecedores': new_providers,
