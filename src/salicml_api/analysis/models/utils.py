@@ -1,4 +1,6 @@
 import logging
+import multiprocessing as mp
+
 from django.db import IntegrityError, transaction
 from itertools import product
 
@@ -61,22 +63,34 @@ def create_finance_metrics(metrics: list, pronacs: list):
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
     missing = missing_metrics(metrics, pronacs)
-    indicators_qs = (FinancialIndicator.objects
-                     .filter(project_id__in=[p for p, _ in missing]))
+    print(f"There are {len(missing)} missing metrics!")
+
+    processors = mp.cpu_count()
+    print(f"Using {processors} processors to calculate metrics!")
+
+    indicators_qs = FinancialIndicator.objects.filter(
+        project_id__in=[p for p, _ in missing]
+    )
     indicators = {i.project_id: i for i in indicators_qs}
-    metrics = []
-    for pronac, metric_name in missing:
-        indicator = indicators[pronac]
-        p_metrics = metrics_calc.get_project(pronac)
-        x = getattr(p_metrics.finance, metric_name)
 
-        metrics.append(Metric.create_metric(name=metric_name,
-                                            data=x, indicator=indicator))
+    pool = mp.Pool(processors)
+    results = [
+        pool.apply_async(create_metric, args=(indicators, metric_name, pronac))
+        for pronac, metric_name in missing
+    ]
 
-    Metric.objects.bulk_create(metrics)
+    calculated_metrics = [p.get() for p in results]
+    if calculated_metrics:
+        Metric.objects.bulk_create(calculated_metrics)
+        print("Bulk completed")
 
-    for indicator in indicators.values():
-        indicator.fetch_weighted_complexity()
+        for indicator in indicators.values():
+            indicator.fetch_weighted_complexity()
+
+        print("Finished update indicators!")
+
+    pool.close()
+    print("Finished metrics calculation!")
 
 
 def missing_metrics(metrics, pronacs):
@@ -86,3 +100,11 @@ def missing_metrics(metrics, pronacs):
     projects_pronacs = [p for p, _ in projects_metrics]
 
     return set(product(projects_pronacs, metrics)) - set(projects_metrics)
+
+
+def create_metric(indicators, metric_name, pronac):
+    indicator = indicators[pronac]
+    p_metrics = metrics_calc.get_project(pronac)
+    x = getattr(p_metrics.finance, metric_name)
+
+    return Metric.create_metric(name=metric_name, data=x, indicator=indicator)
