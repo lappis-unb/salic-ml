@@ -81,11 +81,21 @@ def metric_return(dataframe):
         dataframe = []
     else:
         dataframe.rename(columns=COLUMNS_RENAME, inplace=True)
-        dataframe = dataframe.to_dict('records')
-        dataframe = toolz.groupby('idComprovantePagamento', dataframe )
+        results = dataframe.to_dict('records')
+        results = toolz.groupby('idComprovantePagamento', results)
         is_outlier = True
     return {
         'is_outlier': is_outlier,
         'valor': value,
-        'comprovantes': dataframe,
+        'comprovantes': add_keys(results),
     }
+
+
+def add_keys(results):
+
+    modified_dict_list = []
+    for key in results.keys():
+        modified_dict_list.append({"id_comprovante": key,
+                                   "itens": results[key]})
+
+    return modified_dict_list
