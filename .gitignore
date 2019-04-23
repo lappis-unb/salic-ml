@@ -149,3 +149,6 @@ tags
 .vscode
 
 src/api/db\.sqlite3-journal
+
+# auto migrations
+*_auto_*.py
