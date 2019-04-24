@@ -65,7 +65,9 @@ def outlier_items_(features):
             "nome": item_name,
             "valor_aprovado": approved_value,
             "valor_comprovado": verified_value,
-            "porcentagem": (approved_value / verified_value) * 100,
+            "porcentagem": ((verified_value / approved_value) * 100) - 100,
         }
         outlier_items.append(item)
+        if outlier_items:
+            outlier_items.sort(key=lambda item: item['nome'])
     return outlier_items
