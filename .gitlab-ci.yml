@@ -1,0 +1,21 @@
+image: docker:stable
+
+stages:
+  - build
+
+services:
+  - docker:dind
+
+build requirements:
+  stage: build
+  script:
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+    - docker build -t salic-ml/requirements:$CI_COMMIT_REF_NAME . -f ./docker/Dockerfile.base
+    - docker push salicml/requirements:$CI_COMMIT_REF_NAME
+
+build api:
+  stage: build
+  script:
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+    - docker build -t salic-ml/api:$CI_COMMIT_REF_NAME . -f ./docker/Dockerfile
+    - docker push salicml/api:$CI_COMMIT_REF_NAME
