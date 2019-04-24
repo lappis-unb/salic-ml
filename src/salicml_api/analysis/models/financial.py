@@ -14,7 +14,8 @@ class FinancialIndicatorManager(PolymorphicManager):
         metrics and indicator value
         """
         project = Project.objects.get(pronac=project)
-        indicator = FinancialIndicator.objects.update_or_create(project=project)[0]
+        indicator, _ = (FinancialIndicator
+                        .objects.update_or_create(project=project))
         indicator.is_valid = is_valid
         if indicator.is_valid:
             p_metrics = metrics_calc.get_project(project.pronac)
@@ -43,13 +44,16 @@ class FinancialIndicator(Indicator):
     """
 
     METRICS = {
-        "planilha_aprovacao_comprovacao": ["verified_approved"],
-        "planilha_captacao": ["to_verify_funds"],
         "planilha_comprovacao": [
+            "check_receipts",
+            "transfer_receipts",
+            "money_receipts",
             "proponent_projects",
             "new_providers",
             "total_receipts",
         ],
+        "planilha_aprovacao_comprovacao": ["verified_approved"],
+        "planilha_captacao": ["to_verify_funds"],
         "planilha_orcamentaria": ["number_of_items"],
     }
 
@@ -59,7 +63,6 @@ class FinancialIndicator(Indicator):
         app_label = "analysis"
         proxy = True
 
-
     @property
     def metrics_weights(self):
         return {
@@ -68,6 +71,9 @@ class FinancialIndicator(Indicator):
             "proponent_projects": 2,
             "new_providers": 1,
             "verified_approved": 2,
+            "transfer_receipts": 5,
+            "money_receipts": 5,
+            "check_receipts": 1,
             "verified_funds": 0,
             "common_items_ratio": 0,
             "total_receipts": 0,

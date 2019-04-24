@@ -22,7 +22,7 @@ def raised_funds_by_project(df):
 @metrics.register('finance')
 def to_verify_funds(pronac, dt):
     """
-    Checks how much many is left for the project to verify,
+    Checks how much money is left for the project to verify,
     using raised_funds - verified_funds
     This value can be negative (a project can verify more money than
     the value approved)
