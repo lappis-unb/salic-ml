@@ -2,7 +2,7 @@ import logging
 import multiprocessing as mp
 
 from django.db import IntegrityError, transaction
-from itertools import product, chain
+from itertools import product
 
 from salicml.data.db_connector import db_connector
 from salicml.data.db_operations import DATA_PATH
@@ -84,7 +84,6 @@ def create_finance_metrics(metrics: list, pronacs: list):
             metrics: list of names of metrics that will be calculated
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
-
     missing = missing_metrics(metrics, pronacs)
     print(f"There are {len(missing)} missing metrics!")
 
@@ -92,14 +91,14 @@ def create_finance_metrics(metrics: list, pronacs: list):
     print(f"Using {processors} processors to calculate metrics!")
 
     indicators_qs = FinancialIndicator.objects.filter(
-        project_id__in=[p for _, p in missing]
+        project_id__in=[p for p, _ in missing]
     )
     indicators = {i.project_id: i for i in indicators_qs}
 
     pool = mp.Pool(processors)
     results = [
         pool.apply_async(create_metric, args=(indicators, metric_name, pronac))
-        for metric_name, pronac in missing
+        for pronac, metric_name in missing
     ]
 
     calculated_metrics = [p.get() for p in results]
@@ -120,11 +119,11 @@ def create_finance_metrics(metrics: list, pronacs: list):
 
 def missing_metrics(metrics, pronacs):
     projects_metrics = Project.objects.filter(pronac__in=pronacs).values_list(
-        "pronac", "indicator__metrics"
+        "pronac", "indicator__metrics__name"
     )
     projects_pronacs = [p for p, _ in projects_metrics]
 
-    return set(product(metrics, projects_pronacs)) - set(projects_metrics)
+    return set(product(projects_pronacs, metrics)) - set(projects_metrics)
 
 
 def create_metric(indicators, metric_name, pronac):
