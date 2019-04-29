@@ -75,6 +75,7 @@ def verified_repeated_receipts_for_pronac(pronac):
 def metric_return(dataframe):
     is_outlier = None
     value = dataframe.shape[0]
+    results = {}
     del dataframe['tpFormaDePagamento']
     if dataframe.empty:
         is_outlier = False
