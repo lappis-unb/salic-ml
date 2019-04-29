@@ -62,6 +62,8 @@ def outlier_items_(features):
         verified_value = getattr(row, "vlComprovacao")
         if approved_value > 0:
             porcentage = ((verified_value / approved_value) * 100) - 100
+        else:
+            porcentage = verified_value
         item = {
             "nome": item_name,
             "valor_aprovado": approved_value,
