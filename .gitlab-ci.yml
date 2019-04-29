@@ -1,21 +1,30 @@
 image: docker:stable
 
 stages:
-  - build
+  - build-requirements
+  - build-api
 
 services:
   - docker:dind
 
 build requirements:
-  stage: build
+  stage: build-requirements
+  variables:
+    SALICML_PROD_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salicml/requirements:latest
   script:
-    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-    - docker build -t salic-ml/requirements:$CI_COMMIT_REF_NAME . -f ./docker/Dockerfile.base
-    - docker push salicml/requirements:$CI_COMMIT_REF_NAME
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build -f docker/Dockerfile.base -t $SALICML_PROD_RELEASE_IMAGE .
+    - docker push $SALICML_PROD_RELEASE_IMAGE
+  only:
+    - master
 
 build api:
-  stage: build
+  stage: build-api
+  variables:
+    SALICML_PROD_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salicml/api:latest
   script:
-    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-    - docker build -t salic-ml/api:$CI_COMMIT_REF_NAME . -f ./docker/Dockerfile
-    - docker push salicml/api:$CI_COMMIT_REF_NAME
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build -f docker/Dockerfile.base -t $SALICML_PROD_RELEASE_IMAGE .
+    - docker push $SALICML_PROD_RELEASE_IMAGE
+  only:
+    - master
