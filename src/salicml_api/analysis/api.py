@@ -2,6 +2,16 @@ from boogie.rest import rest_api
 from .utils import default_metrics, metrics_name_map
 
 
+@rest_api.query_hook('analysis.Project')
+def query(request, qs):
+    qs = qs.prefetch_related('indicator_set')
+    if request.method == 'GET':
+        for field, value in request.GET.items():
+            if field == 'complexidade__gt':
+                qs = qs.filter()
+    return qs
+
+
 # Project aditional attribute
 @rest_api.property('analysis.Project')
 def complexidade(obj):
