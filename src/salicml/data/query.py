@@ -49,7 +49,7 @@ class Project(Mapping):
 class Namespace:
     """
     A simple reference for a collection of metrics. It provides access to
-    dotted metrics, e.g., ``project.finance.approved_funds``
+    dotted metrics, e.g., ``project.finance.valor_aprovado``
     """
     def __init__(self, project, base):
         self._project = project
@@ -77,8 +77,7 @@ class Metrics:
         Get metric for the project with the given pronac number.
 
         Usage:
-            >>> metrics.get_metric(pronac_id, 'finance.approved_funds')
-        """
+            >>> metrics.get_metric(pronac_id, valor_aprovado """
 
         assert isinstance(metric, str)
         assert '.' in metric, 'metric must declare a namespace'
@@ -101,7 +100,7 @@ class Metrics:
         """
         Usage:
             @metrics.register('finance')
-            def approved_funds(pronac, data):
+            def valor_aprovado(data):
                 return metric_from_data_and_pronac_number(data, pronac)
         """
         def decorator(func):

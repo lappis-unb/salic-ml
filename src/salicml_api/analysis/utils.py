@@ -1,13 +1,13 @@
 metrics_name_map = {
-    'number_of_items': 'itens_orcamentarios',
-    'to_verify_funds': 'valor_a_ser_comprovado',
-    'verified_approved': 'comprovantes_acima_de_50',
-    'total_receipts': 'comprovantes_pagamento',
-    'new_providers': 'novos_fornecedores',
-    'proponent_projects': 'projetos_mesmo_proponente',
-    'check_receipts': 'comprovantes_de_cheque',
-    'money_receipts': 'comprovantes_de_saque',
-    'transfer_receipts': 'comprovantes_de_transferencia',
+    'itens_orcamentarios': 'itens_orcamentarios',
+    'valor_a_ser_comprovado': 'valor_a_ser_comprovado',
+    'comprovantes_acima_50': 'comprovantes_acima_de_50',
+    'comprovante_pagamento': 'comprovantes_pagamento',
+    'novos_fornecedores': 'novos_fornecedores',
+    'projetos_mesmo_proponente': 'projetos_mesmo_proponente',
+    'comprovante_cheque': 'comprovantes_de_cheque',
+    'comprovante_saque': 'comprovantes_de_saque',
+    'comprovante_transferencia': 'comprovantes_de_transferencia',
 }
 
 default_metrics = {

@@ -9,7 +9,7 @@ from datetime import datetime
 
 
 @metrics.register('finance')
-def item_prices(pronac, data):
+def preco_itens(pronac, data):
     """
     Verify if a project is an outlier compared
     to the other projects in his segment, based

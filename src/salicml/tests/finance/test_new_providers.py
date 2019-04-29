@@ -11,7 +11,7 @@ class TestNewProviders(unittest.TestCase):
 
         response = project.finance.new_providers
         assert response['is_outlier']
-        assert response['new_providers']
+        assert response['novos_fornecedores']
 
     def test_inlier_pronac(self):
         project = metrics.get_project('130222')
@@ -23,7 +23,7 @@ class TestNewProviders(unittest.TestCase):
         response = project.finance.new_providers
 
         expected_keys = [
-            'new_providers',
+            'novos_fornecedores',
             'new_providers_percentage',
             'segment_average_percentage',
             'is_outlier',

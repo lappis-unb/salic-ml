@@ -35,7 +35,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_get_metrics_verified_funds(self):
         print("\n[TEST] Test if the metric [total verified funds] is correct")
-        key = "verified_funds"
+        key = "valor_comprovado"
         pronac = "178098"
         metrics = [key]
 
@@ -51,7 +51,7 @@ class TestFinancialMetrics(unittest.TestCase):
         map(lambda key: self.assertIn(key, response_funds), expected_keys)
 
     def test_get_metrics_raised_funds(self):
-        key = "raised_funds"
+        key = "valor_captado"
         pronac = "178098"
         metrics = [key]
 
@@ -69,7 +69,7 @@ class TestFinancialMetrics(unittest.TestCase):
     def test_get_metrics_common_items_ratio(self):
         print("\n[TEST] Test if the metric [common items ratio] is correct")
         pronac = "090105"
-        metric = "common_items_ratio"
+        metric = "itens_comuns_e_incomuns_por_segmento"
         print("Getting project #{} results...".format(pronac))
         results = self.fm.get_metrics(pronac, metrics=[metric])
         print(results)
@@ -77,7 +77,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_get_proponent_projects(self):
         pronac = "178098"
-        key = "proponent_projects"
+        key = "projetos_mesmo_proponente"
         metrics = [key]
 
         response = self.fm.get_metrics(pronac=pronac, metrics=metrics)
@@ -90,7 +90,7 @@ class TestFinancialMetrics(unittest.TestCase):
         map(lambda key: self.assertIn(key, response_propoents), expected_keys)
 
     def test_get_metrics_total_receipts(self):
-        key = "total_receipts"
+        key = "comprovante_pagamento"
         pronac = "131886"
         metrics = [key]
 
@@ -102,12 +102,12 @@ class TestFinancialMetrics(unittest.TestCase):
         response_receipts = response[key]
         self.assertIsInstance(response_receipts, dict)
 
-        expected_keys = ["is_outlier", "total_receipts", "maximum_expected_in_segment"]
+        expected_keys = ["is_outlier", "comprovante_pagamento", "maximum_expected_in_segment"]
 
         map(lambda key: self.assertIn(key, response_receipts), expected_keys)
 
     def test_new_providers(self):
-        key = "new_providers"
+        key = "novos_fornecedores"
         metrics = [key]
         pronac = "130222"
 
@@ -120,7 +120,7 @@ class TestFinancialMetrics(unittest.TestCase):
         self.assertIsInstance(response_new_providers, dict)
 
         expected_keys = [
-            "new_providers",
+            "novos_fornecedores",
             "new_providers_percentage",
             "segment_average_percentage",
             "is_outlier",
@@ -131,7 +131,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_calculate_easiness_keys(self):
         pronac = "130222"
-        metric_names = ["new_providers", "total_receipts"]
+        metric_names = ["novos_fornecedores", "comprovante_pagamento"]
         metrics = self.fm.get_metrics(pronac=pronac, metrics=metric_names)
 
         EASINESS_KEY = "easiness"
@@ -142,7 +142,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_calculate_easiness(self):
         pronac = "130222"
-        metric_names = ["new_providers", "total_receipts"]
+        metric_names = ["novos_fornecedores", "comprovante_pagamento"]
         metrics = self.fm.get_metrics(pronac=pronac, metrics=metric_names)
 
         EASINESS_KEY = "easiness"
@@ -157,7 +157,7 @@ class TestFinancialMetrics(unittest.TestCase):
 
     def test_calculate_easiness_without_outliers(self):
         pronac = "178098"
-        key = "proponent_projects"
+        key = "projetos_mesmo_proponente"
         metrics = [key]
 
         EASINESS_KEY = "easiness"

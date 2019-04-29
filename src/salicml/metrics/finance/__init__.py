@@ -1,13 +1,13 @@
 # flake8: noqa
-from .operation_code_receipts import check_receipts, transfer_receipts, money_receipts
-from .valor_aprovado import approved_funds
-from .itens_comuns_e_incomuns_por_segmento import common_items_ratio
-from .preço_itens import item_prices
-from .novos_fornecedores import new_providers
-from .itens_orcamentarios import number_of_items
-from .projetos_mesmo_proponente import proponent_projects
-from .valor_captado import raised_funds
-from .comprovantes_pagamentos import total_receipts
-from .valor_comprovado import verified_funds
-from .comprovantes_acima_50 import verified_approved
-from .valor_a_ser_comprovado import to_verify_funds
+from .comprovante_por_operacao import comprovante_cheque, comprovante_transferencia, comprovante_saque
+from .valor_aprovado import valor_aprovado
+from .itens_comuns_e_incomuns_por_segmento import itens_comuns_e_incomuns_por_segmento
+from .preco_itens import preco_itens
+from .novos_fornecedores import novos_fornecedores
+from .itens_orcamentarios import itens_orcamentarios
+from .projetos_mesmo_proponente import projetos_mesmo_proponente
+from .valor_captado import valor_captado
+from .comprovantes_pagamento import comprovante_pagamento
+from .valor_comprovado import valor_comprovado
+from .comprovantes_acima_50 import comprovantes_acima_50
+from .valor_a_ser_comprovado import valor_a_ser_comprovado
