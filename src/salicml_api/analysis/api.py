@@ -1,5 +1,5 @@
 from boogie.rest import rest_api
-from .utils import default_metrics, metrics_name_map
+from .utils import default_metrics, financial_metrics_names
 
 
 # Project aditional attribute
@@ -63,13 +63,14 @@ def indicator_details(indicator):
     if there aren't values for that Indicator, it is filled with default values
     """
     metrics = format_metrics_json(indicator)
+    # print(indicator.metrics.all())
 
     metrics_list = set(indicator.metrics
-                       .filter(name__in=metrics_name_map.keys())
+                       .filter(name__in=financial_metrics_names)
                        .values_list('name', flat=True))
     null_metrics = default_metrics
-    for keys in metrics_list:
-        null_metrics.pop(metrics_name_map[keys], None)
+    for metric_name in metrics_list:
+        null_metrics.pop(metric_name, None)
 
     metrics.update(null_metrics)
 
@@ -86,7 +87,7 @@ def convert_list_into_dict(list):
 
 def format_metrics_json(indicator):
     metrics = [
-                {metrics_name_map[m.name]: {
+                {m.name: {
                       'valor': m.value,
                       'data': m.data,
                       'valor_valido': True,
@@ -95,5 +96,5 @@ def format_metrics_json(indicator):
                       'maximo_esperado': m.data.get('maximo_esperado', 0)
                   },
                  } for m in indicator
-                .metrics.filter(name__in=metrics_name_map.keys())]
+                .metrics.filter(name__in=financial_metrics_names)]
     return convert_list_into_dict(metrics)
