@@ -1,14 +1,14 @@
-metrics_name_map = {
-    'itens_orcamentarios': 'itens_orcamentarios',
-    'valor_a_ser_comprovado': 'valor_a_ser_comprovado',
-    'comprovantes_acima_50': 'comprovantes_acima_de_50',
-    'comprovante_pagamento': 'comprovantes_pagamento',
-    'novos_fornecedores': 'novos_fornecedores',
-    'projetos_mesmo_proponente': 'projetos_mesmo_proponente',
-    'comprovante_cheque': 'comprovantes_de_cheque',
-    'comprovante_saque': 'comprovantes_de_saque',
-    'comprovante_transferencia': 'comprovantes_de_transferencia',
-}
+financial_metrics_names = [
+    'itens_orcamentarios',
+    'valor_a_ser_comprovado',
+    'comprovantes_acima_50',
+    'comprovante_pagamento',
+    'novos_fornecedores',
+    'projetos_mesmo_proponente',
+    'comprovante_cheque',
+    'comprovante_saque',
+    'comprovante_transferencia',
+]
 
 default_metrics = {
   "itens_orcamentarios": {
