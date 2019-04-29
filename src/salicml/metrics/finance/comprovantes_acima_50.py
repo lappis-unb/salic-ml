@@ -60,12 +60,13 @@ def outlier_items_(features):
         item_name = getattr(row, "Item")
         approved_value = getattr(row, "vlAprovado")
         verified_value = getattr(row, "vlComprovacao")
-
+        if approved_value > 0:
+            porcentage = ((verified_value / approved_value) * 100) - 100
         item = {
             "nome": item_name,
             "valor_aprovado": approved_value,
             "valor_comprovado": verified_value,
-            "porcentagem": ((verified_value / approved_value) * 100) - 100,
+            "porcentagem": porcentage,
         }
         outlier_items.append(item)
         if outlier_items:
