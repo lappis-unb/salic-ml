@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg2 \
         apt-transport-https
 
+RUN pip install toolz cytoolz
+
 COPY setup.py setup.py
 RUN mkdir /src
 
