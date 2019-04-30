@@ -39,7 +39,10 @@ class Project(models.Model):
         verbose_name_plural = "projetos"
 
     @lazy
-    def complexity(self):
+    def complexidade(self):
+        """
+        Project complexity, same as FinancialIndicator value
+        """
         indicators = self.indicator_set.all()
         if not indicators:
             value = 0.0

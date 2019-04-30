@@ -1,7 +1,5 @@
 import logging
 import multiprocessing as mp
-import datetime
-import pytz
 import pandas as pd
 
 from django.db import IntegrityError, transaction
@@ -34,7 +32,6 @@ def execute_project_models_sql_scripts(force_update=False):
         query_result = db.execute_pandas_sql_query(query)
         db.close()
         query_result = convert_datetime(query_result)
-        print(query_result['start_execution'])
         try:
             projects = Project.objects.bulk_create(
                 (Project(**vals) for vals in query_result.to_dict("records")),
@@ -116,8 +113,18 @@ def create_metric(indicators, metric_name, pronac):
 
 
 def convert_datetime(df):
+    """
+    Adds timezone to valid datetime and converts NaT (pandas) datetime to
+    None
+    """
     df['start_execution'] = (df['start_execution']
-                             .apply(lambda x: x.tz_localize('utc') if not pd.isnull(x) else datetime.datetime(1800, 5, 17)))
+                             .apply(lambda x: x.tz_localize('utc')
+                             if not pd.isnull(x) else x))
     df['end_execution'] = (df['end_execution']
                            .apply(lambda x: x.tz_localize('utc')
-                           if not pd.isnull(x) else datetime.datetime(1800, 5, 17)))
+                           if not pd.isnull(x) else x))
+    df[['start_execution']] = (df[['start_execution']].astype(object)
+                               .where(df[['start_execution']].notnull(), None))
+    df[['end_execution']] = (df[['end_execution']].astype(object)
+                             .where(df[['end_execution']].notnull(), None))
+    return df

@@ -7,13 +7,13 @@ def query(request, qs):
     qs = qs.prefetch_related('indicator_set')
     if request.method == 'GET':
         for field, value in request.GET.items():
-            dictionary = {field: value}
-            qs = qs.filter(**dictionary)
             if field == 'complexidade__gt':
-                qs = qs.filter()
-            elif field == 'nome__contains':
+                qs = qs.filter(indicator__value__gt=value)
+            elif field.startswith == 'nome__icontains':
                 dictionary = {field: value}
                 qs = qs.filter(**dictionary)
+            elif field == 'complexidade':
+                qs = qs.filter(indicator__value=value)
     return qs
 
 
@@ -25,7 +25,7 @@ def complexidade(obj):
     is used as this value, but it can be a result of calculation with other
     indicators in future
     """
-    return obj.complexity
+    return obj.complexidade
 
 
 # Metric aditional attributes #
