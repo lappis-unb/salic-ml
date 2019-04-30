@@ -1,5 +1,8 @@
 import logging
 import multiprocessing as mp
+import datetime
+import pytz
+import pandas as pd
 
 from django.db import IntegrityError, transaction
 from itertools import product
@@ -30,6 +33,8 @@ def execute_project_models_sql_scripts(force_update=False):
         db = db_connector()
         query_result = db.execute_pandas_sql_query(query)
         db.close()
+        query_result = convert_datetime(query_result)
+        print(query_result['start_execution'])
         try:
             projects = Project.objects.bulk_create(
                 (Project(**vals) for vals in query_result.to_dict("records")),
@@ -108,3 +113,11 @@ def create_metric(indicators, metric_name, pronac):
     x = getattr(p_metrics.finance, metric_name)
 
     return Metric.create_metric(name=metric_name, data=x, indicator=indicator)
+
+
+def convert_datetime(df):
+    df['start_execution'] = (df['start_execution']
+                             .apply(lambda x: x.tz_localize('utc') if not pd.isnull(x) else datetime.datetime(1800, 5, 17)))
+    df['end_execution'] = (df['end_execution']
+                           .apply(lambda x: x.tz_localize('utc')
+                           if not pd.isnull(x) else datetime.datetime(1800, 5, 17)))
