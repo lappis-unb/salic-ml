@@ -2,6 +2,10 @@ from boogie.rest import rest_api
 from .utils import default_metrics, metrics_name_map
 
 
+values_to_order = ['nome', '-nome', 'pronac', '-pronac'
+                   'responsavel', '-responsavel']
+
+
 @rest_api.query_hook('analysis.Project')
 def query(request, qs):
     qs = qs.prefetch_related('indicator_set')
@@ -9,11 +13,17 @@ def query(request, qs):
         for field, value in request.GET.items():
             if field == 'complexidade__gt':
                 qs = qs.filter(indicator__value__gt=value)
-            elif field.startswith == 'nome__icontains':
+            elif field == 'order_by':
+                if value == 'complexidade':
+                    qs.order_by("indicator__value")
+                elif value in values_to_order:
+                                qs = qs.order_by(value)
+            elif field == 'nome__icontains':
                 dictionary = {field: value}
                 qs = qs.filter(**dictionary)
             elif field == 'complexidade':
                 qs = qs.filter(indicator__value=value)
+
     return qs
 
 
