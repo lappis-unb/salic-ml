@@ -5,9 +5,10 @@ metrics_name_map = {
     'total_receipts': 'comprovantes_pagamento',
     'new_providers': 'novos_fornecedores',
     'proponent_projects': 'projetos_mesmo_proponente',
+    'common_items_ratio': 'itens_orcamentarios_inesperados'
 }
 
-default_metrics = {
+default_financial_metrics = {
   "itens_orcamentarios":{
       "valor": 0,
       "valor_valido": False,
@@ -59,4 +60,18 @@ default_metrics = {
         "lista_de_novos_fornecedores": None,
       }
   },
+}
+
+default_admissibility_metrics = {
+    "itens_orcamentarios_inesperados": {
+        "valor": 0,
+        "valor_valido": False,
+        "is_outlier": False,
+        "minimo_esperado": 0,
+        "maximo_esperado": 0,
+        "data": {
+            "lista_de_itens_inesperados": None,
+            "lista_de_itens_esperados": None
+        }
+    },
 }

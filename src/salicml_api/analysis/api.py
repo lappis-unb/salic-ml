@@ -1,6 +1,6 @@
 from boogie.rest import rest_api
-from .utils import default_metrics, metrics_name_map
-
+from .utils import default_admissibility_metrics, default_financial_metrics, metrics_name_map
+from .models import FinancialIndicator, AdmissibilityIndicator
 
 # Project aditional attribute
 @rest_api.property('analysis.Project')
@@ -42,13 +42,17 @@ def details(project):
     and indicators with details
     """
     indicators = project.indicator_set.all()
-    indicators_detail = [(indicator_details(i)
-                         for i in indicators)][0]
+    indicators_detail = [indicator_details(i) for i in indicators]
     if not indicators:
         indicators_detail = [
                         {'FinancialIndicator':
                             {'valor': 0.0,
-                             'metrics': default_metrics, }, }]
+                             'metrics': default_financial_metrics, }, },
+
+                        {'AdmissibilityIndicator':
+                             {'valor': 0.0,
+                              'metrics': default_admissibility_metrics, }, },
+                        ]
     indicators_detail = convert_list_into_dict(indicators_detail)
 
     return {'pronac': project.pronac,
@@ -59,15 +63,20 @@ def details(project):
 
 def indicator_details(indicator):
     """
-    Return a dictionary with all metrics in FinancialIndicator,
-    if there aren't values for that Indicator, it is filled with default values
+    Return a dictionary with all metrics in FinancialIndicator and
+    AdmissibilityIndicator. If there aren't values for those Indicators,
+    they are filled with default values.
     """
     metrics = format_metrics_json(indicator)
-
     metrics_list = set(indicator.metrics
                        .filter(name__in=metrics_name_map.keys())
                        .values_list('name', flat=True))
-    null_metrics = default_metrics
+    null_metrics = {}
+    if isinstance(indicator, FinancialIndicator):
+        null_metrics.update(default_financial_metrics)
+    elif isinstance(indicator, AdmissibilityIndicator):
+        null_metrics.update(default_admissibility_metrics)
+
     for keys in metrics_list:
         null_metrics.pop(metrics_name_map[keys], None)
 
