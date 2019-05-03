@@ -14,7 +14,10 @@ from . import Project
 
 log = logging.getLogger("salic-ml.data")
 LOG = log.info
-MODEL_FILE = DATA_PATH / "scripts" / "models" / "general_project_data.sql"
+MODEL_PATH = DATA_PATH / "scripts" / "models"
+MODEL_FILE = MODEL_PATH / "general_project_data.sql"
+VERIFIED_FUNDS_FILE = MODEL_PATH / "project_valor_comprovado.sql"
+RAISED_FUNDS_FILE = MODEL_PATH / "project_valor_captado.sql"
 
 
 def execute_project_models_sql_scripts(force_update=False):
@@ -25,31 +28,50 @@ def execute_project_models_sql_scripts(force_update=False):
     """
     # TODO: Remove except and use ignore_conflicts
     # on bulk_create when django 2.2. is released
-    with open(MODEL_FILE, "r") as file_content:
-        query = file_content.read()
-        db = db_connector()
-        query_result = db.execute_pandas_sql_query(query)
-        db.close()
-        try:
-            projects = Project.objects.bulk_create(
-                (Project(**vals) for vals in query_result.to_dict("records")),
-                # ignore_conflicts=True available on django 2.2.
-            )
-            indicators = [FinancialIndicator(project=p) for p in projects]
-            FinancialIndicator.objects.bulk_create(indicators)
-        except IntegrityError:
-            # happens when there are duplicated projects
-            LOG("Projects bulk_create failed, creating one by one...")
-            with transaction.atomic():
-                if force_update:
-                    for item in query_result.to_dict("records"):
-                        p, _ = Project.objects.update_or_create(**item)
-                        FinancialIndicator.objects.update_or_create(project=p)
-                else:
+    query_result = make_query_to_dict(MODEL_FILE)
+    try:
+        projects = Project.objects.bulk_create(
+            (Project(**vals) for vals in query_result),
+            # ignore_conflicts=True available on django 2.2.
+        )
+        indicators = [FinancialIndicator(project=p) for p in projects]
+        FinancialIndicator.objects.bulk_create(indicators)
+    except IntegrityError:
+        # happens when there are duplicated projects
+        LOG("Projects bulk_create failed, creating one by one...")
+        with transaction.atomic():
+            if force_update:
+                for item in query_result.to_dict("records"):
+                    p, _ = Project.objects.update_or_create(**item)
+                    FinancialIndicator.objects.update_or_create(project=p)
+            else:
 
-                    for item in query_result.to_dict("records"):
-                        p, _ = Project.objects.get_or_create(**item)
-                        FinancialIndicator.objects.update_or_create(project=p)
+                for item in query_result.to_dict("records"):
+                    p, _ = Project.objects.get_or_create(**item)
+                    FinancialIndicator.objects.update_or_create(project=p)
+
+    create_project_valores()
+
+
+def create_project_valores():
+    """
+        Used to get project information from MinC database,
+        valor_comprovado and valor_captado
+        and update this information to application Project models.
+    """
+    records = make_query_to_dict(VERIFIED_FUNDS_FILE)
+    with transaction.atomic():
+        for value in records:
+            (Project.objects
+             .filter(pronac=value['pronac'])
+             .update(verified_funds=value['valor_comprovado']))
+
+    records = make_query_to_dict(RAISED_FUNDS_FILE)
+    with transaction.atomic():
+        for value in records:
+            (Project.objects
+             .filter(pronac=value['pronac'])
+             .update(verified_funds=value['valor_captado']))
 
 
 def create_finance_metrics(metrics: list, pronacs: list):
@@ -87,6 +109,8 @@ def create_finance_metrics(metrics: list, pronacs: list):
         for indicator in indicators.values():
             indicator.fetch_weighted_complexity()
 
+    for indicator in indicators.values():
+        indicator.fetch_weighted_complexity_without_proponent_projects()
         print("Finished update indicators!")
 
     pool.close()
@@ -108,3 +132,12 @@ def create_metric(indicators, metric_name, pronac):
     x = getattr(p_metrics.finance, metric_name)
 
     return Metric.create_metric(name=metric_name, data=x, indicator=indicator)
+
+
+def make_query_to_dict(file):
+    with open(file, "r") as file_content:
+        query = file_content.read()
+        db = db_connector()
+        query_result = db.execute_pandas_sql_query(query)
+        db.close()
+        return query_result.to_dict("records")
