@@ -18,10 +18,17 @@ from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
 from boogie.rest import rest_api
 
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.get_api_root_view().cls.__name__ = "CHAMA PAPAI"
+router.get_api_root_view().cls.__doc__ = "CHAMA PAPAI"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # rest api
     path('', include(rest_api.urls)),
     path('docs/', include_docs_urls(title='salic ml API Docs', public=False)),
+
 ]
