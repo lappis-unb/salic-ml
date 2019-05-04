@@ -7,7 +7,6 @@ services:
       - ../etc/env/postgres.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../etc/scripts/multiple-postgresql:/docker-entrypoint-initdb.d/
 
   django:
     image: salicml/api:latest
