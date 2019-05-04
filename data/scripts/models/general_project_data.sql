@@ -13,7 +13,7 @@
 
 */
 
-SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
+SELECT CONCAT(projetos.AnoProjeto, projetos.Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
        MAX(Situacao) as situation, MAX(verificacao.Descricao) as description,
        MAX(DtInicioExecucao) as start_execution, MAX(DtFimExecucao) as end_execution
        FROM SAC.dbo.Projetos
@@ -26,4 +26,4 @@ SELECT CONCAT(AnoProjeto, Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(A
                               'E64', 'E65', 'G16', 'G25', 'G26', 'G29', 'G30',
                               'G56', 'K00', 'K01', 'K02', 'L01', 'L02', 'L03',
                               'L04', 'L05', 'L06', 'L08', 'L09', 'L10', 'L11')
-        GROUP BY CONCAT(AnoProjeto, Sequencial)
+        GROUP BY CONCAT(projetos.AnoProjeto, projetos.Sequencial)

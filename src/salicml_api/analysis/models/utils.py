@@ -15,7 +15,10 @@ from . import Project
 
 log = logging.getLogger("salic-ml.data")
 LOG = log.info
-MODEL_FILE = DATA_PATH / "scripts" / "models" / "general_project_data.sql"
+MODEL_PATH = DATA_PATH / "scripts" / "models"
+MODEL_FILE = MODEL_PATH / "general_project_data.sql"
+VERIFIED_FUNDS_FILE = MODEL_PATH / "project_valor_comprovado.sql"
+RAISED_FUNDS_FILE = MODEL_PATH / "project_valor_captado.sql"
 
 
 def execute_project_models_sql_scripts(force_update=False):
@@ -53,6 +56,28 @@ def execute_project_models_sql_scripts(force_update=False):
                         p, _ = Project.objects.get_or_create(**item)
                         FinancialIndicator.objects.update_or_create(project=p)
 
+    create_project_valores()
+
+def create_project_valores():
+    """
+        Used to get project information from MinC database,
+        valor_comprovado and valor_captado
+        and update this information to application Project models.
+    """
+    records = make_query_to_dict(VERIFIED_FUNDS_FILE)
+    with transaction.atomic():
+        for value in records:
+            (Project.objects
+             .filter(pronac=value['pronac'])
+             .update(verified_funds=value['valor_comprovado']))
+
+    records = make_query_to_dict(RAISED_FUNDS_FILE)
+    with transaction.atomic():
+        for value in records:
+            (Project.objects
+             .filter(pronac=value['pronac'])
+             .update(verified_funds=value['valor_captado']))
+
 
 def create_finance_metrics(metrics: list, pronacs: list):
     """
@@ -89,6 +114,8 @@ def create_finance_metrics(metrics: list, pronacs: list):
         for indicator in indicators.values():
             indicator.fetch_weighted_complexity()
 
+    for indicator in indicators.values():
+        indicator.fetch_weighted_complexity_without_proponent_projects()
         print("Finished update indicators!")
 
     pool.close()
@@ -128,3 +155,13 @@ def convert_datetime(df):
     df[['end_execution']] = (df[['end_execution']].astype(object)
                              .where(df[['end_execution']].notnull(), None))
     return df
+
+
+def make_query_to_dict(file):
+    with open(file, "r") as file_content:
+        query = file_content.read()
+        db = db_connector()
+        query_result = db.execute_pandas_sql_query(query)
+        db.close()
+        return query_result.to_dict("records")
+

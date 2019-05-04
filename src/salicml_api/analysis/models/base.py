@@ -33,15 +33,23 @@ class Indicator(PolymorphicModel):
                                  using weights
         """
         # TODO: implment metrics recalculation
+        final_value = self.calculate_weighted_complexity(self.metrics_weights,
+                                                         recalculate_metrics)
+
+        return final_value
+
+    def calculate_weighted_complexity(self, metrics_weights,
+                                      recalculate_metrics=False):
+        # TODO: implment metrics recalculation
         max_total = sum(
-            [self.metrics_weights[metric_name] for metric_name in self.metrics_weights]
+            [metrics_weights[metric_name] for metric_name in metrics_weights]
         )
         total = 0
         if recalculate_metrics:
             self.calculate_indicator_metrics()
         for metric in self.metrics.all():
-            if metric.name in self.metrics_weights and metric.is_outlier:
-                total += self.metrics_weights[metric.name]
+            if metric.name in metrics_weights and metric.is_outlier:
+                total += metrics_weights[metric.name]
 
         value = total / max_total
 

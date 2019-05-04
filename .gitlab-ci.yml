@@ -24,7 +24,7 @@ build api:
     SALICML_PROD_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/salicml/api:latest
   script:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
-    - docker build -f docker/Dockerfile.base -t $SALICML_PROD_RELEASE_IMAGE .
+    - docker build -f docker/Dockerfile -t $SALICML_PROD_RELEASE_IMAGE .
     - docker push $SALICML_PROD_RELEASE_IMAGE
   only:
     - master
