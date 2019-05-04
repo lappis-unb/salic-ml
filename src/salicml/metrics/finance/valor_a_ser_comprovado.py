@@ -20,10 +20,10 @@ def raised_funds_by_project(df):
 
 
 @metrics.register('finance')
-def to_verify_funds(pronac, dt):
+def valor_a_ser_comprovado(pronac, dt):
     """
     Checks how much money is left for the project to verify,
-    using raised_funds - verified_funds
+    using valor_captado - valor_comprovado
     This value can be negative (a project can verify more money than
     the value approved)
     """

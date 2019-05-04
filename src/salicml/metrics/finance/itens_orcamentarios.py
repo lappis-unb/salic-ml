@@ -4,7 +4,7 @@ from salicml.metrics.base import get_info
 
 
 @metrics.register('finance')
-def number_of_items(pronac, dt):
+def itens_orcamentarios(pronac, dt):
     """
     This metric calculates the project number of declared number of items
     and compare it to projects in the same segment

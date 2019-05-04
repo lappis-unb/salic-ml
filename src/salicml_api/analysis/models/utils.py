@@ -58,6 +58,7 @@ def execute_project_models_sql_scripts(force_update=False):
 
     create_project_valores()
 
+
 def create_project_valores():
     """
         Used to get project information from MinC database,

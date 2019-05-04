@@ -6,7 +6,7 @@ from functools import lru_cache
 
 
 @metrics.register('finance')
-def proponent_projects(pronac, data):
+def projetos_mesmo_proponente(pronac, data):
     """
     Checks the CNPJ/CPF of the proponent of project
     with the given pronac and returns all the projects
@@ -45,7 +45,7 @@ def proponent_projects(pronac, data):
     }
 
 
-@data.lazy('verified_funds')
+@data.lazy('valor_comprovado')
 def analyzed_projects(raw_df):
     """
     Return all projects that was analyzed.
@@ -77,7 +77,7 @@ def submitted_projects(raw_df):
 
 
 @data.lazy('planilha_comprovacao')
-def verified_funds(df):
+def valor_comprovado(df):
     """
     Relevant info about proponent.
     """

@@ -6,7 +6,7 @@ import salicml.outliers.gaussian_outlier as gaussian_outlier
 
 
 @metrics.register('finance')
-def raised_funds(pronac, data):
+def valor_captado(pronac, data):
     """
     Returns the total raised funds of a project
     with the given pronac and if this project is an
