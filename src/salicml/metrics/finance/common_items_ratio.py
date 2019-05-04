@@ -244,6 +244,6 @@ def common_items_ratio(pronac, dt):
         'valor': ratio,
         'maximo_esperado': metrics['mean'],
         'desvio_padrao': metrics['std'],
-        'items_incomuns': uncommon_items,
-        'items_comuns_que_o_projeto_nao_possui': get_common_items_not_present(pronac),
+        'items_incomuns': sorted(uncommon_items, key=lambda k: k['name']),
+        'items_comuns_que_o_projeto_nao_possui': sorted(get_common_items_not_present(pronac), key=lambda k: k['name']),
     }
