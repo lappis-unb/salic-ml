@@ -3,7 +3,6 @@ import numpy as np
 
 from salicml.data.query import metrics
 from salicml.data import data
-from salicml.metrics.base import get_salic_url
 
 
 @metrics.register('finance')
@@ -16,17 +15,8 @@ def new_providers(pronac, dt):
     df = info[info['PRONAC'] == pronac]
     providers_count = data.providers_count.to_dict()[0]
 
-    new_providers = {}
+    new_providers = []
     segment_id = None
-    url_prefix = '/prestacao-contas/analisar/comprovante'
-    url_val = [
-        'IdPRONAC',
-        'UF',
-        'cdProduto',
-        'cdCidade',
-        'idPlanilhaItem',
-        'cdEtapa'
-    ]
 
     for _, row in df.iterrows():
         cnpj = row['nrCNPJCPF']
@@ -38,16 +28,17 @@ def new_providers(pronac, dt):
             item_name = row['Item']
             provider_name = row['nmFornecedor']
 
-            new_providers[cnpj] = {
+            new_provider = {
                 'nome': provider_name,
+                'cnpj': cnpj,
                 'itens': {
                     item_id: {
                         'nome': item_name,
-                        'link': get_salic_url(row, url_prefix, url_val),
                         'tem_comprovante': True
                     }
                 }
             }
+            new_providers.append(new_provider)
 
     providers_amount = len(df['nrCNPJCPF'].unique())
 
@@ -58,6 +49,8 @@ def new_providers(pronac, dt):
     averages = data.average_percentage_of_new_providers.to_dict()
     segments_average = averages['segments_average_percentage']
     all_projects_average = list(averages['all_projects_average'].values())[0]
+    if new_providers:
+        new_providers.sort(key=lambda provider: provider['nome'])
 
     return {
         'lista_de_novos_fornecedores': new_providers,

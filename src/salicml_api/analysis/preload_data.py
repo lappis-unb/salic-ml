@@ -1,7 +1,7 @@
 """
 Pre loads measurements from database saved projects
 """
-from .models import create_indicators_metrics, FinancialIndicator, AdmissibilityIndicator
+from .models import create_indicators_metrics, Indicator, FinancialIndicator, AdmissibilityIndicator
 from salicml.data import data
 # ==============================================================================
 # AUXILIAR FUNCTIONS
@@ -23,3 +23,7 @@ def load_project_metrics():
             pronac = 'Pronac'
         pronacs = df[pronac].unique().tolist()
         create_indicators_metrics(all_metrics[key], pronacs)
+
+    indicators = Indicator.objects.all()
+    for indicator in indicators:
+        indicator.calculate_proponent_projects_weight()

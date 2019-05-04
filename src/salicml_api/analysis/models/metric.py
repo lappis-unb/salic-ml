@@ -34,6 +34,7 @@ class Metric(models.Model):
         """
         Creates Metric object for an Indicator
         """
+        value = 0
         if "is_outlier" in data:
             is_outlier = data["is_outlier"]
             del data["is_outlier"]

@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg2 \
         apt-transport-https
 
+RUN pip3 install toolz
+
 COPY setup.py setup.py
 RUN mkdir /src
 

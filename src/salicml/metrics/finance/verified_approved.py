@@ -45,6 +45,7 @@ def verified_approved(pronac, dt):
         "maximo_esperado": MIN_EXPECTED_ITEMS,
         "minimo_esperado": MAX_EXPECTED_ITEMS,
         "lista_de_comprovantes": outlier_items,
+        "link_da_planilha": "http://salic.cultura.gov.br/projeto/#/{0}/relacao-de-pagamento".format(pronac)
     }
 
 
@@ -59,13 +60,15 @@ def outlier_items_(features):
         item_name = getattr(row, "Item")
         approved_value = getattr(row, "vlAprovado")
         verified_value = getattr(row, "vlComprovacao")
-
+        if approved_value > 0:
+            porcentage = ((verified_value / approved_value) * 100) - 100
         item = {
             "nome": item_name,
             "valor_aprovado": approved_value,
             "valor_comprovado": verified_value,
-            "porcentagem": (approved_value / verified_value) * 100,
-            # link do comprovante pro salic
+            "porcentagem": porcentage,
         }
         outlier_items.append(item)
+        if outlier_items:
+            outlier_items.sort(key=lambda item: item['nome'])
     return outlier_items
