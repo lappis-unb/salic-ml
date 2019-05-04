@@ -21,7 +21,8 @@ class ProjectManager(models.Manager):
         return ordered
 
 
-@rest_api(["pronac", "nome", "responsavel"], lookup_field="pronac")
+@rest_api(["pronac", "nome", "responsavel", "verified_funds",
+           "raised_funds"], lookup_field="pronac")
 class Project(models.Model):
     pronac = models.CharField(max_length=15, primary_key=True)
     nome = models.CharField(max_length=200)
@@ -30,7 +31,8 @@ class Project(models.Model):
     situation = models.CharField(choices=SITUATIONS, default="A01", max_length=200)
     description = models.CharField(max_length=200, null=True)
     responsavel = models.CharField(max_length=200, null=True)
-
+    verified_funds = models.FloatField(null=True, blank=True, default=0.0)
+    raised_funds = models.FloatField(null=True, blank=True, default=0.0)
     objects = ProjectManager()
 
     class Meta:
