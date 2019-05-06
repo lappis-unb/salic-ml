@@ -207,7 +207,7 @@ def add_info_to_uncommon_items(filtered_items, uncommon_items):
 
 
 @metrics.register('finance')
-def common_items_ratio(pronac, dt):
+def itens_comuns_e_incomuns_por_segmento(pronac, dt):
     """
     Calculates the common items on projects in a cultural segment,
     calculates the uncommon items on projects in a cultural segment and

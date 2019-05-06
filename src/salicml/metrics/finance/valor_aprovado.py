@@ -25,7 +25,7 @@ def approved_funds_by_projects(df):
 
 
 @metrics.register('finance')
-def approved_funds(pronac, dt):
+def valor_aprovado(pronac, dt):
     """
     Verifica se o valor total de um projeto é um
     outlier em relação

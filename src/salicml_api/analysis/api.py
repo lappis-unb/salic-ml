@@ -1,6 +1,33 @@
 from boogie.rest import rest_api
-from .utils import default_admissibility_metrics, default_financial_metrics, metrics_name_map
+
+from .utils import default_admissibility_metrics, default_financial_metrics, metrics_name_map, financial_metrics_names
 from .models import FinancialIndicator, AdmissibilityIndicator
+
+
+values_to_order = ['nome', '-nome', 'pronac', '-pronac'
+                   'responsavel', '-responsavel']
+
+
+@rest_api.query_hook('analysis.Project')
+def query(request, qs):
+    qs = qs.prefetch_related('indicator_set')
+    if request.method == 'GET':
+        for field, value in request.GET.items():
+            if field == 'complexidade__gt':
+                qs = qs.filter(indicator__value__gt=value)
+            elif field == 'order_by':
+                if value == 'complexidade':
+                    qs.order_by("indicator__value")
+                elif value in values_to_order:
+                                qs = qs.order_by(value)
+            elif field == 'nome__icontains':
+                dictionary = {field: value}
+                qs = qs.filter(**dictionary)
+            elif field == 'complexidade':
+                qs = qs.filter(indicator__value=value)
+
+    return qs
+
 
 # Project aditional attribute
 @rest_api.property('analysis.Project')
@@ -10,12 +37,7 @@ def complexidade(obj):
     is used as this value, but it can be a result of calculation with other
     indicators in future
     """
-    indicators = obj.indicator_set.all()
-    if not indicators:
-        value = 0.0
-    else:
-        value = indicators.first().value
-    return value
+    return obj.complexidade
 
 
 # Metric aditional attributes #
@@ -68,8 +90,9 @@ def indicator_details(indicator):
     they are filled with default values.
     """
     metrics = format_metrics_json(indicator)
+
     metrics_list = set(indicator.metrics
-                       .filter(name__in=metrics_name_map.keys())
+                       .filter(name__in=financial_metrics_names)
                        .values_list('name', flat=True))
     null_metrics = {}
     if isinstance(indicator, FinancialIndicator):
@@ -95,7 +118,7 @@ def convert_list_into_dict(list):
 
 def format_metrics_json(indicator):
     metrics = [
-                {metrics_name_map[m.name]: {
+                {m.name: {
                       'valor': m.value,
                       'data': m.data,
                       'valor_valido': True,
@@ -104,5 +127,5 @@ def format_metrics_json(indicator):
                       'maximo_esperado': m.data.get('maximo_esperado', 0)
                   },
                  } for m in indicator
-                .metrics.filter(name__in=metrics_name_map.keys())]
+                .metrics.filter(name__in=financial_metrics_names)]
     return convert_list_into_dict(metrics)

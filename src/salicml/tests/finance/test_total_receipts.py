@@ -2,7 +2,7 @@ import unittest
 
 from salicml.data.query import metrics
 
-EXPECTED_KEYS = ["is_outlier", "total_receipts", "maximum_expected_in_segment"]
+EXPECTED_KEYS = ["is_outlier", "comprovante_pagamento", "maximum_expected_in_segment"]
 
 
 class TestTotalReceipts(unittest.TestCase):

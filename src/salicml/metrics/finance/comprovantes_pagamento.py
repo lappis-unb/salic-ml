@@ -6,14 +6,14 @@ from salicml.data import data
 
 
 @metrics.register('finance')
-def total_receipts(pronac, dt):
+def comprovante_pagamento(pronac, dt):
     """
     This metric calculates the project total of receipts
     and compare it to projects in the same segment
     output:
             is_outlier: True if projects receipts is not compatible
                         to others projects in the same segment
-            total_receipts: absolute number of receipts
+            comprovante_pagamento: absolute number of receipts
             maximum_expected_in_segment: maximum receipts expected in segment
     """
     dataframe = data.planilha_comprovacao

@@ -10,9 +10,15 @@ A parceria contou com a contribuição de diversos funcionários do MinC e do LA
 [Joênio Costa](https://github.com/joenio),
 [Luciano Prestes](https://github.com/LucianoPC),
 [Victor Moura](https://github.com/victorcmoura),
+[Eduardo Nunes](https://github.com/eduardonunes2525),
+[Fabíola Malta](https://github.com/fabiolamfleury),
+[Rodrigo Oliveira](https://github.com/rodrigocam),
+[Pablo Diego](https://github.com/pablodiegoss),
+[João Guilherme](https://github.com/joaaogui),
 [Daniel Guerreiro](https://github.com/danielgs83),
 [Felipe Duerno](https://github.com/Duerno),
 [Alexandre Torres](https://github.com/AlexandreTK),
+[Lucas Mattioli](https://github.com/Mattioli),
 [Marlon Mendes](https://github.com/marlonbymendes),
 [Ricardo Poppi](https://github.com/ricardopoppi) e
 [Rodrigo Maia](https://github.com/rodmaia2099).

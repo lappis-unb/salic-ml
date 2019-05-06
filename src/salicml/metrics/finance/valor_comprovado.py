@@ -6,7 +6,7 @@ from salicml.data import data
 
 
 @metrics.register('finance')
-def verified_funds(pronac, dt):
+def valor_comprovado(pronac, dt):
     """
     Responsable for detecting anomalies in projects total verified funds.
     """

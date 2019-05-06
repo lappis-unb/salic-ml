@@ -8,6 +8,18 @@ metrics_name_map = {
     "common_items_ratio": "itens_orcamentarios_inesperados",
 }
 
+financial_metrics_names = [
+    'itens_orcamentarios',
+    'valor_a_ser_comprovado',
+    'comprovantes_acima_50',
+    'comprovante_pagamento',
+    'novos_fornecedores',
+    'projetos_mesmo_proponente',
+    'comprovante_cheque',
+    'comprovante_saque',
+    'comprovante_transferencia',
+]
+
 default_financial_metrics = {
     "itens_orcamentarios": {
         "check_receipts": "comprovantes_de_cheque",

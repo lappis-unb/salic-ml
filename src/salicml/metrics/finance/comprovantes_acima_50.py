@@ -9,7 +9,7 @@ MAX_EXPECTED_ITEMS = 0
 
 
 @metrics.register('finance')
-def verified_approved(pronac, dt):
+def comprovantes_acima_50(pronac, dt):
     """
     This metric compare budgetary items of SALIC projects in terms of
     verified versus approved value
@@ -62,6 +62,8 @@ def outlier_items_(features):
         verified_value = getattr(row, "vlComprovacao")
         if approved_value > 0:
             porcentage = ((verified_value / approved_value) * 100) - 100
+        else:
+            porcentage = verified_value
         item = {
             "nome": item_name,
             "valor_aprovado": approved_value,

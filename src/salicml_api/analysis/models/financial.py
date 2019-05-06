@@ -47,16 +47,16 @@ class FinancialIndicator(Indicator):
 
     METRICS = {
         "planilha_comprovacao": [
-            "check_receipts",
-            "transfer_receipts",
-            "money_receipts",
-            "proponent_projects",
-            "new_providers",
-            "total_receipts",
+            "comprovante_cheque",
+            "comprovante_transferencia",
+            "comprovante_saque",
+            "projetos_mesmo_proponente",
+            "novos_fornecedores",
+            "comprovante_pagamento",
         ],
-        "planilha_aprovacao_comprovacao": ["verified_approved"],
-        "planilha_captacao": ["to_verify_funds"],
-        "planilha_orcamentaria": ["number_of_items"],
+        "planilha_aprovacao_comprovacao": ["comprovantes_acima_50"],
+        "planilha_captacao": ["valor_a_ser_comprovado"],
+        "planilha_orcamentaria": ["itens_orcamentarios"],
     }
 
     objects = FinancialIndicatorManager()
@@ -68,17 +68,17 @@ class FinancialIndicator(Indicator):
     @property
     def metrics_weights(self):
         return {
-            "number_of_items": 1,
-            "to_verify_funds": 5,
-            "proponent_projects": 2,
-            "new_providers": 1,
-            "verified_approved": 2,
-            "transfer_receipts": 5,
-            "money_receipts": 5,
-            "check_receipts": 1,
-            "verified_funds": 0,
-            "common_items_ratio": 0,
-            "total_receipts": 0,
+            "itens_orcamentarios": 1,
+            "valor_a_ser_comprovado": 5,
+            "projetos_mesmo_proponente": 2,
+            "novos_fornecedores": 1,
+            "comprovantes_acima_50": 2,
+            "comprovante_transferencia": 5,
+            "comprovante_saque": 5,
+            "comprovante_cheque": 1,
+            "valor_comprovado": 0,
+            "itens_comuns_e_incomuns_por_segmento": 0,
+            "comprovante_pagamento": 0,
             "items_prices": 0,
         }
 

@@ -16,7 +16,7 @@ new_tpFormaDePagamento = {0.0: np.nan, 1.0: "Cheque",
 
 
 @metrics.register('finance')
-def check_receipts(pronac, dt):
+def comprovante_cheque(pronac, dt):
     """
     Checks how many items are in a same receipt when payment type is check
         - is_outlier: True if there are any receipts that have more than one
@@ -29,7 +29,7 @@ def check_receipts(pronac, dt):
 
 
 @metrics.register('finance')
-def transfer_receipts(pronac, dt):
+def comprovante_transferencia(pronac, dt):
     """
     Checks how many items are in a same receipt when payment type is bank
     transfer
@@ -43,7 +43,7 @@ def transfer_receipts(pronac, dt):
 
 
 @metrics.register('finance')
-def money_receipts(pronac, dt):
+def comprovante_saque(pronac, dt):
     """
     Checks how many items are in a same receipt when payment type is
     withdraw/money
