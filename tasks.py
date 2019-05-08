@@ -66,23 +66,14 @@ def train_metrics(ctx):
     manage(ctx, 'update_projects_metrics', env={})
 
 
-@task(help={'models': "Default is True, updates api models",
-            'pickles': "Default is False, save queries in pickles",
-            'f': "Default is False, force to save files even if already exists"})
-def update_data(ctx, models=True, pickles=False, f=False):
+@task(help={'f': "Default is False, force to save files even if already exists"})
+def get_pickles(ctx, f=False):
     """
     Updates local django db projects and pickle files using salic database from
     MinC
     Pickles are saved in /data/raw/ from sql queries in /data/scripts/
-    Models are created from /data/scripts/models/
     """
-    if pickles:
-        save_sql_to_files(f)
-    if models:
-        if f:
-            manage(ctx, 'create_models_from_sql --force True', env={})
-        else:
-            manage(ctx, 'create_models_from_sql', env={})
+    save_sql_to_files(f)
 
 
 @task(help={'f': "Default is False, force to update model even if already exists"})
