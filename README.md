@@ -23,37 +23,58 @@ A parceria contou com a contribuição de diversos funcionários do MinC e do LA
 [Ricardo Poppi](https://github.com/ricardopoppi) e
 [Rodrigo Maia](https://github.com/rodmaia2099).
 
-O salic-ml desenvolve uma API para fornecer dados relevantes a respeito de projetos culturais a partir de seus dados abertos. O projeto conta com dois repositórios disponíveis na plataforma [GitHub](https://github.com/lappis-unb/) e um [servidor FTP](ftp://138.68.73.247/). Este é o repositório principal, onde são mantidas as pesquisas, tarefas e planejamento do time. O repositório [salic-ml-web](https://github.com/lappis-unb/salic-ml-web) é o repositório utilizado para desenvolver a API para a disponibilização dos dados encontrados através das pesquisas. Por fim, o servidor FTP fornece os dados brutos do Salic, utilizados para realizar todas as pesquisas do grupo.
+
+O projeto salic-ml é dividido em uma API REST para disponibilização de indicadores a respeito dos projetos submetidos para a lei rouanet e um pacote de algoritmos utilizados para o cálculo de métricas.
 
 
 Contribuição
 ------------
 
-Antes de mais nada, sinta-se à vontade para nos contactar sempre que precisar. Nosso grupo de comunicação no [RocketChat](https://chat.lappis.rocks/channel/salic-ml) está sempre aberto para discussões. Para acompanhar nosso _roadmap_, instale o plugin [ZenHub](https://www.zenhub.com/) para o GitHub.
+Para acompanhar nosso planejamento por sprint e a longo prazo, instale o plugin [ZenHub](https://www.zenhub.com/) para o GitHub e acesse a aba que fica ao lado da aba de Pull requests neste repositório.
 
 #### Requisitos
 
-- Python 3.6
-- Virtualenv ou virtualenvwrapper
+Existem duas maneiras de executar este projeto, sendo uma com ambiente local e outra utilizando [Docker](https://www.docker.com/).
+
+Para um ambiente de desenvolvimento local, você irá precisar da versão 3.6, ou superior, do [Python](https://www.python.org/downloads/release/python-360/). Além disso, é recomendado que você possua instalado o [virtualenv](https://virtualenv.pypa.io/en/latest/), um ótimo isolador de ambientes Python e junto com ele o [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/).
+
 
 #### Instalação
 
-As pesquisas deste repositório são realizadas em notebooks do [Jupyter Notebook](http://jupyter.org/). Para reproduzir nossas pesquisas e estudos, é preciso baixar os dados do servidor FTP e instalar o Jupyter Notebook.
+Para ambientes locais, você pode seguir os seguintes passos:
 
-Para baixar os dados do servidor FTP, basta acessar o seu endpoint: _ftp://138.68.73.247/_. Lembrando que a estrutura de arquivos do servidor FTP é a mesma da pasta `data` deste repositório, então tenha cuidado para não armazenar os dados baixados em pastas erradas. Uma forma de baixar os dados é com o comando [wget](https://www.gnu.org/software/wget/), por um terminal de comandos, entre na pasta raiz deste repositório e execute o seguinte comando:
+ 1. Criar ambiente isolado com virtualenv
+    ```shell
+    $ mkvirtualenv salicml -p /usr/bin/python3.6
+    ```
 
-    $ wget -r -nH -nc -P data ftp://138.68.73.247
+ 2. Instalar as dependências dentro do ambiente virtual
+    ```shell
+    $ python setup.py develop
+    ```
 
-Este comando baixará todos os arquivos de dados do servidor e pode demorar alguns minutos ou mesmo horas. Cada notebook precisa de um conjunto específico de arquivos de dados e raramente ou único notebook utilizará todos os arquivos do servidor e para baixar arquivos específicos do servidor, execute o comando:
+Para ambientes docker, basta executar o docker-compose:
 
-    $ wget -nc -P data/FILE ftp://138.68.73.247/FILE
+```shell
+    $ sudo docker-compose -f docker/docker-compose.yml up
+```
 
-Onde _FILE_ deve ser substituído pelo caminho e nome do arquivo desejado.
+#### Como lidamos com os dados
 
-Para instalar o Jupyter Notebook, é possível utilizar a plataforma [Anaconda](https://www.anaconda.com/) ou o [pip](http://jupyter.org/install).
-Para instalar todas as dependências deste projeto, esteja em um ambiente virtual do python e rode o seguinte comando:
+Nosso algoritmos utilizam a biblioteca [pandas](https://pandas.pydata.org/), uma excelente biblioteca para lidar com dados em formato de tabela. Nosso flow de trabalho é:
+    
+ 1. Gerar pandas dataframes a partir de um banco de dados.
+ 
+ 2. Gerar arquivos `pickle` comprimidos destes dataframes.
 
-    $ pip install -r requirements.txt
+ 3. Acessar estes arquivos `pickle` com nossa api de dados:
+    ```python
+    from salicml.data import data
+    
+    data.planilha_orcamentaria
+    ```
+
+Todos os dataframes em forma de arquivos `pickle`, são armazenados neste repositório da pasta `data/raw`, e ficam disponíveis para acesso via Python pela nossa api de dados.
 
 #### Reprodução de pesquisas
 
@@ -61,7 +82,7 @@ Após a instalação, execute o seguinte comando a partir da raiz do diretório:
 
     $ jupyter-notebook
 
-Este comando abrirá uma página o navegador. A partir deste navegador, entre no diretório _notebooks_ e abra o notebook desejado. Estrutura de pastas para armazenar os notebooks de estudo e pesquisa:
+Este comando abrirá uma página o navegador. A partir deste navegador, entre no diretório `research/notebooks` e abra o notebook desejado. Estrutura de pastas para armazenar os notebooks de estudo e pesquisa:
 
 * **Doing:** notebooks que estão sendo desenvolvidos.
 
@@ -73,56 +94,97 @@ Seguem o formato <Descrição do Notebook>-<Versão>.
 versões de notebooks estáveis e atualizados das pesquisas realizadas.
 
 
-#### API
+#### Tasks comuns
 
-Para rodar a api, execute o comando a partir da raiz do diretório:
+Este projeto utiliza `tasks` do [invoke](http://www.pyinvoke.org/) para automatizar tarefas.
 
+ - Subir o servidor de desenvolvimento da API:
+
+    ```shell
     $ inv run
+    ```
 
-#### Passo a passo de contribuições
+ - Popular o banco de dados local com os projetos do banco de dados remoto:
 
-1. Crie um _Fork_ deste repositório: na página do repositório [salic-ml no GitHub](https://github.com/lappis-unb/salic-ml) tem um botão para realizar o _fork_;
+    ```shell
+    $ inv update-models
+    ```
 
-2. Clone o seu _fork_ do repositório:
+ - Baixar os arquivos `pickles`:
 
-```
-$ git clone http://github.com/<USERNAME>/salic-ml.git
-```
+    ```shell
+    $ inv get-pickles
+    ```
 
-3. Crie uma _branch_ de pesquisa:
+ - Transformar arquivos `csv` em `pickles`:
 
-```
-$ git checkout -b <USERNAME>-new-research
-```
+    ```shell
+    $ inv pickle
+    ```
 
-4. Faça suas mudanças e realize os seus _commits_:
+- Treinar os algoritmos de cálculo de métricas:
 
-```
-$ git commit -am 'My contribution'
-```
+    ```shell
+    $ inv train-metrics
+    ```
 
-5. Atualize suas modificações no seu _fork_ remoto:
+- Gerar um arquivo `pickle` a partir de uma consulta de banco:
 
-```
-$ git push origin <USERNAME>-new-research
-```
+    ```shell
+    $ inv run-sql
+    ```
 
-6. Crie o seu _pull request_: na plataforma GitHub, a partir do seu _fork_, terá um botão para abrir um _pull request_.
+- Criar migrações:
+
+    ```shell
+    $ inv make
+    ```
+
+- Executar migrações:
+
+    ```shell
+    $ inv migrate
+    ```
+
+- Alias para python `manage.py`:
+
+    ```shell
+    $ inv manager
+    ```
 
 #### Outros comandos
 
-Alguns comandos foram criados para facilitar o desenvolvimento, para rodar a API, popular dados entre outros.
 - Para que tenha acesso a lista de comandos digite em seu terminal:
-
+    
+    ```
      $ invoke --list
-
+    ```
  - Para ler a descrição de um comando específico (exemplo comando run):
 
+    ```
      $ invoke --help run
+    ```
 
- - Para executá-lo (exemplo comando run):
+#### Primeiros passos
 
-     $ inv run
+Aqui são descritos os passos necessários para quem acabou de instalar o ambiente:
+
+ 1. Baixar os arquivos `pickle`
+     ```shell
+    $ inv get-pickles
+    ```
+ 2. Popular o banco com projetos
+    ```shell
+     $ inv update-models
+    ```
+ 3. Treinar as métricas
+    ```shell
+    $ inv train-metrics
+    ```
+ 4. Subir o servidor 
+    ```shell
+    $ inv run
+    ```
 
 Licença
 -------
