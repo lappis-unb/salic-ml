@@ -1,3 +1,4 @@
+import numpy as np
 from salicml.data.query import metrics
 from salicml.data import data
 from salicml.metrics.base import get_cpf_cnpj_by_pronac
@@ -113,7 +114,10 @@ def get_proponent_submitted_projects(cpf_cnpj, pronac):
     all_projects = submitted_projects_dict()
     try:
         proponent_projects = all_projects[str(cpf_cnpj)]
-        proponent_projects['pronac_list'].remove(pronac)
+        remove_pronac = np.delete(proponent_projects['pronac_list'],
+                                  np.where(proponent_projects['pronac_list'] == pronac),
+                                  axis=0)
+        proponent_projects['pronac_list'] = remove_pronac
         return proponent_projects
     except KeyError:
         return {}
