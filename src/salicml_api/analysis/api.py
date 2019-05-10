@@ -15,9 +15,11 @@ def query(request, qs):
                 qs = qs.filter(indicator__value__gt=value)
             elif field == 'order_by':
                 if value == 'complexidade':
-                    qs.order_by("indicator__value")
+                    qs = qs.order_by("indicator__value")
+                elif value == '-complexidade':
+                    qs = qs.order_by("-indicator__value")
                 elif value in values_to_order:
-                                qs = qs.order_by(value)
+                    qs = qs.order_by(value)
             elif field == 'nome__icontains':
                 dictionary = {field: value}
                 qs = qs.filter(**dictionary)
