@@ -4,7 +4,7 @@ from .db_connector import db_connector
 from .loader import WRITE_DF, WRITE_DF_OPTS, FILE_EXTENSION
 
 SQL_EXTENSION = ".sql"
-DATA_PATH = pathlib.Path(__file__).parent.parent.parent.parent.parent / "data"
+DATA_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "data"
 
 
 def test_connection():

@@ -1,9 +1,10 @@
 from invoke import task
+import pandas as pd
 import os
 import sys
 
-from src.salicml.data import csv_to_pickle
-from src.salicml.data.db_operations import save_sql_to_files, save_sql_to_file
+from src.salicml.data import csv_to_pickle, data
+from src.salicml.data.db_operations import save_sql_to_files, save_sql_to_file, save_dataframe_as_pickle
 from src.salicml.data.ftp_updater import execute_upload_pickle
 
 python = sys.executable
@@ -104,6 +105,97 @@ def update_ftp(ctx, file):
     Uploads pickle file to ftp /data/ folder
     """
     execute_upload_pickle(file)
+
+
+@task
+def gen_test_df(ctx):
+    print('Generating test dataframes...\n')
+
+    print('Generating test planilha orcamentaria...')
+    # planilha orcamentaria
+    df_name = 'planilha_orcamentaria'
+    df_orcamentaria = pd.DataFrame()
+    for seg in data.planilha_orcamentaria.idSegmento.unique():
+        is_seg = data.planilha_orcamentaria['idSegmento'] == seg
+        df_orcamentaria = pd.concat(
+            [df_orcamentaria, data.planilha_orcamentaria[is_seg].head(20)],
+            ignore_index=True
+        )
+
+    data.store_test_df(df_name, df_orcamentaria)
+    print('Generated test planilha orcamentaria!\n')
+
+
+    print('Generating test planilha comprovacao...')
+    # planilha comprovacao
+    df_name = 'planilha_comprovacao'
+    df_comprovacao = pd.DataFrame()
+    for seg in data.planilha_comprovacao.idSegmento.unique():
+        is_seg = data.planilha_comprovacao['idSegmento'] == seg
+        df_comprovacao = pd.concat(
+            [df_comprovacao, data.planilha_comprovacao[is_seg].head(20)],
+            ignore_index=True
+        )
+
+    data.store_test_df(df_name, df_comprovacao)
+    print('Generated test planilha comprovacao!\n')
+
+
+    print('Generating test planilha captacao...')
+    # planilha captacao
+    df_name = 'planilha_captacao'
+    df_captacao = pd.DataFrame()
+    for p in data.planilha_captacao.Pronac.unique()[:2000]:
+        is_p = data.planilha_captacao['Pronac'] == p
+        df_captacao = pd.concat(
+            [df_captacao, data.planilha_captacao[is_p].head(10)],
+            ignore_index=True
+        )
+
+    data.store_test_df(df_name, df_captacao)
+    print('Generated test planilha captacao!\n')
+    
+
+    print('Generating test planilha aprovacao comprovacao...')
+    # planilha aprovacao comprovacao
+    df_name = 'planilha_aprovacao_comprovacao'
+    df_aprovacao_comprovacao = pd.DataFrame()
+    for p in data.planilha_aprovacao_comprovacao.PRONAC.unique()[:2000]:
+        is_p = data.planilha_aprovacao_comprovacao['PRONAC'] == p
+        df_aprovacao_comprovacao = pd.concat(
+            [df_aprovacao_comprovacao, data.planilha_aprovacao_comprovacao[is_p].head(10)],
+            ignore_index=True
+        )
+
+    data.store_test_df(df_name, df_aprovacao_comprovacao)
+    print('Generated test planilha aprovacao comprovacao!\n')
+    
+    data.store_test_df('planilha_projetos', data.planilha_projetos)
+
+    print('Finished generation of test dataframes!')
+
+
+@task()
+def test_metrics(ctx):
+    raw_dir = './data/raw/'
+    original = os.listdir(raw_dir)
+    for fname in original:
+        if fname != '.gitkeep':
+            new_name = 'raw_' + fname + '.pickle.gz'
+            src = raw_dir + fname
+            dest = raw_dir + new_name
+
+            os.rename(src, dest)
+
+    manage(ctx, 'update_projects_metrics', env={})
+
+    for fname in os.listdir(raw_dir):
+        if fname != '.gitkeep':
+            new_name = fname.split('raw_')[1]
+            src = raw_dir + fname
+            dest = raw_dir + new_name
+
+            os.rename(src, dest)
 
 
 @task(help={'c': 'command to be run with manage.py'})

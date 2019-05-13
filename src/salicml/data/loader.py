@@ -34,9 +34,9 @@ class Loader:
                 df = self._registry[attr]()
             else:
                 try:
-                    df = _load_dataframe(self._root / "processed", attr)
-                except FileNotFoundError:
                     df = _load_dataframe(self._root / "raw", attr)
+                except FileNotFoundError:
+                    df = _load_dataframe(self._root / "test", attr)
             self._cache[attr] = df
             return df
 
@@ -45,25 +45,36 @@ class Loader:
             *super().__dir__(),
             *self._cache,
             *self._registry,
-            *_file_attributes(self._root / "processed"),
             *_file_attributes(self._root / "raw"),
+            *_file_attributes(self._root / "test"),
         })
 
-    def store(self, loc, df):
+    def _store(self, loc, df, path):
         """Store dataframe in the given location.
 
         Store some arbitrary dataframe:
 
-        >>> data.store('my_data', df)
+        >>> data.store('my_data', df, 'test')
 
         Now recover it from the global store.
-        >>> data.my_data
+        >>> data.test_my_data
         ...
         """
 
-        path = "%s.%s" % (self._root / "processed" / loc, FILE_EXTENSION)
+        path = "%s.%s" % (self._root / path / loc, FILE_EXTENSION)
         WRITE_DF(df, path, **WRITE_DF_OPTS)
         self._cache[loc] = df
+
+    def store_test_df(self, loc, df):
+        """
+        Store a dataframe in test folder
+            
+            >>> data.store_test_df('my_data', df)
+
+            Now recover it from the test store
+            >>> data.test.my_data
+        """
+        self._store(loc, df, 'test')
 
     def lazy(self, *names, name=None):
         """
