@@ -107,8 +107,12 @@ def update_ftp(ctx, file):
     execute_upload_pickle(file)
 
 
-@task
+@task()
 def gen_test_df(ctx):
+    """
+    Generate small dataframes that represents the
+    real dataframes used in metrics training. 
+    """
     print('Generating test dataframes...\n')
 
     print('Generating test planilha orcamentaria...')
@@ -177,6 +181,9 @@ def gen_test_df(ctx):
 
 @task()
 def test_metrics(ctx):
+    """
+    Train metrics with test dataframes.
+    """
     raw_dir = './data/raw/'
     original = os.listdir(raw_dir)
     for fname in original:
