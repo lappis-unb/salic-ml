@@ -116,6 +116,12 @@ Este projeto utiliza `tasks` do [invoke](http://www.pyinvoke.org/) para automati
     $ inv get-pickles
     ```
 
+ - Gerar dataframes de teste
+
+    ```shell
+    $ inv gen-test-df
+    ```
+
  - Transformar arquivos `csv` em `pickles`:
 
     ```shell
