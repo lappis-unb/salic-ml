@@ -31,14 +31,28 @@ def novos_fornecedores(pronac, dt):
             new_provider = {
                 'nome': provider_name,
                 'cnpj': cnpj,
-                'itens': {
-                    item_id: {
+                'itens': [ 
+                    {
+                        'item_id': item_id,
                         'nome': item_name,
                         'tem_comprovante': True
                     }
-                }
+                ]
             }
-            new_providers.append(new_provider)
+
+            append_new_provider = True
+            append_new_item = True
+            for provider in new_providers:
+                if provider["nome"] == new_provider["nome"]:
+                    append_new_provider = False
+                    for item in provider["itens"]:
+                        if new_provider["itens"][0]["item_id"] == item["item_id"]:
+                            append_new_item = False
+                        
+                    if append_new_item: provider["itens"].append(new_provider["itens"][0])
+
+            if append_new_provider:
+                new_providers.append(new_provider)
 
     providers_amount = len(df['nrCNPJCPF'].unique())
 
@@ -54,7 +68,7 @@ def novos_fornecedores(pronac, dt):
 
     return {
         'lista_de_novos_fornecedores': new_providers,
-        'valor': new_providers_amount,
+        'valor': providers_amount,
         'new_providers_percentage': new_providers_percentage,
         'is_outlier': new_providers_percentage > segments_average[segment_id],
         'segment_average_percentage': segments_average[segment_id],
