@@ -13,14 +13,15 @@ def novos_fornecedores(pronac, dt):
     """
     info = data.providers_info
     df = info[info['PRONAC'] == pronac]
-    providers_count = data.providers_count.to_dict()[0]
+    providers_quantity = data.providers_count.to_dict()[0]
 
     new_providers = []
+    fdsa = []
     segment_id = None
 
     for _, row in df.iterrows():
         cnpj = row['nrCNPJCPF']
-        cnpj_count = providers_count.get(cnpj, 0)
+        cnpj_count = providers_quantity.get(cnpj, 0)
         segment_id = row['idSegmento']
 
         if cnpj_count <= 1:
@@ -53,6 +54,7 @@ def novos_fornecedores(pronac, dt):
 
             if append_new_provider:
                 new_providers.append(new_provider)
+            fdsa.append(new_provider)
 
     providers_amount = len(df['nrCNPJCPF'].unique())
 
@@ -63,10 +65,13 @@ def novos_fornecedores(pronac, dt):
     averages = data.average_percentage_of_new_providers.to_dict()
     segments_average = averages['segments_average_percentage']
     all_projects_average = list(averages['all_projects_average'].values())[0]
+
     if new_providers:
         new_providers.sort(key=lambda provider: provider['nome'])
 
     return {
+        'lista_': df['nrCNPJCPF'].unique(),
+        'lista_de_novos': fdsa,
         'lista_de_novos_fornecedores': new_providers,
         'valor': providers_amount,
         'new_providers_percentage': new_providers_percentage,
@@ -84,13 +89,14 @@ def average_percentage_of_new_providers(providers_info, providers_count):
     """
     segments_percentages = {}
     all_projects_percentages = []
-    providers_count = providers_count.to_dict()[0]
+    providers_quantity = providers_count.to_dict()[0]
 
     for _, items in providers_info.groupby('PRONAC'):
         cnpj_array = items['nrCNPJCPF'].unique()
         new_providers = 0
+
         for cnpj in cnpj_array:
-            cnpj_count = providers_count.get(cnpj, 0)
+            cnpj_count = providers_quantity.get(cnpj, 0)
             if cnpj_count <= 1:
                 new_providers += 1
 
@@ -117,15 +123,11 @@ def providers_count(df):
     Returns total occurrences of each provider
     in the database.
     """
-    providers_count = {}
-    cnpj_array = df.values
+    cnpjs = df.values
+    unique, counts = np.unique(cnpjs, return_counts=True)
+    providers_quantity = dict(zip(unique, counts))
 
-    for a in cnpj_array:
-        cnpj = a[0]
-        occurrences = providers_count.get(cnpj, 0)
-        providers_count[cnpj] = occurrences + 1
-
-    return pd.DataFrame.from_dict(providers_count, orient='index')
+    return pd.DataFrame.from_dict(providers_quantity, orient='index')
 
 
 @data.lazy('planilha_comprovacao')
@@ -149,10 +151,8 @@ def all_providers_cnpj(df):
     in database.
     """
     cnpj_list = []
-
     for _, items in df.groupby('PRONAC'):
-        unique_cnpjs = items['nrCNPJCPF'].unique()
-        cnpj_list += list(unique_cnpjs)
+        cnpj_list += list(items['nrCNPJCPF'].unique())
 
     return pd.DataFrame(cnpj_list)
 
