@@ -24,5 +24,8 @@ RUN pip3 install toolz
 COPY setup.py setup.py
 RUN mkdir /src
 
+# FIX ME - django-boogie crashes installation without this
+RUN pip3 install --no-cache-dir toolz
+
 RUN pip3 install --no-cache-dir -e .
 RUN pip3 install --no-cache-dir -e .[dev]

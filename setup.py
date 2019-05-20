@@ -11,7 +11,7 @@ setup(
     install_requires=[
         'django~=2.1',
         'django-boogie',
-        'django-cors-headers',
+        'django-environ~=0.4.5',
         'django-filter',
         'django-picklefield',
         'django-polymorphic',
@@ -36,6 +36,7 @@ setup(
             'pytest~=3.8.0',
             'pytest-django',
             'seaborn~=0.9.0',
+            'django-cors-headers',
         ],
     },
     python_requires='>=3.5',

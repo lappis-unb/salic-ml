@@ -10,6 +10,8 @@ services:
 
   django:
     image: salicml/api:latest
+    links:
+      - "salic_db"
     build:
        context: ../
        dockerfile: ./docker/Dockerfile
@@ -17,6 +19,7 @@ services:
     env_file:
       - ../etc/env/db.env # salic_db
       - ../etc/env/postgres.env
+      - ../etc/env/django.env
     volumes:
       - ../src:/src
       - ../data:/data

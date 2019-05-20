@@ -9,7 +9,7 @@ from salicml.data.db_connector import db_connector
 from salicml.data.db_operations import DATA_PATH
 from salicml.data.query import metrics as metrics_calc
 
-from . import FinancialIndicator
+from . import Indicator, FinancialIndicator, AdmissibilityIndicator
 from . import Metric
 from . import Project
 
@@ -35,13 +35,17 @@ def execute_project_models_sql_scripts(force_update=False):
         query_result = db.execute_pandas_sql_query(query)
         db.close()
         query_result = convert_datetime(query_result)
+        
         try:
             projects = Project.objects.bulk_create(
                 (Project(**vals) for vals in query_result.to_dict("records")),
                 # ignore_conflicts=True available on django 2.2.
             )
-            indicators = [FinancialIndicator(project=p) for p in projects]
-            FinancialIndicator.objects.bulk_create(indicators)
+            f_indicators = [FinancialIndicator(project=p) for p in projects]
+            a_indicators = [AdmissibilityIndicator(project=p) for p in projects]
+
+            FinancialIndicator.objects.bulk_create(f_indicators)
+            AdmissibilityIndicator.objects.bulk_create(a_indicators)
         except IntegrityError:
             # happens when there are duplicated projects
             LOG("Projects bulk_create failed, creating one by one...")
@@ -50,11 +54,13 @@ def execute_project_models_sql_scripts(force_update=False):
                     for item in query_result.to_dict("records"):
                         p, _ = Project.objects.update_or_create(**item)
                         FinancialIndicator.objects.update_or_create(project=p)
+                        AdmissibilityIndicator.objects.update_or_create(project=p)
                 else:
 
                     for item in query_result.to_dict("records"):
                         p, _ = Project.objects.get_or_create(**item)
                         FinancialIndicator.objects.update_or_create(project=p)
+                        AdmissibilityIndicator.objects.update_or_create(project=p)
 
     create_project_valores()
 
@@ -80,7 +86,7 @@ def create_project_valores():
              .update(verified_funds=value['valor_captado']))
 
 
-def create_finance_metrics(metrics: list, pronacs: list):
+def create_indicators_metrics(metrics: list, pronacs: list):
     """
     Creates metrics, creating an Indicator if it doesn't already exists
     Metrics are created for projects that are in pronacs and saved in
@@ -91,14 +97,14 @@ def create_finance_metrics(metrics: list, pronacs: list):
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
     missing = missing_metrics(metrics, pronacs)
+    indicators_qs = Indicator.objects.filter(
+        project_id__in=[p for p, _ in missing])
+    
     print(f"There are {len(missing)} missing metrics!")
 
     processors = mp.cpu_count()
     print(f"Using {processors} processors to calculate metrics!")
 
-    indicators_qs = FinancialIndicator.objects.filter(
-        project_id__in=[p for p, _ in missing]
-    )
     indicators = {i.project_id: i for i in indicators_qs}
 
     pool = mp.Pool(processors)
@@ -136,7 +142,7 @@ def create_metric(indicators, metric_name, pronac):
     indicator = indicators[pronac]
     p_metrics = metrics_calc.get_project(pronac)
     x = getattr(p_metrics.finance, metric_name)
-
+    
     return Metric.create_metric(name=metric_name, data=x, indicator=indicator)
 
 

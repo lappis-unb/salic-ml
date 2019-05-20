@@ -107,7 +107,7 @@ def update_ftp(ctx, file):
     execute_upload_pickle(file)
 
 
-@task()
+@task
 def gen_test_df(ctx):
     """
     Generate small dataframes that represents the
@@ -179,7 +179,7 @@ def gen_test_df(ctx):
     print('Finished generation of test dataframes!')
 
 
-@task()
+@task
 def test_metrics(ctx):
     """
     Train metrics with test dataframes.
@@ -187,22 +187,21 @@ def test_metrics(ctx):
     raw_dir = './data/raw/'
     original = os.listdir(raw_dir)
     for fname in original:
-        if fname != '.gitkeep':
-            new_name = 'raw_' + fname + '.pickle.gz'
+        if '.pickle.gz' in fname:
+            new_name = 'raw_' + fname
             src = raw_dir + fname
             dest = raw_dir + new_name
-
             os.rename(src, dest)
 
-    manage(ctx, 'update_projects_metrics', env={})
-
-    for fname in os.listdir(raw_dir):
-        if fname != '.gitkeep':
-            new_name = fname.split('raw_')[1]
-            src = raw_dir + fname
-            dest = raw_dir + new_name
-
-            os.rename(src, dest)
+    try:
+        manage(ctx, 'update_projects_metrics', env={})
+    finally:
+        for fname in os.listdir(raw_dir):
+            if '.pickle.gz' in fname:
+                new_name = fname.split('raw_')[1]
+                src = raw_dir + fname
+                dest = raw_dir + new_name
+                os.rename(src, dest)
 
 
 @task(help={'c': 'command to be run with manage.py'})
