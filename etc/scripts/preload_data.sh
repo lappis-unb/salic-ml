@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 echo "Attempting to cron"
-inv update-data --pickles
+inv get-pickles
 inv update-models train-metrics
 
