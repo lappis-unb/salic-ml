@@ -7,6 +7,8 @@ data/processed/*
 !data/processed/.gitkeep
 data/raw/*
 !data/raw/.gitkeep
+data/test/*
+!data/test/.gitkeep
 
 # Deploy HTTPS Certificate files
 data/certbot

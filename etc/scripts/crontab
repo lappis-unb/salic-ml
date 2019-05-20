@@ -1,1 +1,1 @@
-59 23 * * SUN sh etc/scripts/preload_data.sh >> /var/log/cron_complexity.log 2>&1
+59 23 * * SUN sh /etc/scripts/preload_data.sh >> /var/log/cron_complexity.log 2>&1

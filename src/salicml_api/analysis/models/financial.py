@@ -94,7 +94,7 @@ class FinancialIndicator(Indicator):
 
     def fetch_complexity_without_proponent_projects(self):
         metrics_weights = self.metrics_weights
-        del metrics_weights["proponent_projects"]
+        del metrics_weights["projetos_mesmo_proponente"]
         return self.calculate_weighted_complexity(metrics_weights)
 
     def calculate_proponent_projects_weight(self):

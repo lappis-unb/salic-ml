@@ -123,7 +123,7 @@ def create_indicators_metrics(metrics: list, pronacs: list):
             indicator.fetch_weighted_complexity()
 
     for indicator in indicators.values():
-        indicator.fetch_weighted_complexity_without_proponent_projects()
+        indicator.fetch_complexity_without_proponent_projects()
         print("Finished update indicators!")
 
     pool.close()
