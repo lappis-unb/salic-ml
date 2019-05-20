@@ -238,12 +238,12 @@ def itens_comuns_e_incomuns_por_segmento(pronac, dt):
         .drop_duplicates(subset='idPlanilhaItens')
     )
     uncommon_items = add_info_to_uncommon_items(filtered_items, uncommon_items)
-
+    print(get_common_items_not_present(pronac))
     return {
         'is_outlier': ratio < threshold,
         'valor': ratio,
         'maximo_esperado': metrics['mean'],
         'desvio_padrao': metrics['std'],
-        'items_incomuns': sorted(uncommon_items, key=lambda k: k['name']),
-        'items_comuns_que_o_projeto_nao_possui': sorted(get_common_items_not_present(pronac), key=lambda k: k['name']),
+        'items_incomuns': sorted(uncommon_items.items(), key=lambda k: k[1]['name']),
+        'items_comuns_que_o_projeto_nao_possui': sorted(get_common_items_not_present(pronac).items(), key=lambda k: k[1]),
     }

@@ -97,10 +97,9 @@ def create_indicators_metrics(metrics: list, pronacs: list):
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
     missing = missing_metrics(metrics, pronacs)
-
     indicators_qs = Indicator.objects.filter(
-        project_id__in=[p for _, p in missing])
-
+        project_id__in=[p for p, _ in missing])
+    
     print(f"There are {len(missing)} missing metrics!")
 
     processors = mp.cpu_count()
@@ -143,7 +142,7 @@ def create_metric(indicators, metric_name, pronac):
     indicator = indicators[pronac]
     p_metrics = metrics_calc.get_project(pronac)
     x = getattr(p_metrics.finance, metric_name)
-
+    
     return Metric.create_metric(name=metric_name, data=x, indicator=indicator)
 
 
