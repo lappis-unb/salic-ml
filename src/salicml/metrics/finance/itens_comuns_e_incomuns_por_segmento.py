@@ -238,7 +238,6 @@ def itens_comuns_e_incomuns_por_segmento(pronac, dt):
         .drop_duplicates(subset='idPlanilhaItens')
     )
     uncommon_items = add_info_to_uncommon_items(filtered_items, uncommon_items)
-    print(get_common_items_not_present(pronac))
     return {
         'is_outlier': ratio < threshold,
         'valor': ratio,

@@ -1,13 +1,3 @@
-metrics_name_map = {
-    "number_of_items": "itens_orcamentarios",
-    "to_verify_funds": "valor_a_ser_comprovado",
-    "verified_approved": "comprovantes_acima_de_50",
-    "total_receipts": "comprovantes_pagamento",
-    "new_providers": "novos_fornecedores",
-    "proponent_projects": "projetos_mesmo_proponente",
-    "common_items_ratio": "itens_orcamentarios_inesperados",
-}
-
 financial_metrics_names = [
     'itens_orcamentarios',
     'valor_a_ser_comprovado',
@@ -18,6 +8,7 @@ financial_metrics_names = [
     'comprovante_cheque',
     'comprovante_saque',
     'comprovante_transferencia',
+    'itens_comuns_e_incomuns_por_segmento'
 ]
 
 default_financial_metrics = {
@@ -41,7 +32,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"lista_de_comprovantes": None, "link_da_planilha": "#"},
     },
-    "comprovantes_pagamento": {
+    "comprovante_pagamento": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
@@ -64,7 +55,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"lista_de_novos_fornecedores": None},
     },
-    "comprovantes_de_cheque": {
+    "comprovante_de_cheque": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
@@ -72,7 +63,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"comprovantes": None},
     },
-    "comprovantes_de_saque": {
+    "comprovante_de_saque": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
@@ -80,7 +71,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"comprovantes": None},
     },
-    "comprovantes_de_transferencia": {
+    "comprovante_de_transferencia": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
@@ -91,12 +82,12 @@ default_financial_metrics = {
 }
 
 default_admissibility_metrics = {
-    "itens_orcamentarios_inesperados": {
-        "valor": 0,
-        "valor_valido": False,
-        "is_outlier": False,
-        "minimo_esperado": 0,
-        "maximo_esperado": 0,
-        "data": {"lista_de_itens_inesperados": None, "lista_de_itens_esperados": None},
+    "itens_comuns_e_incomuns_por_segmento": {
+        'is_outlier': False,
+        'valor': 0,
+        'maximo_esperado': 0,
+        'desvio_padrao': 0,
+        'items_incomuns': None,
+        'items_comuns_que_o_projeto_nao_possui': None,
     }
 }
