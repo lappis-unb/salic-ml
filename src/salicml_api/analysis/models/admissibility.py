@@ -17,3 +17,6 @@ class AdmissibilityIndicator(Indicator):
 
     def calculate_proponent_projects_weight(self):
         return None
+
+    def fetch_complexity_without_proponent_projects(self):
+        return None
