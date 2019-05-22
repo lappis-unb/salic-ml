@@ -123,7 +123,8 @@ def create_indicators_metrics(metrics: list, pronacs: list):
 
     for indicator in indicators.values():
         indicator.fetch_complexity_without_proponent_projects()
-        print("Finished update indicators!")
+    
+    print("Finished update indicators!")
 
     pool.close()
     print("Finished metrics calculation!")
