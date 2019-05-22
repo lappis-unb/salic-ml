@@ -1,6 +1,6 @@
 from boogie.rest import rest_api
 
-from .utils import default_admissibility_metrics, default_financial_metrics, metrics_name_map, financial_metrics_names
+from .utils import default_admissibility_metrics, default_financial_metrics, financial_metrics_names
 from .models import FinancialIndicator, AdmissibilityIndicator
 
 
@@ -93,7 +93,7 @@ def indicator_details(indicator):
     """
     metrics = format_metrics_json(indicator)
 
-    metrics_list = set(indicator.metrics
+    metrics_set = set(indicator.metrics
                        .filter(name__in=financial_metrics_names)
                        .values_list('name', flat=True))
     null_metrics = {}
@@ -102,8 +102,8 @@ def indicator_details(indicator):
     elif isinstance(indicator, AdmissibilityIndicator):
         null_metrics.update(default_admissibility_metrics)
 
-    for keys in metrics_list:
-        null_metrics.pop(metrics_name_map[keys], None)
+    for metric in metrics_set:
+        null_metrics.pop(metric, None)
 
     metrics.update(null_metrics)
 
