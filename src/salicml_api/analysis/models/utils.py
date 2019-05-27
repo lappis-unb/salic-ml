@@ -86,7 +86,7 @@ def create_project_valores():
              .update(verified_funds=value['valor_captado']))
 
 
-def create_indicators_metrics(metrics: list, pronacs: list):
+def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
     """
     Creates metrics, creating an Indicator if it doesn't already exists
     Metrics are created for projects that are in pronacs and saved in
@@ -97,9 +97,10 @@ def create_indicators_metrics(metrics: list, pronacs: list):
             pronacs: pronacs in dataset that is used to calculate those metrics
     """
     missing = missing_metrics(metrics, pronacs)
-    indicators_qs = Indicator.objects.filter(
-        project_id__in=[p for p, _ in missing])
-    
+    indicators_qs = indicator_class.objects.filter(
+        project_id__in=[p for p, _ in missing]
+    )
+
     print(f"There are {len(missing)} missing metrics!")
 
     processors = mp.cpu_count()
@@ -135,9 +136,9 @@ def missing_metrics(metrics, pronacs):
         "pronac", "indicator__metrics__name"
     )
     projects_pronacs = [p for p, _ in projects_metrics]
-
-    return set(product(projects_pronacs, metrics)) - set(projects_metrics)
-
+    missing = set(product(projects_pronacs, metrics)) - set(projects_metrics)
+    
+    return missing
 
 def create_metric(indicators, metric_name, pronac):
     indicator = indicators[pronac]
