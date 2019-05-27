@@ -35,6 +35,9 @@ def novos_fornecedores(pronac, dt):
                     'nome': item_name,
                     'tem_comprovante': True
                 }
+
+                new_provider['itens'] = {k: v for k, v in sorted(new_provider['itens'].items(), key=lambda i: i[1]['nome'])}
+
             else:
                 new_provider = {
                     'nome': provider_name,
