@@ -1,4 +1,5 @@
 from boogie.rest import rest_api
+from functools import lru_cache
 from polymorphic.managers import PolymorphicManager
 import numpy
 
@@ -20,11 +21,9 @@ class FinancialIndicatorManager(PolymorphicManager):
                         .objects.update_or_create(project=project))
         indicator.is_valid = is_valid
         if indicator.is_valid:
-            p_metrics = metrics_calc.get_project(project.pronac)
+            project_metrics = metrics_calc.get_project(project.pronac)
             for metric_name in metrics_list:
-                print("calculando a metrica  ", metric_name)
-                x = getattr(p_metrics.finance, metric_name)
-                print("do projeto: ", project)
+                x = getattr(project_metrics.finance, metric_name)
                 Metric.objects.create_metric(metric_name, x, indicator)
             indicator.fetch_weighted_complexity()
         return indicator
@@ -82,14 +81,17 @@ class FinancialIndicator(Indicator):
             "items_prices": 0,
         }
 
+    @property
+    @lru_cache(maxsize=256)
+    def max_weight_total(self):
+        return sum(self.metrics_weights.values())
+
     def calculate_indicator_metrics(self):
-        p_metrics = metrics_calc.get_project(self.project.pronac)
+        project_metrics = metrics_calc.get_project(self.project.pronac)
         metrics = FinancialIndicator.METRICS
         for metric_name in metrics:
             for metric in metrics[metric_name]:
-                print("calculando a metrica  ", metric)
-                x = getattr(p_metrics.finance, metric)
-                print("do projeto: ", self.project)
+                x = getattr(project_metrics.finance, metric)
                 Metric.create_metric(metric, x, self)
 
     def fetch_complexity_without_proponent_projects(self):
