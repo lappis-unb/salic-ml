@@ -36,6 +36,7 @@ class Indicator(PolymorphicModel):
             recalculate_metrics: If true metrics values are updated before
                                  using weights
         """
+
         # TODO: implement metrics recalculation
         self.calculate_weighted_complexity(self.metrics_weights,
                                            recalculate_metrics)
@@ -43,6 +44,7 @@ class Indicator(PolymorphicModel):
     def calculate_weighted_complexity(self,
                                       metrics_weights,
                                       recalculate_metrics=False):
+
         # TODO: implement metrics recalculation
         if recalculate_metrics:
             self.calculate_indicator_metrics()
