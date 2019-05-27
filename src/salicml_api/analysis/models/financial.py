@@ -1,4 +1,5 @@
 from boogie.rest import rest_api
+from functools import lru_cache
 from polymorphic.managers import PolymorphicManager
 import numpy
 
@@ -81,6 +82,11 @@ class FinancialIndicator(Indicator):
             "comprovante_pagamento": 0,
             "items_prices": 0,
         }
+
+    @property
+    @lru_cache(maxsize=256)
+    def max_total(self):
+        return sum(self.metrics_weights.values())
 
     def calculate_indicator_metrics(self):
         p_metrics = metrics_calc.get_project(self.project.pronac)

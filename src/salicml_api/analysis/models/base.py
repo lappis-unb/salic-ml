@@ -22,7 +22,11 @@ class Indicator(PolymorphicModel):
 
     @property
     def metric_weights(self, **kwargs):
-        raise NotImplementedError("implement in subclass")
+        raise NotImplementedError("metric_weights implement in subclass")
+
+    @property
+    def max_total(self, **kwargs):
+        raise NotImplementedError("max_total implement in subclass")
 
     def fetch_weighted_complexity(self, recalculate_metrics=False):
         """
@@ -32,36 +36,26 @@ class Indicator(PolymorphicModel):
             recalculate_metrics: If true metrics values are updated before
                                  using weights
         """
-        # TODO: implment metrics recalculation
-        final_value = self.calculate_weighted_complexity(self.metrics_weights,
+        # TODO: implement metrics recalculation
+        self.calculate_weighted_complexity(self.metrics_weights,
                                                          recalculate_metrics)
-
-        return final_value
 
     def calculate_weighted_complexity(self, metrics_weights,
                                       recalculate_metrics=False):
-        # TODO: implment metrics recalculation
-        max_total = sum(
-            [metrics_weights[metric_name] for metric_name in metrics_weights]
-        )
-        total = 0
+        # TODO: implement metrics recalculation
         if recalculate_metrics:
             self.calculate_indicator_metrics()
+
+        total = 0
         for metric in self.metrics.all():
-            if metric.name in metrics_weights and metric.is_outlier:
+            if ((metric.name in metrics_weights)
+                and metric.is_outlier):
                 total += metrics_weights[metric.name]
 
-        value = total / max_total
+        value = total / self.max_total
 
-        final_value = "{:.1f}".format(value * 10)
+        self.value = float("{:.1f}".format(value * 10))
 
-        if final_value[-1] == "0":
-            final_value = "{:.0f}".format(value * 10)
-            final_value = int(final_value)
-        else:
-            final_value = float(final_value)
-        self.value = float(final_value)
         self.is_valid = True
         self.updated_at = datetime.datetime.now()
         self.save()
-        return final_value
