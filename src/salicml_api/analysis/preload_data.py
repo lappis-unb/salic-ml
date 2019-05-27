@@ -5,23 +5,21 @@ from .models import create_indicators_metrics, Indicator, FinancialIndicator, Ad
 from salicml.data import data
 
 
-def load_project_metrics():
+def load_project_metrics(indicator_class):
     """
     Create project metrics for financial indicator
     Updates them if already exists
     """
-    all_metrics = {
-        **FinancialIndicator.METRICS,
-        **AdmissibilityIndicator.METRICS
-    }
+    all_metrics = {**indicator_class.METRICS}
 
-    for key in all_metrics:
-        df = getattr(data, key)
+    for planilha in all_metrics:
+        df = getattr(data, planilha)
         pronac = 'PRONAC'
-        if key == 'planilha_captacao':
+        if planilha == 'planilha_captacao':
             pronac = 'Pronac'
         pronacs = df[pronac].unique().tolist()
-        create_indicators_metrics(all_metrics[key], pronacs)
+
+        create_indicators_metrics(all_metrics[planilha], pronacs, indicator_class)
 
     indicators = Indicator.objects.all()
     for indicator in indicators:
