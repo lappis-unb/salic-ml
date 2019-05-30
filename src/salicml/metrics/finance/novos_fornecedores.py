@@ -15,7 +15,7 @@ def novos_fornecedores(pronac, dt):
     df = info[info['PRONAC'] == pronac]
     providers_count = data.providers_count.to_dict()[0]
 
-    new_providers = []
+    new_providers = {}
     segment_id = None
 
     for _, row in df.iterrows():
@@ -28,18 +28,31 @@ def novos_fornecedores(pronac, dt):
             item_name = row['Item']
             provider_name = row['nmFornecedor']
 
-            new_provider = {
-                'nome': provider_name,
-                'cnpj': cnpj,
-                'itens': {
-                    item_id: {
-                        'nome': item_name,
-                        'tem_comprovante': True
+            new_provider = new_providers.get(cnpj, None)
+
+            if new_provider:
+                new_provider['itens'][item_id] = {
+                    'nome': item_name,
+                    'tem_comprovante': True
+                }
+
+                new_provider['itens'] = {k: v for k, v in sorted(new_provider['itens'].items(), key=lambda i: i[1]['nome'])}
+
+            else:
+                new_provider = {
+                    'nome': provider_name,
+                    'cnpj': cnpj,
+                    'itens': {
+                        item_id: {
+                            'nome': item_name,
+                            'tem_comprovante': True
+                        }
                     }
                 }
-            }
-            new_providers.append(new_provider)
+            
+            new_providers[cnpj] = new_provider
 
+    new_providers = list(new_providers.values())
     providers_amount = len(df['nrCNPJCPF'].unique())
 
     new_providers_amount = len(new_providers)
