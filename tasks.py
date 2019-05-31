@@ -29,6 +29,7 @@ def run(ctx):
     """
     Run development server
     """
+    os.system('service cron start')
     manage(ctx, 'runserver 0.0.0.0:8000', env={})
 
 
