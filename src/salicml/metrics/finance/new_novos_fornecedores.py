@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+import functools
+
+from itertools import chain
 
 from salicml.data.query import metrics
 from salicml.data import data
@@ -15,7 +18,7 @@ def novos_fornecedores(pronac, dt):
     df = info[info['PRONAC'] == pronac]
     providers_count = data.providers_count.to_dict()[0]
 
-    new_providers = {}
+    new_providers = []
     segment_id = None
 
     for _, row in df.iterrows():
@@ -28,31 +31,18 @@ def novos_fornecedores(pronac, dt):
             item_name = row['Item']
             provider_name = row['nmFornecedor']
 
-            new_provider = new_providers.get(cnpj, None)
-
-            if new_provider:
-                new_provider['itens'][item_id] = {
-                    'nome': item_name,
-                    'tem_comprovante': True
-                }
-
-                new_provider['itens'] = {k: v for k, v in sorted(new_provider['itens'].items(), key=lambda i: i[1]['nome'])}
-
-            else:
-                new_provider = {
-                    'nome': provider_name,
-                    'cnpj': cnpj,
-                    'itens': {
-                        item_id: {
-                            'nome': item_name,
-                            'tem_comprovante': True
-                        }
+            new_provider = {
+                'nome': provider_name,
+                'cnpj': cnpj,
+                'itens': {
+                    item_id: {
+                        'nome': item_name,
+                        'tem_comprovante': True
                     }
                 }
-            
-            new_providers[cnpj] = new_provider
+            }
+            new_providers.append(new_provider)
 
-    new_providers = list(new_providers.values())
     providers_amount = len(df['nrCNPJCPF'].unique())
 
     new_providers_amount = len(new_providers)
@@ -75,39 +65,24 @@ def novos_fornecedores(pronac, dt):
     }
 
 
-@data.lazy('providers_info', 'providers_count')
-def average_percentage_of_new_providers(providers_info, providers_count):
+@data.lazy('providers_info', 'providers_count', 'all_providers_cnpj')
+def average_percentage_of_new_providers(providers_info, providers_count, all_providers_cnpj):
     """
     Return the average percentage of new providers
     per segment and the average percentage of all projects.
     """
-    segments_percentages = {}
-    all_projects_percentages = []
     providers_count = providers_count.to_dict()[0]
+    all_providers_cnpj_tuples, _ = all_providers_cnpj
+    
+    partial_func = functools.partial(calc_new_providers_percentage, providers_count)
+    percentages = all_providers_cnpj_tuples.apply(partial_func)
 
-    for _, items in providers_info.groupby('PRONAC'):
-        cnpj_array = items['nrCNPJCPF'].unique()
-        new_providers = 0
-        for cnpj in cnpj_array:
-            cnpj_count = providers_count.get(cnpj, 0)
-            if cnpj_count <= 1:
-                new_providers += 1
-
-        segment_id = items.iloc[0]['idSegmento']
-        new_providers_percent = new_providers / cnpj_array.size
-        segments_percentages.setdefault(segment_id, [])
-        segments_percentages[segment_id].append(new_providers_percent)
-        all_projects_percentages.append(new_providers_percent)
-
-    segments_average_percentage = {}
-    for segment_id, percentages in segments_percentages.items():
-        mean = np.mean(percentages)
-        segments_average_percentage[segment_id] = mean
-
-    return pd.DataFrame.from_dict({
-        'segments_average_percentage': segments_average_percentage,
-        'all_projects_average': np.mean(all_projects_percentages)
-    })
+    return pd.DataFrame.from_dict(
+        {
+            'segments_average_percentage': percentages.groupby('idSegmento').mean(),
+            'all_projects_average': percentages.mean()
+        }
+    )
 
 
 @data.lazy('all_providers_cnpj')
@@ -116,15 +91,10 @@ def providers_count(df):
     Returns total occurrences of each provider
     in the database.
     """
-    providers_count = {}
-    cnpj_array = df.values
-
-    for a in cnpj_array:
-        cnpj = a[0]
-        occurrences = providers_count.get(cnpj, 0)
-        providers_count[cnpj] = occurrences + 1
-
-    return pd.DataFrame.from_dict(providers_count, orient='index')
+    _, cnpj_array = df
+    unique, counts = np.unique(cnpj_array.values, return_counts=True)
+    
+    return pd.DataFrame.from_dict(dict(zip(unique, counts)), orient='index')
 
 
 @data.lazy('planilha_comprovacao')
@@ -144,15 +114,10 @@ def providers_info(df):
 @data.lazy('providers_info')
 def all_providers_cnpj(df):
     """
-    Return CPF/CNPJ of all providers in database.
     """
-    cnpj_list = []
-
-    for _, items in df.groupby('PRONAC'):
-        unique_cnpjs = items['nrCNPJCPF'].unique()
-        cnpj_list += list(unique_cnpjs)
-
-    return pd.DataFrame(cnpj_list)
+    series_of_lists = df.groupby(['PRONAC', 'idSegmento']).apply(lambda i: i['nrCNPJCPF'].unique())
+    flatten = list(chain(*series_of_lists.values))
+    return (series_of_lists, pd.DataFrame(flatten))
 
 
 def get_providers_info(pronac):
@@ -164,3 +129,14 @@ def get_providers_info(pronac):
     grouped = df.groupby('PRONAC')
 
     return grouped.get_group(pronac)
+
+
+def calc_new_providers_percentage(providers_count, array):
+    new_providers = 0
+    for cnpj in array:
+        cnpj_count = providers_count.get(cnpj, 0)
+        if cnpj_count <= 1:
+            new_providers += 1
+
+    new_providers_percent = new_providers / array.size
+    return new_providers_percent
