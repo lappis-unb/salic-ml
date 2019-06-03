@@ -38,21 +38,22 @@ class Indicator(PolymorphicModel):
         """
         # TODO: implement metrics recalculation
         self.calculate_weighted_complexity(self.metrics_weights,
-                                                         recalculate_metrics)
+                                           recalculate_metrics)
 
-    def calculate_weighted_complexity(self, metrics_weights,
+    def calculate_weighted_complexity(self,
+                                      metrics_weights,
                                       recalculate_metrics=False):
         # TODO: implement metrics recalculation
         if recalculate_metrics:
             self.calculate_indicator_metrics()
 
-        total = 0
+        metric_total = 0
         for metric in self.metrics.all():
-            if ((metric.name in metrics_weights)
-                and metric.is_outlier):
-                total += metrics_weights[metric.name]
+            if ((metric.name in metrics_weights) and metric.is_outlier):
+                metric_total += metrics_weights[metric.name]
 
-        final_value = float("{:.1f}".format((total / self.max_total)* 10))
+        final_value = float(
+            "{:.1f}".format((metric_total / self.max_weight_total) * 10))
         self.value = final_value
 
         self.is_valid = True

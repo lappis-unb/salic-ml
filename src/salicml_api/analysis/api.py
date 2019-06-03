@@ -4,7 +4,7 @@ from .utils import default_admissibility_metrics, default_financial_metrics, fin
 from .models import FinancialIndicator, AdmissibilityIndicator
 
 
-values_to_order = ['nome', '-nome', 'pronac', '-pronac'
+values_to_order = ['nome', '-nome', 'pronac', '-pronac',
                    'responsavel', '-responsavel']
 
 
@@ -13,15 +13,15 @@ def query(request, qs):
     qs = qs.prefetch_related('indicator_set')
     if request.method == 'GET':
         for field, value in request.GET.items():
-            if field == 'complexidade__gt':
-                qs = qs.filter(indicator__value__gt=value)
-            elif field == 'order_by':
+            if field == 'order_by':
                 if value == 'complexidade':
                     qs = qs.order_by("indicator__value")
                 elif value == '-complexidade':
                     qs = qs.order_by("-indicator__value")
                 elif value in values_to_order:
                     qs = qs.order_by(value)
+            elif field == 'complexidade__gt':
+                qs = qs.filter(indicator__value__gt=value)
             elif field == 'nome__icontains':
                 dictionary = {field: value}
                 qs = qs.filter(**dictionary)
@@ -79,10 +79,11 @@ def details(project):
                         ]
     indicators_detail = convert_list_into_dict(indicators_detail)
 
-    return {'pronac': project.pronac,
-            'nome': project.nome,
-            'indicadores': indicators_detail,
-            }
+    return {
+        'pronac': project.pronac,
+        'nome': project.nome,
+        'indicadores': indicators_detail,
+    }
 
 
 def indicator_details(indicator):
@@ -107,10 +108,12 @@ def indicator_details(indicator):
 
     metrics.update(null_metrics)
 
-    return {type(indicator).__name__: {
+    return {
+        type(indicator).__name__: {
             'valor': indicator.value,
-            'metricas': metrics, },
-            }
+            'metricas': metrics,
+        }
+    }
 
 
 # utils

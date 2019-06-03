@@ -6,7 +6,9 @@ from boogie.rest import rest_api
 @rest_api(["value"], inline=True)
 class AdmissibilityIndicator(Indicator):
 
-    METRICS = {"planilha_orcamentaria": ["itens_comuns_e_incomuns_por_segmento"]}
+    METRICS = {
+        "planilha_orcamentaria": ["itens_comuns_e_incomuns_por_segmento"]
+    }
 
     class Meta:
         app_label = "analysis"
@@ -18,7 +20,7 @@ class AdmissibilityIndicator(Indicator):
 
     @property
     @lru_cache(maxsize=256)
-    def max_total(self):
+    def max_weight_total(self):
         return sum(self.metrics_weights.values())
 
     def calculate_proponent_projects_weight(self):

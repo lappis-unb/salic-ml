@@ -18,15 +18,13 @@ class FinancialIndicatorManager(PolymorphicManager):
         metrics and indicator value
         """
         project = Project.objects.get(pronac=project)
-        indicator, _ = (FinancialIndicator
-                        .objects.update_or_create(project=project))
+        indicator, _ = (
+            FinancialIndicator.objects.update_or_create(project=project))
         indicator.is_valid = is_valid
         if indicator.is_valid:
-            p_metrics = metrics_calc.get_project(project.pronac)
+            project_metrics = metrics_calc.get_project(project.pronac)
             for metric_name in metrics_list:
-                print("calculando a metrica  ", metric_name)
-                x = getattr(p_metrics.finance, metric_name)
-                print("do projeto: ", project)
+                x = getattr(project_metrics.finance, metric_name)
                 Metric.objects.create_metric(metric_name, x, indicator)
             indicator.fetch_weighted_complexity()
         return indicator
@@ -86,17 +84,15 @@ class FinancialIndicator(Indicator):
 
     @property
     @lru_cache(maxsize=256)
-    def max_total(self):
+    def max_weight_total(self):
         return sum(self.metrics_weights.values())
 
     def calculate_indicator_metrics(self):
-        p_metrics = metrics_calc.get_project(self.project.pronac)
+        project_metrics = metrics_calc.get_project(self.project.pronac)
         metrics = FinancialIndicator.METRICS
         for metric_name in metrics:
             for metric in metrics[metric_name]:
-                print("calculando a metrica  ", metric)
-                x = getattr(p_metrics.finance, metric)
-                print("do projeto: ", self.project)
+                x = getattr(project_metrics.finance, metric)
                 Metric.create_metric(metric, x, self)
 
     def fetch_complexity_without_proponent_projects(self):
@@ -109,15 +105,17 @@ class FinancialIndicator(Indicator):
 
         if metric:
             if isinstance(metric.data["projetos_submetidos"], dict):
-                pronacs = (metric.data["projetos_submetidos"]
-                           ["pronacs_of_this_proponent"])
+                pronacs = (
+                    metric.
+                    data["projetos_submetidos"]["pronacs_of_this_proponent"])
                 metric.data["projetos_submetidos"] = []
-                indicators = (FinancialIndicator.objects
-                              .filter(project__pronac__in=pronacs))
+                indicators = (FinancialIndicator.objects.filter(
+                    project__pronac__in=pronacs))
                 values_list = []
                 for indicator in indicators:
-                    val = (indicator
-                           .fetch_complexity_without_proponent_projects())
+                    val = (
+                        indicator.fetch_complexity_without_proponent_projects()
+                    )
 
                     values_list.append(val)
                     (metric.data["projetos_submetidos"]
@@ -145,7 +143,8 @@ class FinancialIndicator(Indicator):
             "data_final": end_execution,
             "valor_comprovado": self.project.verified_funds,
             "valor_captado": self.project.raised_funds,
-            "situacao": situation_code + " - " + situations.SITUATIONS_DICT[situation_code],
+            "situacao": situation_code + " - " +
+            situations.SITUATIONS_DICT[situation_code],
         }
 
     def __str__(self):
