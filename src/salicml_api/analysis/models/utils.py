@@ -36,33 +36,17 @@ def execute_project_models_sql_scripts(force_update=False):
         db.close()
         query_result = convert_datetime(query_result)
         
-        try:
-            projects = Project.objects.bulk_create(
-                (Project(**vals) for vals in query_result.to_dict("records")),
-                # ignore_conflicts=True available on django 2.2.
-            )
-            f_indicators = [FinancialIndicator(project=p) for p in projects]
-            a_indicators = [AdmissibilityIndicator(project=p) for p in projects]
-
-            FinancialIndicator.objects.bulk_create(f_indicators)
-            AdmissibilityIndicator.objects.bulk_create(a_indicators)
-        except IntegrityError:
-            # happens when there are duplicated projects
-            LOG("Projects bulk_create failed, creating one by one...")
-            with transaction.atomic():
-                if force_update:
-                    for item in query_result.to_dict("records"):
-                        p, _ = Project.objects.update_or_create(**item)
-                        FinancialIndicator.objects.update_or_create(project=p)
-                        AdmissibilityIndicator.objects.update_or_create(project=p)
-                else:
-
-                    for item in query_result.to_dict("records"):
-                        p, _ = Project.objects.get_or_create(**item)
-                        FinancialIndicator.objects.update_or_create(project=p)
-                        AdmissibilityIndicator.objects.update_or_create(project=p)
-
-    create_project_valores()
+        # try:
+        projects = Project.objects.bulk_create(
+            (Project(**vals) for vals in query_result.to_dict("records")),
+            ignore_conflicts=True
+        )
+        f_indicators = [FinancialIndicator(project=p) for p in projects]
+        a_indicators = [AdmissibilityIndicator(project=p) for p in projects]
+        FinancialIndicator.objects.bulk_create(f_indicators)
+        AdmissibilityIndicator.objects.bulk_create(a_indicators)
+        
+        create_project_valores()
 
 
 def create_project_valores():
@@ -104,6 +88,7 @@ def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
     print(f"There are {len(missing)} missing metrics!")
 
     processors = mp.cpu_count()
+    # processors = 1
     print(f"Using {processors} processors to calculate metrics!")
 
     indicators = {i.project_id: i for i in indicators_qs}
@@ -128,6 +113,7 @@ def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
     print("Finished update indicators!")
 
     pool.close()
+    pool.join()
     print("Finished metrics calculation!")
 
 
