@@ -24,7 +24,7 @@ default_financial_metrics = {
         "minimo_esperado": 0,
         "maximo_esperado": 0,
     },
-    "comprovantes_acima_de_50": {
+    "comprovantes_acima_50": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,

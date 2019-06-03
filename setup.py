@@ -9,7 +9,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src'),
     install_requires=[
-        'django~=2.1',
+        'django~=2.2',
         'django-boogie',
         'django-environ~=0.4.5',
         'django-filter',

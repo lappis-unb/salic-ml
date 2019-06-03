@@ -12,5 +12,6 @@ Breve comentário sobre o contexto e descrição da issue.
 
 **Critérios de aceitação**
 
+- [ ] Caso as models tenham sido alteradas, as migrações devem estar commitadas.
 - [ ] Cada critério de aceitação descreve uma condição necessária para que a issue seja considerada completa
 - [ ] A condição necessária pode ser a nível de comportamento ou resultado
