@@ -5,6 +5,7 @@ import numpy
 
 from salicml.data.query import metrics as metrics_calc
 from salicml.outliers.gaussian_outlier import is_outlier
+from salicml_api.analysis import situations
 from .metric import Metric
 from .base import Indicator
 from .project import Project
@@ -80,7 +81,7 @@ class FinancialIndicator(Indicator):
             "valor_comprovado": 0,
             "itens_comuns_e_incomuns_por_segmento": 0,
             "comprovante_pagamento": 0,
-            "items_prices": 0,
+            "items_prices": 0
         }
 
     @property
@@ -99,12 +100,13 @@ class FinancialIndicator(Indicator):
                 Metric.create_metric(metric, x, self)
 
     def fetch_complexity_without_proponent_projects(self):
-        metrics_weights = self.metrics_weights
-        del metrics_weights["projetos_mesmo_proponente"]
-        return self.calculate_weighted_complexity(metrics_weights)
+        new_metrics_weights = self.metrics_weights
+        del new_metrics_weights["projetos_mesmo_proponente"]
+        return self.calculate_weighted_complexity(new_metrics_weights)
 
     def calculate_proponent_projects_weight(self):
-        metric = self.metrics.filter(name="proponent_projects").first()
+        metric = self.metrics.filter(name="projetos_mesmo_proponente").first()
+
         if metric:
             if isinstance(metric.data["projetos_submetidos"], dict):
                 pronacs = (metric.data["projetos_submetidos"]
@@ -116,12 +118,15 @@ class FinancialIndicator(Indicator):
                 for indicator in indicators:
                     val = (indicator
                            .fetch_complexity_without_proponent_projects())
+
                     values_list.append(val)
                     (metric.data["projetos_submetidos"]
                      .append(indicator.get_project_info()))
+
                 std = numpy.std(values_list)
                 mean = numpy.mean(values_list)
                 value = self.fetch_complexity_without_proponent_projects()
+
                 outlier = is_outlier(value, mean, std)
                 metric.is_outlier = outlier
                 metric.save()
@@ -130,14 +135,17 @@ class FinancialIndicator(Indicator):
     def get_project_info(self):
         start_execution = self.project.start_execution
         end_execution = self.project.end_execution
+        situation_code = self.project.situation
+
         return {
             "complexidade": self.value,
             "pronac": self.project.pronac,
             "nome": self.project.nome,
-            "periodo_de_execucao": f'{start_execution} a {end_execution}',
+            "data_inicio": start_execution,
+            "data_final": end_execution,
             "valor_comprovado": self.project.verified_funds,
             "valor_captado": self.project.raised_funds,
-            "situacao": self.project.situation,
+            "situacao": situation_code + " - " + situations.SITUATIONS_DICT[situation_code],
         }
 
     def __str__(self):

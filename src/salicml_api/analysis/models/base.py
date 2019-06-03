@@ -52,10 +52,10 @@ class Indicator(PolymorphicModel):
                 and metric.is_outlier):
                 total += metrics_weights[metric.name]
 
-        value = total / self.max_total
-
-        self.value = float("{:.1f}".format(value * 10))
+        final_value = float("{:.1f}".format((total / self.max_total)* 10))
+        self.value = final_value
 
         self.is_valid = True
         self.updated_at = datetime.datetime.now()
         self.save()
+        return final_value
