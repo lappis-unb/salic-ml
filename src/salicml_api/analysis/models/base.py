@@ -60,4 +60,5 @@ class Indicator(PolymorphicModel):
         self.is_valid = True
         self.updated_at = datetime.datetime.now()
         self.save()
+
         return final_value
