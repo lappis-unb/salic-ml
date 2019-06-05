@@ -37,6 +37,7 @@ services:
       - ../etc/env/deploy.env
     volumes:
       - ../data:/data
+      - ../logs:/var/log/
     ports:
       - "8000:8000"
     environment:
