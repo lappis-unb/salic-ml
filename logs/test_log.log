@@ -1,0 +1,711 @@
+Attempting to cron
+/root
+sh: 1: service: not found
+/usr/bin/python3: can't open file 'src/salicml_api/manage.py': [Errno 2] No such file or directory
+Attempting to cron
+/root
+sh: 1: service: not found
+/usr/bin/python3: can't open file 'src/salicml_api/manage.py': [Errno 2] No such file or directory
+Attempting to cron
+/root
+sh: 1: service: not found
+/usr/bin/python3: can't open file 'src/salicml_api/manage.py': [Errno 2] No such file or directory
+Attempting to cron
+/root
+sh: 1: service: not found
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/base.py", line 323, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/commands/runserver.py", line 60, in execute
+    super().execute(*args, **options)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/base.py", line 364, in execute
+    output = self.handle(*args, **options)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/commands/runserver.py", line 67, in handle
+    if not settings.DEBUG and not settings.ALLOWED_HOSTS:
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+Attempting to cron
+/root
+sh: 1: service: not found
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/base.py", line 323, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/commands/runserver.py", line 60, in execute
+    super().execute(*args, **options)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/base.py", line 364, in execute
+    output = self.handle(*args, **options)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/commands/runserver.py", line 67, in handle
+    if not settings.DEBUG and not settings.ALLOWED_HOSTS:
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+=======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+=======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+=======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+=======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+=======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+Wed Jun  5 19:37:01 UTC 2019 =======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+Wed Jun  5 19:38:01 UTC 2019 =======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+Wed Jun  5 19:39:01 UTC 2019 =======================
+Attempting to cron
+/root
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+=======================
+======================= Wed Jun  5 19:41:01 UTC 2019 =======================
+Attempting to cron
+declare -x HOME="/root"
+declare -x LOGNAME="root"
+declare -x OLDPWD="/root"
+declare -x PATH="/usr/bin:/bin"
+declare -x PWD="/"
+declare -x SHELL="/bin/sh"
+declare -x SHLVL="1"
+file /data/raw/planilha_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_projetos.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_comprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_orcamentaria.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_captacao.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/planilha_aprovacao_pai.pickle.gz already exists, if you would like to update it, use -f flag
+
+file /data/raw/project_items.pickle.gz already exists, if you would like to update it, use -f flag
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 273, in get_value
+    value = self.ENVIRON[var]
+  File "/usr/lib/python3.7/os.py", line 678, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'DJANGO_SECRET_KEY'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "src/salicml_api/manage.py", line 21, in <module>
+    execute_from_command_line(sys.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 381, in execute_from_command_line
+    utility.execute()
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 375, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/usr/local/lib/python3.7/dist-packages/django/core/management/__init__.py", line 211, in fetch_command
+    settings.INSTALLED_APPS
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 79, in __getattr__
+    self._setup(name)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 66, in _setup
+    self._wrapped = Settings(settings_module)
+  File "/usr/local/lib/python3.7/dist-packages/django/conf/__init__.py", line 157, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "/usr/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/src/salicml_api/config/settings.py", line 29, in <module>
+    SECRET_KEY = env("DJANGO_SECRET_KEY")
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 123, in __call__
+    return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+  File "/usr/local/lib/python3.7/dist-packages/environ/environ.py", line 277, in get_value
+    raise ImproperlyConfigured(error_msg)
+django.core.exceptions.ImproperlyConfigured: Set the DJANGO_SECRET_KEY environment variable
+======================= Wed Jun  5 19:46:01 UTC 2019 =======================
+Attempting to cron
+======================= Wed Jun  5 19:47:01 UTC 2019 =======================
+Attempting to cron
+======================= Wed Jun  5 19:48:01 UTC 2019 =======================
+Attempting to cron
+======================= Wed Jun  5 19:49:01 UTC 2019 =======================
+Attempting to cron

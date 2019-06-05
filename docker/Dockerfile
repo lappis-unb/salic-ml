@@ -4,9 +4,8 @@ COPY tasks.py /tasks.py
 COPY etc/ /etc/
 COPY src/ src/
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
-        echo $TZ > /etc/timezone && \
-        dpkg-reconfigure -f noninteractive tzdata
+RUN rm -f /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 
 ADD etc/scripts/crontab /etc/cron.d/complexity-cron
 
