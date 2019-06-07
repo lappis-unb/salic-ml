@@ -36,11 +36,13 @@ class Indicator(PolymorphicModel):
             recalculate_metrics: If true metrics values are updated before
                                  using weights
         """
+
         # TODO: implement metrics recalculation
         self.calculate_weighted_complexity(self.metrics_weights,
-                                                         recalculate_metrics)
+                                           recalculate_metrics)
 
-    def calculate_weighted_complexity(self, metrics_weights,
+    def calculate_weighted_complexity(self,
+                                      metrics_weights,
                                       recalculate_metrics=False):
         # TODO: implement metrics recalculation
         if recalculate_metrics:
@@ -48,14 +50,15 @@ class Indicator(PolymorphicModel):
 
         metric_total = 0
         for metric in self.metrics.all():
-            if ((metric.name in metrics_weights)
-                and metric.is_outlier):
+            if ((metric.name in metrics_weights) and metric.is_outlier):
                 metric_total += metrics_weights[metric.name]
 
-        metric_value = metric_total / self.max_weight_total
-
-        self.value = float("{:.1f}".format(metric_value * 10))
+        final_value = float(
+            "{:.1f}".format((metric_total / self.max_weight_total) * 10))
+        self.value = final_value
 
         self.is_valid = True
         self.updated_at = datetime.datetime.now()
         self.save()
+
+        return final_value

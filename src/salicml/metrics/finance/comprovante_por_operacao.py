@@ -3,16 +3,22 @@ from salicml.data import data
 import numpy as np
 import toolz
 
-COLUMNS = ['PRONAC', 'idComprovantePagamento', 'tpFormaDePagamento', 'Item',
-           'nmFornecedor', 'vlComprovacao', 'nrCNPJCPF']
+COLUMNS = [
+    'PRONAC', 'idComprovantePagamento', 'tpFormaDePagamento', 'Item',
+    'nmFornecedor', 'vlComprovacao', 'nrCNPJCPF'
+]
 COLUMNS_RENAME = {
-                    'nmFornecedor': 'nome_fornecedor',
-                    'Item': 'item',
-                    'vlComprovacao': 'valor_comprovado',
-                    'nrCNPJCPF': 'cpf_cnpj_fornecedor',
+    'nmFornecedor': 'nome_fornecedor',
+    'Item': 'item',
+    'vlComprovacao': 'valor_comprovado',
+    'nrCNPJCPF': 'cpf_cnpj_fornecedor',
 }
-new_tpFormaDePagamento = {0.0: np.nan, 1.0: "Cheque",
-                          2.0: "Transferência Bancária", 3.0: 'Saque/Dinheiro'}
+new_tpFormaDePagamento = {
+    0.0: np.nan,
+    1.0: "Cheque",
+    2.0: "Transferência Bancária",
+    3.0: 'Saque/Dinheiro'
+}
 
 
 @metrics.register('finance')
@@ -59,9 +65,8 @@ def comprovante_saque(pronac, dt):
 @data.lazy('planilha_comprovacao')
 def verified_repeated_receipts(df):
     receipts = df[COLUMNS]
-    duplicated = receipts[receipts
-                          .duplicated(subset=['idComprovantePagamento'],
-                                      keep=False)]
+    duplicated = receipts[receipts.duplicated(
+        subset=['idComprovantePagamento'], keep=False)]
     return duplicated
 
 
@@ -74,7 +79,6 @@ def verified_repeated_receipts_for_pronac(pronac):
 
 def metric_return(dataframe):
     is_outlier = None
-    value = dataframe.shape[0]
     results = {}
     del dataframe['tpFormaDePagamento']
     if dataframe.empty:
@@ -85,9 +89,10 @@ def metric_return(dataframe):
         results = dataframe.to_dict('records')
         results = toolz.groupby('idComprovantePagamento', results)
         is_outlier = True
+
     return {
         'is_outlier': is_outlier,
-        'valor': value,
+        'valor': len(results),
         'comprovantes': add_keys(results),
     }
 
@@ -96,7 +101,9 @@ def add_keys(results):
 
     modified_dict_list = []
     for key in results.keys():
-        modified_dict_list.append({"id_comprovante": key,
-                                   "itens": results[key]})
+        modified_dict_list.append({
+            "id_comprovante": key,
+            "itens": results[key]
+        })
 
     return modified_dict_list

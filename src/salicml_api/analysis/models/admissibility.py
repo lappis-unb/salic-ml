@@ -6,7 +6,9 @@ from boogie.rest import rest_api
 @rest_api(["value"], inline=True)
 class AdmissibilityIndicator(Indicator):
 
-    METRICS = {"planilha_orcamentaria": ["itens_comuns_e_incomuns_por_segmento"]}
+    METRICS = {
+        "planilha_orcamentaria": ["itens_comuns_e_incomuns_por_segmento"]
+    }
 
     class Meta:
         app_label = "analysis"

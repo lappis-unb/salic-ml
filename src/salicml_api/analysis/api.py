@@ -3,9 +3,9 @@ from boogie.rest import rest_api
 from .utils import default_admissibility_metrics, default_financial_metrics, financial_metrics_names
 from .models import FinancialIndicator, AdmissibilityIndicator
 
-
-values_to_order = ['nome', '-nome', 'pronac', '-pronac',
-                   'responsavel', '-responsavel']
+values_to_order = [
+    'nome', '-nome', 'pronac', '-pronac', 'responsavel', '-responsavel'
+]
 
 
 @rest_api.query_hook('analysis.Project')
@@ -15,9 +15,11 @@ def query(request, qs):
         for field, value in request.GET.items():
             if field == 'order_by':
                 if value == 'complexidade':
-                    qs = qs.order_by("indicator__value")
+                    qs = qs.filter(
+                        indicator__value__gt=-1).order_by("indicator__value")
                 elif value == '-complexidade':
-                    qs = qs.order_by("-indicator__value")
+                    qs = qs.filter(
+                        indicator__value__gt=-1).order_by("-indicator__value")
                 elif value in values_to_order:
                     qs = qs.order_by(value)
             elif field == 'complexidade__gt':
@@ -69,14 +71,19 @@ def details(project):
     indicators_detail = [indicator_details(i) for i in indicators]
     if not indicators:
         indicators_detail = [
-                        {'FinancialIndicator':
-                            {'valor': 0.0,
-                             'metrics': default_financial_metrics, }, },
-
-                        {'AdmissibilityIndicator':
-                             {'valor': 0.0,
-                              'metrics': default_admissibility_metrics, }, },
-                        ]
+            {
+                'FinancialIndicator': {
+                    'valor': 0.0,
+                    'metrics': default_financial_metrics,
+                },
+            },
+            {
+                'AdmissibilityIndicator': {
+                    'valor': 0.0,
+                    'metrics': default_admissibility_metrics,
+                },
+            },
+        ]
     indicators_detail = convert_list_into_dict(indicators_detail)
 
     return {
@@ -94,9 +101,9 @@ def indicator_details(indicator):
     """
     metrics = format_metrics_json(indicator)
 
-    metrics_set = set(indicator.metrics
-                       .filter(name__in=financial_metrics_names)
-                       .values_list('name', flat=True))
+    metrics_set = set(
+        indicator.metrics.filter(name__in=financial_metrics_names).values_list(
+            'name', flat=True))
     null_metrics = {}
     if isinstance(indicator, FinancialIndicator):
         null_metrics.update(default_financial_metrics)
@@ -122,15 +129,14 @@ def convert_list_into_dict(list):
 
 
 def format_metrics_json(indicator):
-    metrics = [
-                {m.name: {
-                      'valor': m.value,
-                      'data': m.data,
-                      'valor_valido': True,
-                      'is_outlier': m.is_outlier,
-                      'minimo_esperado': m.data.get('minimo_esperado', 0),
-                      'maximo_esperado': m.data.get('maximo_esperado', 0)
-                  },
-                 } for m in indicator
-                .metrics.filter(name__in=financial_metrics_names)]
+    metrics = [{
+        m.name: {
+            'valor': m.value,
+            'data': m.data,
+            'valor_valido': True,
+            'is_outlier': m.is_outlier,
+            'minimo_esperado': m.data.get('minimo_esperado', 0),
+            'maximo_esperado': m.data.get('maximo_esperado', 0)
+        },
+    } for m in indicator.metrics.filter(name__in=financial_metrics_names)]
     return convert_list_into_dict(metrics)
