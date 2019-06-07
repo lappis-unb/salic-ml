@@ -13,6 +13,8 @@ from . import Indicator, FinancialIndicator, AdmissibilityIndicator
 from . import Metric
 from . import Project
 
+from salicml.metrics import finance
+
 log = logging.getLogger("salic-ml.data")
 LOG = log.info
 MODEL_PATH = DATA_PATH / "scripts" / "models"
@@ -20,6 +22,7 @@ MODEL_FILE = MODEL_PATH / "general_project_data.sql"
 VERIFIED_FUNDS_FILE = MODEL_PATH / "project_valor_comprovado.sql"
 RAISED_FUNDS_FILE = MODEL_PATH / "project_valor_captado.sql"
 
+FINANCE = finance
 
 def execute_project_models_sql_scripts(force_update=False):
     """
@@ -85,11 +88,10 @@ def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
         project_id__in=[p for p, _ in missing]
     )
 
-    print(f"There are {len(missing)} missing metrics!")
+    print(f"There are {len(missing)} projects missing this metric!")
 
     processors = mp.cpu_count()
-    # processors = 1
-    print(f"Using {processors} processors to calculate metrics!")
+    # print(f"Using {processors} processors to calculate metrics!")
 
     indicators = {i.project_id: i for i in indicators_qs}
 
@@ -114,7 +116,7 @@ def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
 
     pool.close()
     pool.join()
-    print("Finished metrics calculation!")
+    print("Finished metric calculation!\n")
 
 
 def missing_metrics(metrics, pronacs):
@@ -125,6 +127,7 @@ def missing_metrics(metrics, pronacs):
     missing = set(product(projects_pronacs, metrics)) - set(projects_metrics)
     
     return missing
+
 
 def create_metric(indicators, metric_name, pronac):
     indicator = indicators[pronac]
