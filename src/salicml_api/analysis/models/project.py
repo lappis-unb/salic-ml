@@ -5,6 +5,7 @@ from django.db import models
 from sidekick import lazy
 from salicml.data.db_operations import DATA_PATH
 from salicml_api.analysis.situations import SITUATIONS
+from django.contrib.contenttypes.models import ContentType
 
 log = logging.getLogger("salic-ml.data")
 LOG = log.info
@@ -34,6 +35,7 @@ class Project(models.Model):
     responsavel = models.CharField(max_length=200, null=True)
     verified_funds = models.FloatField(null=True, blank=True, default=0.0)
     raised_funds = models.FloatField(null=True, blank=True, default=0.0)
+    complexity = models.FloatField(null=True, blank=True, default=0.0)
     objects = ProjectManager()
 
     class Meta:
@@ -45,12 +47,21 @@ class Project(models.Model):
         """
         Project complexity, same as FinancialIndicator value
         """
+        return self.complexity
+
+    def financial_indicator(self):
+        """
+        Project complexity, same as FinancialIndicator value
+        """
+
         indicators = self.indicator_set.all()
-        if not indicators:
-            value = 0.0
-        else:
-            value = indicators.first().value
-        return value
+        financial_indicator = None
+        for indicator in indicators:
+            if ContentType.objects.get(app_label='analysis', model='financialindicator').id == indicator.polymorphic_ctype_id:
+                financial_indicator = indicator
+                break
+    
+        return financial_indicator
 
     def __str__(self):
         return self.nome

@@ -27,6 +27,9 @@ class FinancialIndicatorManager(PolymorphicManager):
                 x = getattr(project_metrics.finance, metric_name)
                 Metric.objects.create_metric(metric_name, x, indicator)
             indicator.fetch_weighted_complexity()
+
+        project.complexity = indicator.value
+        project.save()
         return indicator
 
 
@@ -146,6 +149,13 @@ class FinancialIndicator(Indicator):
             "situacao": situation_code + " - " +
             situations.SITUATIONS_DICT[situation_code],
         }
+
+    def save(self, *args, **kwargs):
+        project = self.project
+        project.complexity = self.value
+        project.save()
+        super(Indicator, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return self.project.nome + " value: " + str(self.value)
