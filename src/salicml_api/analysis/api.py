@@ -15,11 +15,9 @@ def query(request, qs):
         for field, value in request.GET.items():
             if field == 'order_by':
                 if value == 'complexidade':
-                    qs = qs.filter(
-                        indicator__value__gt=-1).order_by("indicator__value")
+                    qs = qs.order_by('complexity')
                 elif value == '-complexidade':
-                    qs = qs.filter(
-                        indicator__value__gt=-1).order_by("-indicator__value")
+                    qs = qs.order_by('-complexity')
                 elif value in values_to_order:
                     qs = qs.order_by(value)
             elif field == 'complexidade__gt':
