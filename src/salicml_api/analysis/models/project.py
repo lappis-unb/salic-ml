@@ -35,6 +35,7 @@ class Project(models.Model):
     responsavel = models.CharField(max_length=200, null=True)
     verified_funds = models.FloatField(null=True, blank=True, default=0.0)
     raised_funds = models.FloatField(null=True, blank=True, default=0.0)
+    complexity = models.FloatField(null=True, blank=True, default=0.0)
     objects = ProjectManager()
 
     class Meta:
@@ -46,13 +47,7 @@ class Project(models.Model):
         """
         Project complexity, same as FinancialIndicator value
         """
-        indicators = self.indicator_set.all()
-        value = 0.0
-        for indicator in indicators:
-            if ContentType.objects.get(app_label='analysis', model='financialindicator').id == indicator.polymorphic_ctype_id:
-                value = indicator.value
-                break
-        return value
+        return self.complexity
 
     def financial_indicator(self):
         """
