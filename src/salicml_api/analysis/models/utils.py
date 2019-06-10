@@ -88,35 +88,23 @@ def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
         project_id__in=[p for p, _ in missing]
     )
 
-    print(f"There are {len(missing)} projects missing this metric!")
-
-    processors = mp.cpu_count()
-    # print(f"Using {processors} processors to calculate metrics!")
+    print(f"There are {len(missing)} projects missing \"{metrics[0]}\" metric!")
 
     indicators = {i.project_id: i for i in indicators_qs}
 
-    pool = mp.Pool(processors)
-    results = [
-        pool.apply_async(create_metric, args=(indicators, metric_name, pronac))
-        for pronac, metric_name in missing
-    ]
+    calculated_metrics = []
+    for pronac, metric_name in missing:
+        calculated_metrics.append(create_metric(indicators, metric_name, pronac))
 
-    calculated_metrics = [p.get() for p in results]
     if calculated_metrics:
         Metric.objects.bulk_create(calculated_metrics)
-        print("Bulk completed")
+        print(f"Bulk \"{metrics[0]}\" metric completed")
 
         for indicator in indicators.values():
             indicator.fetch_weighted_complexity()
-
-    for indicator in indicators.values():
-        indicator.fetch_complexity_without_proponent_projects()
-    
-    print("Finished update indicators!")
-
-    pool.close()
-    pool.join()
-    print("Finished metric calculation!\n")
+            indicator.fetch_complexity_without_proponent_projects()
+        
+        print(f"Finished metric \"{metrics[0]}\" calculation!\n")
 
 
 def missing_metrics(metrics, pronacs):
