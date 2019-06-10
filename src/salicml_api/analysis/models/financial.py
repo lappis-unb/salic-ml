@@ -154,7 +154,7 @@ class FinancialIndicator(Indicator):
         project = self.project
         project.complexity = self.value
         project.save()
-        super(Model, self).save(*args, **kwargs)
+        super(Indicator, self).save(*args, **kwargs)
 
 
     def __str__(self):
