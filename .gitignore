@@ -151,3 +151,4 @@ tags
 .vscode
 
 src/api/db\.sqlite3-journal
+logs/*.log
