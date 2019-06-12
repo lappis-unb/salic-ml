@@ -76,6 +76,9 @@ class Loader:
         """
         self._store(loc, df, 'test')
 
+    def store_dev_df(self, loc, df):
+        self._store(loc, df, 'dev')
+
     def lazy(self, *names, name=None):
         """
 
