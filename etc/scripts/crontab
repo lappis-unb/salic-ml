@@ -1,2 +1,4 @@
 59 23 * * SUN /etc/scripts/preload_data.sh >> /var/log/cron_complexity.log 2>&1
 59 23 * * WED /etc/scripts/preload_data.sh >> /var/log/test_log.log 2>&1
+# DEBUG run every minute
+* * * * * /etc/scripts/preload_data.sh >> /var/log/debug.log 2>&1
