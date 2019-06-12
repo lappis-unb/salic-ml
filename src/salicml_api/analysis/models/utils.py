@@ -97,14 +97,16 @@ def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
         calculated_metrics.append(create_metric(indicators, metric_name, pronac))
 
     if calculated_metrics:
-        Metric.objects.bulk_create(calculated_metrics)
+        Metric.objects.bulk_create(calculated_metrics, batch_size=1000)
         print(f"Bulk \"{metrics[0]}\" metric completed")
 
         for indicator in indicators.values():
             indicator.fetch_weighted_complexity()
-            indicator.fetch_complexity_without_proponent_projects()
+
+    for indicator in indicators.values():
+        indicator.fetch_complexity_without_proponent_projects()
         
-        print(f"Finished metric \"{metrics[0]}\" calculation!\n")
+    print(f"Finished metric \"{metrics[0]}\" calculation!\n")
 
 
 def missing_metrics(metrics, pronacs):

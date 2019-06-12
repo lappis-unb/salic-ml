@@ -109,8 +109,8 @@ class FinancialIndicator(Indicator):
         if metric:
             if isinstance(metric.data["projetos_submetidos"], dict):
                 pronacs = (
-                    metric.
-                    data["projetos_submetidos"]["pronacs_of_this_proponent"])
+                    metric.data["projetos_submetidos"]["pronacs_of_this_proponent"]
+                )
                 metric.data["projetos_submetidos"] = []
                 indicators = (FinancialIndicator.objects.filter(
                     project__pronac__in=pronacs))

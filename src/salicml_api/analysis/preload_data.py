@@ -34,7 +34,11 @@ def load_project_metrics(indicator_class):
         process.start()
 
     [p.join() for p in process_list]
-
+    
+    indicators = indicator_class.objects.all()
+    for indicator in indicators:
+        indicator.calculate_proponent_projects_weight()
+    
     print("Finished metrics calculation!\n")
 
 
