@@ -36,7 +36,10 @@ class Loader:
                 try:
                     df = _load_dataframe(self._root / "raw", attr)
                 except FileNotFoundError:
-                    df = _load_dataframe(self._root / "test", attr)
+                    try:
+                        df = _load_dataframe(self._root / "dev", attr)
+                    except FileNotFoundError:
+                        df = _load_dataframe(self._root / "test", attr)
             self._cache[attr] = df
             return df
 
