@@ -122,6 +122,14 @@ Este projeto utiliza `tasks` do [invoke](http://www.pyinvoke.org/) para automati
     $ inv gen-test-df
     ```
 
+ - Setar quais datasets usar (desenvolvimento, produção ou teste)
+
+    ```shell
+    $ inv set-data datatype=prod
+    $ inv set-data datatype=dev
+    $ inv set-data datatype=test
+    ```
+
  - Transformar arquivos `csv` em `pickles`:
 
     ```shell
