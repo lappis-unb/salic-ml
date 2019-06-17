@@ -2,6 +2,9 @@
 Pre loads measurements from database saved projects
 """
 import multiprocessing as mp
+
+from django import db
+
 from .models import create_indicators_metrics, Indicator, FinancialIndicator, AdmissibilityIndicator
 from salicml.data import data
 
@@ -12,21 +15,48 @@ def load_project_metrics(indicator_class):
     Updates them if already exists
     """
     all_metrics = {**indicator_class.METRICS}
+    
+    #close db connections here
+    db.connections.close_all()
 
     processors = mp.cpu_count()
     print(f"Using {processors} processors to calculate metrics!")
+    
+    process_list = []
 
     for planilha in all_metrics:
-        df = getattr(data, planilha)
-        pronac = 'PRONAC'
-        if planilha == 'planilha_captacao':
-            pronac = 'Pronac'
-        pronacs = df[pronac].unique().tolist()
+        
+        process = mp.Process(
+            target=start_calculation,
+            args=(planilha, all_metrics, indicator_class)
+        )
+        process_list.append(process)
+        process.start()
 
-        for metric in all_metrics[planilha]:
-            print(f'Calculating metric "{metric}"')
-            create_indicators_metrics([metric], pronacs, indicator_class)
-
-    indicators = Indicator.objects.all()
+    [p.join() for p in process_list]
+    
+    indicators = indicator_class.objects.all()
     for indicator in indicators:
         indicator.calculate_proponent_projects_weight()
+    
+    print("Finished metrics calculation!\n")
+
+
+def start_calculation(planilha, all_metrics, indicator_class):
+    df = getattr(data, planilha)
+    pronac = 'PRONAC'
+    if planilha == 'planilha_captacao':
+        pronac = 'Pronac'
+    
+    pronacs = df[pronac].unique().tolist()
+    inner_process_list = []
+    for metric in all_metrics[planilha]:
+        print(f'Calculating metric "{metric}"\n')
+        inner_process = mp.Process(
+            target=create_indicators_metrics,
+            args=([metric], pronacs, indicator_class)
+        )
+        inner_process_list.append(inner_process)
+        inner_process.start()
+        
+    [p.join() for p in inner_process_list]
