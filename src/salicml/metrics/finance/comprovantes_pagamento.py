@@ -36,12 +36,12 @@ def comprovante_pagamento(pronac, dt):
         }
 
 
-@data.lazy('planilha_comprovacao')
+# @data.lazy('planilha_comprovacao')
 def segment_projects(df):
     return df.groupby(["idSegmento", "PRONAC"]).nunique()
 
 
-@data.lazy('segment_projects')
+# @data.lazy('segment_projects')
 def segment_projects_agg(df):
     df = df["idComprovantePagamento"].groupby(["idSegmento"])
 

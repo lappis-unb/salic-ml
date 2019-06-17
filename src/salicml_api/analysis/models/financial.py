@@ -86,7 +86,7 @@ class FinancialIndicator(Indicator):
         }
 
     @property
-    @lru_cache(maxsize=256)
+    # @lru_cache(maxsize=256)
     def max_weight_total(self):
         return sum(self.metrics_weights.values())
 

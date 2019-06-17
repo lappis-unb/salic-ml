@@ -34,7 +34,7 @@ def valor_comprovado(pronac, dt):
     }
 
 
-@data.lazy('planilha_comprovacao')
+# @data.lazy('planilha_comprovacao')
 def comprovation_value(df):
     df["vlComprovacao"] = df["vlComprovacao"].apply(
         pd.to_numeric
@@ -42,7 +42,7 @@ def comprovation_value(df):
     return df
 
 
-@data.lazy('comprovation_value')
+# @data.lazy('comprovation_value')
 def verified_funds_by_segment_agg(df):
     df = (
         df[["PRONAC", "idSegmento", "vlComprovacao"]]

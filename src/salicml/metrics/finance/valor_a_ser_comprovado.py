@@ -4,7 +4,7 @@ from salicml.data.query import metrics
 from salicml.data import data
 
 
-@data.lazy('planilha_captacao')
+# @data.lazy('planilha_captacao')
 def raised_funds_by_project(df):
     """
     Raised funds organized by project.

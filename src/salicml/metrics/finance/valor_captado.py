@@ -22,7 +22,7 @@ def valor_captado(pronac, data):
     }
 
 
-@data.lazy('all_raised_funds')
+# @data.lazy('all_raised_funds')
 def raised_funds_by_segment(df):
     """
     Raised funds organized by segment.
@@ -34,7 +34,7 @@ def raised_funds_by_segment(df):
     )
 
 
-@data.lazy('raised_funds_by_segment')
+# @data.lazy('raised_funds_by_segment')
 def segment_raised_funds_average(df):
     """
     Return some info about raised funds.

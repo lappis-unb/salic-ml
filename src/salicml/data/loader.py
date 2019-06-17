@@ -122,7 +122,7 @@ def csv_to_pickle(path=ROOT / "raw", clean=False):
             continue
 
         LOG(f"converting {file} to pickle")
-        df = pd.read_csv(path / file, low_memory=True)
+        df = pd.read_csv(path / file, low_memory=False)
         WRITE_DF(df, path / (base + "." + FILE_EXTENSION), **WRITE_DF_OPTS)
         if clean:
             os.remove(path / file)
@@ -137,7 +137,7 @@ def _file_attributes(path):
             yield file[:-ext_size]
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def get_data():
     return Loader()
 

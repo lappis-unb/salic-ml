@@ -46,7 +46,7 @@ def projetos_mesmo_proponente(pronac, data):
     }
 
 
-@data.lazy('valor_comprovado')
+# @data.lazy('valor_comprovado')
 def analyzed_projects(raw_df):
     """
     Return all projects that was analyzed.
@@ -62,7 +62,7 @@ def analyzed_projects(raw_df):
     return analyzed_projects
 
 
-@data.lazy('planilha_projetos')
+# @data.lazy('planilha_projetos')
 def submitted_projects(raw_df):
     """
     Return all submitted projects.
@@ -77,7 +77,7 @@ def submitted_projects(raw_df):
     return submitted_projects
 
 
-@data.lazy('planilha_comprovacao')
+# @data.lazy('planilha_comprovacao')
 def valor_comprovado(df):
     """
     Relevant info about proponent.
@@ -88,7 +88,7 @@ def valor_comprovado(df):
     )
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def submitted_projects_dict():
     """
     Cached dict of all submitted projects.
@@ -97,7 +97,7 @@ def submitted_projects_dict():
     return df.to_dict(orient='index')
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def analyzed_projects_dict():
     """
     Cached dict of all analyzed projects.

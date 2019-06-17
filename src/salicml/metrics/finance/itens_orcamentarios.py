@@ -31,7 +31,7 @@ def itens_orcamentarios(pronac, dt):
     }
 
 
-@data.lazy('planilha_orcamentaria')
+# @data.lazy('planilha_orcamentaria')
 def items_by_project(df):
     """
     Return a dataframe to verify project number of items
@@ -40,7 +40,7 @@ def items_by_project(df):
     return df
 
 
-@data.lazy('items_by_project')
+# @data.lazy('items_by_project')
 def items_by_project_agg(df):
     """
     Return Agreggate mean and standard deviantion of project number of items

@@ -49,7 +49,7 @@ def comprovantes_acima_50(pronac, dt):
     }
 
 
-@data.lazy('planilha_aprovacao_comprovacao')
+# @data.lazy('planilha_aprovacao_comprovacao')
 def approved_verified_items(df):
     return df[COLUMNS]
 

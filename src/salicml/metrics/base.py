@@ -86,7 +86,7 @@ def has_receipt(item):
     return combined_id in data.receipt.index
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def get_segment_projects(segment_id):
     """
     Returns all projects from a segment.
@@ -99,7 +99,7 @@ def get_segment_projects(segment_id):
     )
 
 
-@data.lazy('planilha_comprovacao')
+# @data.lazy('planilha_comprovacao')
 def receipt(df):
     """
     Return a dataframe to verify if a item has a receipt.

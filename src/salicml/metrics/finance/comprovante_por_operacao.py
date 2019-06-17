@@ -62,7 +62,7 @@ def comprovante_saque(pronac, dt):
     return metric_return(comprovantes_saque)
 
 
-@data.lazy('planilha_comprovacao')
+# @data.lazy('planilha_comprovacao')
 def verified_repeated_receipts(df):
     receipts = df[COLUMNS]
     duplicated = receipts[receipts.duplicated(

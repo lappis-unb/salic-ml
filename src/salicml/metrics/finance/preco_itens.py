@@ -46,7 +46,7 @@ def is_outlier(df, item_id, segment_id, price):
     )
 
 
-@data.lazy('relevant_items')
+# @data.lazy('relevant_items')
 def aggregated_relevant_items(raw_df):
     """
     Aggragation for calculate mean and std.
@@ -63,7 +63,7 @@ def aggregated_relevant_items(raw_df):
     )
 
 
-@data.lazy('items_with_price')
+# @data.lazy('items_with_price')
 def relevant_items(df):
     """
     Dataframe with items used by cultural projects,
@@ -81,7 +81,7 @@ def relevant_items(df):
     return df
 
 
-@data.lazy('planilha_orcamentaria')
+# @data.lazy('planilha_orcamentaria')
 def items_with_price(raw_df):
     """
     Dataframe with price as number.

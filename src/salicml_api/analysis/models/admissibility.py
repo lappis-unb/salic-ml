@@ -19,7 +19,7 @@ class AdmissibilityIndicator(Indicator):
         return {"itens_comuns_e_incomuns_por_segmento": 1}
 
     @property
-    @lru_cache(maxsize=256)
+    # @lru_cache(maxsize=256)
     def max_weight_total(self):
         return sum(self.metrics_weights.values())
 

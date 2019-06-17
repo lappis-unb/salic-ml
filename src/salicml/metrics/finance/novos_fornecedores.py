@@ -78,7 +78,7 @@ def novos_fornecedores(pronac, dt):
     }
 
 
-@data.lazy('providers_info', 'providers_count', 'all_providers_cnpj')
+# @data.lazy('providers_info', 'providers_count', 'all_providers_cnpj')
 def average_percentage_of_new_providers(providers_info, providers_count, all_providers_cnpj):
     """
     Return the average percentage of new providers
@@ -98,7 +98,7 @@ def average_percentage_of_new_providers(providers_info, providers_count, all_pro
     )
 
 
-@data.lazy('all_providers_cnpj')
+# @data.lazy('all_providers_cnpj')
 def providers_count(df):
     """
     Returns total occurrences of each provider
@@ -110,7 +110,7 @@ def providers_count(df):
     return pd.DataFrame.from_dict(dict(zip(unique, counts)), orient='index')
 
 
-@data.lazy('planilha_comprovacao')
+# @data.lazy('planilha_comprovacao')
 def providers_info(df):
     """
     Relevant info for providers.
@@ -124,7 +124,7 @@ def providers_info(df):
         ]]
 
 
-@data.lazy('providers_info')
+# @data.lazy('providers_info')
 def all_providers_cnpj(df):
     """
     Return all CNPJ/CPF of providers in the database.

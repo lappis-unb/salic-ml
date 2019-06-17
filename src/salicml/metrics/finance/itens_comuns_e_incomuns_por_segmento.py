@@ -10,7 +10,7 @@ from salicml.metrics.base import (
 from functools import lru_cache
 
 
-@data.lazy('all_items')
+# @data.lazy('all_items')
 def common_items(df):
     """
     Returns the itens that are common in all the segments,
@@ -32,7 +32,7 @@ def common_items(df):
     )
 
 
-@data.lazy('planilha_orcamentaria')
+# @data.lazy('planilha_orcamentaria')
 def distinct_items(df):
     """
     Returns a dataframe with all itens with no duplicates
@@ -46,7 +46,7 @@ def distinct_items(df):
     )
 
 
-@data.lazy('planilha_orcamentaria')
+# @data.lazy('planilha_orcamentaria')
 def all_items(df):
     """
     Return all itens used in the segments, with no duplicates.
@@ -79,7 +79,7 @@ def common_items_percentage(pronac, seg_common_items):
     return common_found_items / project_items_amount
 
 
-@data.lazy('all_items', 'common_items')
+# @data.lazy('all_items', 'common_items')
 def common_items_metrics(all_items, common_items):
     """
     Calculates the percentage of common items for each project
@@ -106,7 +106,7 @@ def common_items_metrics(all_items, common_items):
     return pd.DataFrame.from_dict(metrics, orient='index')
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def get_project_items(pronac):
     """
     Returns all items from a project.
@@ -118,7 +118,7 @@ def get_project_items(pronac):
     )
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def segment_common_items(segment_id):
     """
     Returns all the common items in a segment.
@@ -132,7 +132,7 @@ def segment_common_items(segment_id):
     )
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def get_uncommon_items(pronac):
     """
     Return all uncommon items of a project
@@ -159,7 +159,7 @@ def get_uncommon_items(pronac):
     )
 
 
-@lru_cache(maxsize=128)
+# @lru_cache(maxsize=128)
 def get_common_items_not_present(pronac):
     """
     Returns all segment common items that are not
