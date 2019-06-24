@@ -205,6 +205,29 @@ def test_metrics(ctx):
                 os.rename(src, dest)
 
 
+@task
+def set_data(ctx, datatype='dev'):
+    """
+    Set dataframes for use.
+    """
+    data.clear()
+    raw_dir = './data/raw/'
+    dev_dir = './data/dev/'
+    
+    if datatype == 'dev':
+        pop_raw(dev_dir)
+        prepend_raw(raw_dir)
+    
+    elif datatype == 'prod':
+        pop_raw(raw_dir)
+
+    elif datatype == 'test':
+        pop_raw(raw_dir)
+        pop_raw(dev_dir)
+        prepend_raw(raw_dir)
+        prepend_raw(dev_dir)
+
+
 @task(help={'c': 'command to be run with manage.py'})
 def manager(ctx, c):
     """
@@ -213,3 +236,27 @@ def manager(ctx, c):
         $ inv manager createsuperuser
     """
     manage(ctx, c, env={})
+
+
+def prepend_raw(data_dir):
+    """
+    Insert "raw_" to the begining of the file name of all files in data_dir.
+    """
+    for fname in os.listdir(data_dir):
+        if 'raw_' not in fname and '.pickle.gz' in fname:
+            new_name = 'raw_' + fname
+            src = data_dir + fname
+            dest = data_dir + new_name
+            os.rename(src, dest)
+
+
+def pop_raw(data_dir):
+    """
+    Remove "raw_" from the begining of the file name of all files in data_dir.
+    """
+    for fname in os.listdir(data_dir):
+        if 'raw_' in fname and '.pickle.gz' in fname:
+            new_name = fname[4:]
+            src = data_dir + fname
+            dest = data_dir + new_name
+            os.rename(src, dest)

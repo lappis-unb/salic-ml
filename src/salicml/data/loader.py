@@ -36,7 +36,10 @@ class Loader:
                 try:
                     df = _load_dataframe(self._root / "raw", attr)
                 except FileNotFoundError:
-                    df = _load_dataframe(self._root / "test", attr)
+                    try:
+                        df = _load_dataframe(self._root / "dev", attr)
+                    except FileNotFoundError:
+                        df = _load_dataframe(self._root / "test", attr)
             self._cache[attr] = df
             return df
 
@@ -75,6 +78,9 @@ class Loader:
             >>> data.test.my_data
         """
         self._store(loc, df, 'test')
+
+    def store_dev_df(self, loc, df):
+        self._store(loc, df, 'dev')
 
     def lazy(self, *names, name=None):
         """
