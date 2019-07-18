@@ -38,10 +38,12 @@ def projetos_mesmo_proponente(pronac, data):
         except KeyError:
             pass
 
+        submitted_pronacs_list = [project for project in proponent_submitted_projects.get('pronacs_of_this_proponent', []) if project != pronac]
+
     return {
         'cpf_cnpj': cpf_cnpj,
-        'valor': submitted_projects.get('num_pronacs', 0),
-        'projetos_submetidos': proponent_submitted_projects,
+        'valor': len(submitted_pronacs_list),
+        'projetos_submetidos': submitted_pronacs_list,
         'projetos_analizados': proponent_analyzed_projects,
     }
 
@@ -114,10 +116,13 @@ def get_proponent_submitted_projects(cpf_cnpj, pronac):
     all_projects = submitted_projects_dict()
     try:
         proponent_projects = all_projects[str(cpf_cnpj)]
-        remove_pronac = np.delete(proponent_projects['pronac_list'],
-                                  np.where(proponent_projects['pronac_list'] == pronac),
-                                  axis=0)
-        proponent_projects['pronac_list'] = remove_pronac
+        # # This session of code is commented due an unresolved bug where
+        # # the proponent_submitted_projects list could be empty even when it shouldn't
+        # # Tested with dev dataset (CgcCpf = 5077601742894258019 and Pronacs = ['1510549', '1511193'])
+        # remove_pronac = np.delete(proponent_projects['pronac_list'],
+        #                           np.where(proponent_projects['pronac_list'] == pronac),
+        #                           axis=0)
+        # proponent_projects['pronac_list'] = remove_pronac
         return proponent_projects
     except KeyError:
         return {}
