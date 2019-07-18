@@ -1,20 +1,20 @@
 SELECT projetos.IdPRONAC,
-	   (projetos.AnoProjeto + projetos.Sequencial) AS PRONAC,
+	   LTRIM(RTRIM((projetos.AnoProjeto + projetos.Sequencial))) AS PRONAC,
 	   projetos.DtProtocolo AS DataProjeto,
-	   a.idplanilhaaprovacao AS idPlanilhaAprovacao,
-	   a.idPlanilhaItem,
-	   itens.Descricao AS Item,
-	   projetos.Segmento AS idSegmento,
+	   LTRIM(RTRIM(a.idplanilhaaprovacao)) AS idPlanilhaAprovacao,
+	   LTRIM(RTRIM(a.idPlanilhaItem)) AS idPlanilhaItem,
+	   LTRIM(RTRIM(itens.Descricao)) AS Item,
+	   LTRIM(RTRIM(projetos.Segmento)) AS idSegmento,
 	   comprovacao.vlComprovado AS vlComprovacao,
 	   ROUND((a.QtItem * a.nrOcorrencia * a.VlUnitario),2) as vlAprovado,
-	   comprovacao.idComprovantePagamento,
-	   e.CNPJCPF AS nrCNPJCPF,
+	   LTRIM(RTRIM(comprovacao.idComprovantePagamento)),
+	   LTRIM(RTRIM(e.CNPJCPF)) AS nrCNPJCPF,
 	   f.Descricao AS nmFornecedor,
 	   uf.CodUfIbge as UF,
-	   a.idProduto AS cdProduto,
+	   LTRIM(RTRIM(a.idProduto)) AS cdProduto,
 	   a.idMunicipioDespesa AS cdCidade,
 	   a.idEtapa AS cdEtapa,
-	   projetos.CgcCpf AS proponenteCgcCpf
+	   LTRIM(RTRIM(projetos.CgcCpf)) AS proponenteCgcCpf
 FROM SAC.dbo.tbPlanilhaAprovacao a
 INNER JOIN SAC.dbo.Projetos projetos ON (a.IdPRONAC = projetos.IdPRONAC)
 INNER JOIN BDCorporativo.scSAC.tbComprovantePagamentoxPlanilhaAprovacao comprovacao ON (a.idPlanilhaAprovacao = comprovacao.idPlanilhaAprovacao)

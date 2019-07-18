@@ -1,4 +1,4 @@
-SELECT a.idPronac,a.AnoProjeto+a.Sequencial as PRONAC,k.idPlanilhaAprovacao, k.idPlanilhaAprovacaoPai,i.Descricao as Item,
+SELECT a.idPronac,LTRIM(RTRIM(a.AnoProjeto+a.Sequencial)) as PRONAC,k.idPlanilhaAprovacao, k.idPlanilhaAprovacaoPai,i.Descricao as Item,
        (z.Quantidade * z.Ocorrencia * z.ValorUnitario) as VlSolicitado,
        (b.Quantidade * b.Ocorrencia * b.ValorUnitario) as VlSugerido,
        e.Descricao as Unidade,k.QtItem,k.nrOcorrencia,k.VlUnitario,k.QtDias,f.UF,

@@ -1,14 +1,14 @@
 --- Project example: http://salic.cultura.gov.br/verprojetos?idPronac=501eac548e7d4fa987034573abc6e179MjEwMzEwZUA3NWVmUiEzNDUwb3RT
-SELECT a.idPronac, a.PRONAC, Item, i.idPlanilhaItens, Unidade, QtDias, QtItem, nrOcorrencia,
+SELECT LTRIM(RTRIM(a.idPronac)) as idPronac, LTRIM(RTRIM(a.PRONAC)) as PRONAC, Item, LTRIM(RTRIM(i.idPlanilhaItens)) as idPlanilhaItens, Unidade, QtDias, QtItem, nrOcorrencia,
 	(VlSolicitado / NULLIF(QtItem * nrOcorrencia, 0)) AS VlUnitarioSolicitado,
 	VlSolicitado AS VlTotalSolicitado,
 	VlUnitario AS VlUnitarioAprovado,
 	Aprovado AS VlTotalAprovado,
 	UF AS UfItem,
 	Municipio AS MunicipioItem,
-	Etapa,
-	p.Area,
-	p.Segmento,
+	LTRIM(RTRIM(Etapa)) as Etapa,
+	LTRIM(RTRIM(p.Area)) as Area,
+	LTRIM(RTRIM(p.Segmento)) as Segmento,
 	p.DtProtocolo as DataProjeto
 FROM SAC.dbo.vwPlanilhaAprovada a
 LEFT JOIN SAC.dbo.Projetos p
