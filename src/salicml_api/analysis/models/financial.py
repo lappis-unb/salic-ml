@@ -53,11 +53,11 @@ class FinancialIndicator(Indicator):
             "comprovante_cheque",
             "comprovante_transferencia",
             "comprovante_saque",
-            "projetos_mesmo_proponente",
             "novos_fornecedores",
             "comprovante_pagamento",
+            "comprovantes_acima_50",
         ],
-        "planilha_aprovacao_comprovacao": ["comprovantes_acima_50"],
+        "planilha_projetos": ["projetos_mesmo_proponente"],
         "planilha_captacao": ["valor_a_ser_comprovado"],
         "planilha_orcamentaria": ["itens_orcamentarios"],
     }
@@ -107,9 +107,10 @@ class FinancialIndicator(Indicator):
         metric = self.metrics.filter(name="projetos_mesmo_proponente").first()
 
         if metric:
-            if isinstance(metric.data["projetos_submetidos"], dict):
+            if isinstance(metric.data["projetos_submetidos"], list):
                 pronacs = (
-                    metric.data["projetos_submetidos"]["pronacs_of_this_proponent"]
+                    # metric.data["projetos_submetidos"]["pronacs_of_this_proponent"] # Before uncommenting, check finance/projetos_mesmo_proponente.py
+                    metric.data["projetos_submetidos"]
                 )
                 metric.data["projetos_submetidos"] = []
                 indicators = (FinancialIndicator.objects.filter(
