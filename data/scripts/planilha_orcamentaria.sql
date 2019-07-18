@@ -1,8 +1,8 @@
 SELECT a.idPronac,
-a.AnoProjeto+a.Sequencial as PRONAC,
+LTRIM(RTRIM(a.AnoProjeto+a.Sequencial)) as PRONAC,
 k.idPlanilhaAprovacao,
 i.Descricao as Item,
-i.idPlanilhaItens,
+LTRIM(RTRIM(i.idPlanilhaItens)) as idPlanilhaItens,
 e.Descricao as Unidade,
 k.QtDias,
 k.QtItem,
@@ -14,19 +14,19 @@ ROUND((k.QtItem * k.nrOcorrencia * k.VlUnitario), 2) as VlTotalAprovado,
 f.UF as UfItem,
 f.Municipio as MunicipioItem,
 convert(varchar(8), d.idPlanilhaEtapa) + ' - ' + d.Descricao as Etapa,
-a.Area as idArea,
+LTRIM(RTRIM(a.Area)) as idArea,
 area.Descricao as Area,
-a.Segmento AS idSegmento,
+LTRIM(RTRIM(a.Segmento)) AS idSegmento,
 segmento.Descricao AS Segmento,
-k.idProduto,
+LTRIM(RTRIM(k.idProduto)) as idProduto,
 case
     when k.idProduto = 0
        then 'Administracao do Projeto'
        else c.Descricao
 end as Produto,
 a.DtProtocolo as DataProjeto,
-k.idEtapa AS cdEtapa,
-k.idMunicipioDespesa AS cdCidade
+LTRIM(RTRIM(k.idEtapa)) AS cdEtapa,
+LTRIM(RTRIM(k.idMunicipioDespesa)) AS cdCidade
 FROM SAC.dbo.Projetos a
 INNER JOIN SAC.dbo.tbPlanilhaProjeto b on (a.idPronac = b.idPronac)
 INNER JOIN SAC.dbo.tbPlanilhaProposta z on (b.idPlanilhaProposta=z.idPlanilhaProposta)

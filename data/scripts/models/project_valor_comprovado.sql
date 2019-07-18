@@ -1,5 +1,5 @@
 SELECT
-	   CONCAT(projetos.AnoProjeto, projetos.Sequencial) AS pronac,
+	   LTRIM(RTRIM(CONCAT(projetos.AnoProjeto, projetos.Sequencial))) AS pronac,
 	   SUM(comprovacao.vlComprovado) AS valor_comprovado
 FROM SAC.dbo.tbPlanilhaAprovacao a
 INNER JOIN SAC.dbo.Projetos projetos ON (a.IdPRONAC = projetos.IdPRONAC)

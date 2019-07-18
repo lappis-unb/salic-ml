@@ -13,7 +13,7 @@
 
 */
 
-SELECT CONCAT(projetos.AnoProjeto, projetos.Sequencial) as pronac, MAX(NomeProjeto) as nome, MAX(Analista) as responsavel,
+SELECT LTRIM(RTRIM(CONCAT(projetos.AnoProjeto, projetos.Sequencial))) as pronac, LTRIM(RTRIM(MAX(NomeProjeto))) as nome, MAX(Analista) as responsavel,
        MAX(Situacao) as situation, MAX(verificacao.Descricao) as description,
        MAX(DtInicioExecucao) as start_execution, MAX(DtFimExecucao) as end_execution
        FROM SAC.dbo.Projetos
