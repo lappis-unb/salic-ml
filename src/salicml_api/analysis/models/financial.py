@@ -55,9 +55,9 @@ class FinancialIndicator(Indicator):
             "comprovante_saque",
             "novos_fornecedores",
             "comprovante_pagamento",
+            "comprovantes_acima_50",
         ],
         "planilha_projetos": ["projetos_mesmo_proponente"],
-        "planilha_aprovacao_comprovacao": ["comprovantes_acima_50"],
         "planilha_captacao": ["valor_a_ser_comprovado"],
         "planilha_orcamentaria": ["itens_orcamentarios"],
     }
