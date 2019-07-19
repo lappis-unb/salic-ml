@@ -13,9 +13,12 @@ financial_metrics_names = [
 
 default_financial_metrics = {
     "itens_orcamentarios": {
-        "check_receipts": "comprovantes_de_cheque",
-        "money_receipts": "comprovantes_de_saque",
-        "transfer_receipts": "comprovantes_de_transferencia",
+        "valor": 0,
+        "valor_valido": False,
+        "is_outlier": False,
+        "minimo_esperado": 0,
+        "maximo_esperado": 0,
+        "data": {"maximo_esperado": 0, "desvio_padrao": 0}
     },
     "valor_a_ser_comprovado": {
         "valor": 0,
@@ -55,7 +58,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"lista_de_novos_fornecedores": None},
     },
-    "comprovante_de_cheque": {
+    "comprovante_cheque": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
@@ -63,7 +66,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"comprovantes": None},
     },
-    "comprovante_de_saque": {
+    "comprovante_saque": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
@@ -71,7 +74,7 @@ default_financial_metrics = {
         "maximo_esperado": 0,
         "data": {"comprovantes": None},
     },
-    "comprovante_de_transferencia": {
+    "comprovante_transferencia": {
         "valor": 0,
         "valor_valido": False,
         "is_outlier": False,
