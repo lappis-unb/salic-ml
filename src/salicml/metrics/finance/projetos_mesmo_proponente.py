@@ -42,8 +42,8 @@ def projetos_mesmo_proponente(pronac, data):
 
     return {
         'cpf_cnpj': cpf_cnpj,
-        'valor': len(submitted_pronacs_list),
-        'projetos_submetidos': submitted_pronacs_list,
+        'valor': len(set(submitted_pronacs_list)),
+        'projetos_submetidos': list(set(submitted_pronacs_list)),
         'projetos_analizados': proponent_analyzed_projects,
     }
 

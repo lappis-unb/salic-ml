@@ -129,6 +129,8 @@ class FinancialIndicator(Indicator):
                 mean = numpy.mean(values_list)
                 value = self.fetch_complexity_without_proponent_projects()
 
+                metric.data["valor"] = len(metric.data["projetos_submetidos"])
+
                 outlier = is_outlier(value, mean, std)
                 metric.is_outlier = outlier
                 metric.save()
