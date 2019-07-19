@@ -14,10 +14,10 @@ COLUMNS_RENAME = {
     'nrCNPJCPF': 'cpf_cnpj_fornecedor',
 }
 new_tpFormaDePagamento = {
-    0.0: np.nan,
-    1.0: "Cheque",
-    2.0: "Transferência Bancária",
-    3.0: 'Saque/Dinheiro'
+    '0': np.nan,
+    '1': "Cheque",
+    '2': "Transferência Bancária",
+    '3': 'Saque/Dinheiro'
 }
 
 
@@ -29,7 +29,7 @@ def comprovante_cheque(pronac, dt):
         - itens_que_compartilham_comprovantes: List of items that share receipt
     """
     df = verified_repeated_receipts_for_pronac(pronac)
-    comprovantes_cheque = df[df['tpFormaDePagamento'] == 1.0]
+    comprovantes_cheque = df[df['tpFormaDePagamento'] == '1']
 
     return metric_return(comprovantes_cheque)
 
@@ -43,7 +43,7 @@ def comprovante_transferencia(pronac, dt):
         - itens_que_compartilham_comprovantes: List of items that share receipt
     """
     df = verified_repeated_receipts_for_pronac(pronac)
-    comprovantes_transferencia = df[df['tpFormaDePagamento'] == 2.0]
+    comprovantes_transferencia = df[df['tpFormaDePagamento'] == '2']
 
     return metric_return(comprovantes_transferencia)
 
@@ -57,7 +57,7 @@ def comprovante_saque(pronac, dt):
         - itens_que_compartilham_comprovantes: List of items that share receipt
     """
     df = verified_repeated_receipts_for_pronac(pronac)
-    comprovantes_saque = df[df['tpFormaDePagamento'] == 3.0]
+    comprovantes_saque = df[df['tpFormaDePagamento'] == '3']
 
     return metric_return(comprovantes_saque)
 
