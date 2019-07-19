@@ -26,7 +26,7 @@ def itens_orcamentarios(pronac, dt):
     return {
        'is_outlier': is_outlier,
        'valor': project_items_count,
-       'maximo_esperado': mean,
+       'maximo_esperado': threshold,
        'desvio_padrao': std,
     }
 
