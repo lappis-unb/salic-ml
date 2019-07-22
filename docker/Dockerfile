@@ -1,6 +1,7 @@
 FROM salicml/requirements:latest
 
 COPY tasks.py /tasks.py
+COPY tox.ini /tox.ini
 COPY etc/ /etc/
 COPY src/ src/
 

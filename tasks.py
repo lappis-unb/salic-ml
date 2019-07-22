@@ -228,6 +228,14 @@ def set_data(ctx, datatype='dev'):
         prepend_raw(dev_dir)
 
 
+@task
+def test(ctx):
+    ctx.run(
+        'pytest -vv',
+    )
+
+
+
 @task(help={'c': 'command to be run with manage.py'})
 def manager(ctx, c):
     """
