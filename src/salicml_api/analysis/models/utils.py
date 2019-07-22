@@ -70,7 +70,7 @@ def create_project_valores():
         for value in records:
             (Project.objects
              .filter(pronac=value['pronac'])
-             .update(verified_funds=value['valor_captado']))
+             .update(raised_funds=value['valor_captado']))
 
 
 def create_indicators_metrics(metrics: list, pronacs: list, indicator_class):
