@@ -231,7 +231,7 @@ def set_data(ctx, datatype='dev'):
 @task
 def test(ctx):
     ctx.run(
-        'pytest -vv',
+        'pytest src/salicml_api -vv',
     )
 
 
