@@ -235,6 +235,10 @@ def test(ctx):
     )
 
 
+@task
+def db_test(ctx):
+    manage(ctx, 'loaddata data/dump/dev_project.json')
+
 
 @task(help={'c': 'command to be run with manage.py'})
 def manager(ctx, c):
