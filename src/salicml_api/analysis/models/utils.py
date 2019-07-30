@@ -58,23 +58,40 @@ def execute_project_models_sql_scripts(force_update=False, from_file=False):
         FinancialIndicator.objects.bulk_create(f_indicators)
         AdmissibilityIndicator.objects.bulk_create(a_indicators)
         
-        create_project_valores()
+        create_project_valores(from_file)
 
 
-def create_project_valores():
+def create_project_valores(from_file=False):
     """
         Used to get project information from MinC database,
         valor_comprovado and valor_captado
         and update this information to application Project models.
     """
-    records = make_query_to_dict(VERIFIED_FUNDS_FILE)
+
+    if from_file:
+        with open('/data/dump/verified_funds_query.pickle', 'rb') as offline_file:
+            records = pkl.load(offline_file)
+    else:
+        records = make_query_to_dict(VERIFIED_FUNDS_FILE)
+
+    # with open('verified_funds_query.pickle', 'wb') as offline_file:
+            # pkl.dump(records, offline_file, protocol=pkl.HIGHEST_PROTOCOL)
+
     with transaction.atomic():
         for value in records:
             (Project.objects
              .filter(pronac=value['pronac'])
              .update(verified_funds=value['valor_comprovado']))
 
-    records = make_query_to_dict(RAISED_FUNDS_FILE)
+    if from_file:
+        with open('/data/dump/raised_funds_query.pickle', 'rb') as offline_file:
+            records = pkl.load(offline_file)
+    else:
+        records = make_query_to_dict(RAISED_FUNDS_FILE)
+
+    # with open('raised_funds_query.pickle', 'wb') as offline_file:
+            # pkl.dump(records, offline_file, protocol=pkl.HIGHEST_PROTOCOL)
+
     with transaction.atomic():
         for value in records:
             (Project.objects
