@@ -23,5 +23,5 @@ def django_db_setup(django_db_setup, django_db_blocker):
         with django_db_blocker.unblock():
             call_command('loaddata', '/data/dump/dev_project.json')
             os.system("inv set-data")
-            os.system("inv train_metrics")
+            call_command('update_projects_metrics') 
 
