@@ -4,8 +4,6 @@ from .utils import load_json
 PROJECT_DETAIL_URL_132955 = '/v1/projects/132955/details/'
 PROJECT_NAME_132955 = 'Brasil contemporâneo: economia e cultura - Milagre econômico e recessão nos anos 70/80: décadas de chumbo, contestação e rock brazuca'
 
-PROJECT_DETAIL_URL_080690 = '/v1/projects/080690/details/'
-
 def test_detail_url(db, api_client):
     response = api_client.get(PROJECT_DETAIL_URL_132955)
     json_data = load_json(response)
@@ -115,17 +113,17 @@ def test_projetos_mesmo_proponente(db, api_client):
     pass
 
 def test_valor_a_ser_comprovado(db, api_client):
-    response = api_client.get(PROJECT_DETAIL_URL_080690)
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
     json_data = load_json(response)
     valor_a_ser_comprovado = json_data['indicadores']['FinancialIndicator']['metricas']['valor_a_ser_comprovado']
     data = valor_a_ser_comprovado['data']
 
-    assert(valor_a_ser_comprovado['valor'] == "259000.0")
+    assert(valor_a_ser_comprovado['valor'] == "25100.0")
     assert(valor_a_ser_comprovado['valor_valido'] == True)
     assert(valor_a_ser_comprovado['is_outlier'] == True)
     assert(valor_a_ser_comprovado['minimo_esperado'] == 0)
     assert(valor_a_ser_comprovado['maximo_esperado'] == 0)
-    assert(data['valor_captado'] == 259000.0)
-    assert(data['valor_comprovado'] == 0)
+    assert(data['valor_captado'] == 100000.0)
+    assert(data['valor_comprovado'] == 74900.0)
     assert(data['minimo_esperado'] == 0)
     
