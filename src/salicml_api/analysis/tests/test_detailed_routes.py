@@ -118,7 +118,17 @@ def test_comprovante_transferencia(db, api_client):
     assert(comprovante_transferencia['maximo_esperado'] == 0)
 
 def test_comprovante_pagamento(db, api_client):
-    pass
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
+    json_data = load_json(response)
+    comprovante_pagamento = json_data['indicadores']['FinancialIndicator']['metricas']['comprovante_pagamento']
+
+    assert(comprovante_pagamento['valor'] == "10")
+    assert(comprovante_pagamento['data']['maximo_esperado'] == 35.925945419092514)
+    assert(comprovante_pagamento['data']['minimo_esperado'] == 0)
+    assert(comprovante_pagamento['valor_valido'] == True)
+    assert(comprovante_pagamento['is_outlier'] == False)
+    assert(comprovante_pagamento['minimo_esperado'] == 0)
+    assert(comprovante_pagamento['maximo_esperado'] == 35.925945419092514)
 
 def test_itens_orcamentarios(db, api_client):
     pass
