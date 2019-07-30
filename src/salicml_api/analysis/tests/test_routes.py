@@ -1,4 +1,5 @@
 import json
+from .utils import load_json
 
 ROOT_URL = '/'
 PROJECT_LIST_URL = '/v1/projects/'
@@ -6,15 +7,20 @@ PROJECT_DETAIL_URL = '/v1/projects/details'
 
 def test_root_url(db, api_client):
     response = api_client.get(ROOT_URL)
+
+    json_data = load_json(response)
+
+    print(json_data)
+
     assert(response.status_code == 200)
 
 def test_project_list_url(db, api_client):
     response = api_client.get(PROJECT_LIST_URL)
 
-    json_data = json.loads(response.content.decode('utf-8'))
-    
+    json_data = load_json(response)
+
     assert(response.status_code == 200)
-    assert(type(json_data['data']) == type([]))
+    assert(isinstance(json_data['data'], list))
     assert(len(json_data['data']) == 15)
 
 # def test_project_detail(api_client):
