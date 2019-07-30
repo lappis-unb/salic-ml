@@ -130,7 +130,25 @@ def test_comprovantes_acima_50(db, api_client):
     pass
 
 def test_projetos_mesmo_proponente(db, api_client):
-    pass
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
+    json_data = load_json(response)
+    projetos_mesmo_proponente = json_data['indicadores']['FinancialIndicator']['metricas']['projetos_mesmo_proponente']
+    data = projetos_mesmo_proponente['data']
+    projetos_analisados = data['projetos_analizados']
+
+
+    assert(projetos_mesmo_proponente['valor'] == "0")
+    assert(projetos_mesmo_proponente['valor_valido'] == True)
+    assert(projetos_mesmo_proponente['is_outlier'] == False)
+    assert(projetos_mesmo_proponente['minimo_esperado'] == 0)
+    assert(projetos_mesmo_proponente['maximo_esperado'] >= 0)
+
+    assert(isinstance(data['cpf_cnpj'], str))
+    assert(isinstance(data['projetos_submetidos'], list))
+    assert(isinstance(projetos_analisados, dict))
+    assert(projetos_analisados['number_of_projects'] == 1)
+    assert(projetos_analisados['pronacs_of_this_proponent'] == ["132955"])
+
 
 def test_valor_a_ser_comprovado(db, api_client):
     response = api_client.get(PROJECT_DETAIL_URL_132955)
