@@ -37,7 +37,7 @@ def test_project_list_object_type(db, api_client):
     assert(isinstance(first_project['responsavel'], str))
     assert(isinstance(first_project['pronac'], str))
     assert(details_url in first_project['links']['details'])
-    assert(first_project['complexidade'] == 2.3)
+    assert(first_project['complexidade'] == 3.2)
 
 def sort_test(api_client, parameter, result, minus_result):
     response = api_client.get(PROJECT_LIST_URL + '?order_by=' + parameter)
@@ -53,7 +53,7 @@ def sort_test(api_client, parameter, result, minus_result):
     assert(first_project_minus[parameter] == minus_result)
 
 def test_project_list_sort_by_complexity(db, api_client):
-    sort_test(api_client, 'complexidade', 0.0, 2.3)
+    sort_test(api_client, 'complexidade', 0.0, 3.2)
 
 def test_project_list_sort_by_nome(db, api_client):
     sort_test(api_client, 'nome', "\"1\"", 'Zuzu in Progress')
