@@ -131,7 +131,17 @@ def test_comprovante_pagamento(db, api_client):
     assert(comprovante_pagamento['maximo_esperado'] == 35.925945419092514)
 
 def test_itens_orcamentarios(db, api_client):
-    pass
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
+    json_data = load_json(response)
+    itens_orcamentarios = json_data['indicadores']['FinancialIndicator']['metricas']['itens_orcamentarios']
+
+    assert(itens_orcamentarios['valor'] == "46")
+    assert(itens_orcamentarios['data']['maximo_esperado'] == 44.06414854641879)
+    assert(itens_orcamentarios['data']['desvio_padrao'] == 10.042765697612529)
+    assert(itens_orcamentarios['valor_valido'] == True)
+    assert(itens_orcamentarios['is_outlier'] == True)
+    assert(itens_orcamentarios['minimo_esperado'] == 0)
+    assert(itens_orcamentarios['maximo_esperado'] == 44.06414854641879)
 
 def test_novos_fornecedores(db, api_client):
     response = api_client.get(PROJECT_DETAIL_URL_132955)
