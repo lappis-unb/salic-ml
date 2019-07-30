@@ -1,6 +1,7 @@
 import logging
 import multiprocessing as mp
 import pandas as pd
+import pickle as pkl
 
 from django.db import IntegrityError, transaction
 from itertools import product
@@ -24,7 +25,7 @@ RAISED_FUNDS_FILE = MODEL_PATH / "project_valor_captado.sql"
 
 FINANCE = finance
 
-def execute_project_models_sql_scripts(force_update=False):
+def execute_project_models_sql_scripts(force_update=False, from_file=False):
     """
         Used to get project information from MinC database
         and convert to this application Project models.
@@ -33,11 +34,19 @@ def execute_project_models_sql_scripts(force_update=False):
     # TODO: Remove except and use ignore_conflicts
     # on bulk_create when django 2.2. is released
     with open(MODEL_FILE, "r") as file_content:
-        query = file_content.read()
-        db = db_connector()
-        query_result = db.execute_pandas_sql_query(query)
-        db.close()
-        query_result = convert_datetime(query_result)
+        if from_file:
+            print("Using offline file to populate models")
+            with open('/data/dump/update_models.pickle', 'rb') as offline_file:
+                query_result = pkl.load(offline_file)
+        else:
+            query = file_content.read()
+            db = db_connector()
+            query_result = db.execute_pandas_sql_query(query)
+            db.close()
+            query_result = convert_datetime(query_result)
+
+        # with open('update_models.pickle', 'wb') as offline_file:
+        #     pkl.dump(query_result, offline_file, protocol=pkl.HIGHEST_PROTOCOL)
         
         # try:
         projects = Project.objects.bulk_create(
@@ -134,10 +143,10 @@ def convert_datetime(df):
     """
     df['start_execution'] = (df['start_execution']
                              .apply(lambda x: x.tz_localize('utc')
-                             if not pd.isnull(x) else x))
+                             if not pd.isnull(x) and type(x) != str else x))
     df['end_execution'] = (df['end_execution']
                            .apply(lambda x: x.tz_localize('utc')
-                           if not pd.isnull(x) else x))
+                           if not pd.isnull(x) and type(x) != str else x))
     df[['start_execution']] = (df[['start_execution']].astype(object)
                                .where(df[['start_execution']].notnull(), None))
     df[['end_execution']] = (df[['end_execution']].astype(object)
