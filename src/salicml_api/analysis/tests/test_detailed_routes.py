@@ -50,18 +50,14 @@ def test_itens_comuns_e_incomuns_por_segmento(db, api_client):
     itens_comuns_e_incomuns_por_segmento = admissibility_data['metricas']['itens_comuns_e_incomuns_por_segmento']
     data = itens_comuns_e_incomuns_por_segmento['data']
 
-    print(data)
-
     assert(itens_comuns_e_incomuns_por_segmento['valor'] == "0.17391304347826086")
     assert(itens_comuns_e_incomuns_por_segmento['valor_valido'] == True)
     assert(itens_comuns_e_incomuns_por_segmento['is_outlier'] == False)
     assert(itens_comuns_e_incomuns_por_segmento['minimo_esperado'] == 0)
     assert(itens_comuns_e_incomuns_por_segmento['maximo_esperado'] == 0.28728639746373064)
 
-    assert('itens_incomuns' in data)
+    assert('items_incomuns' in data)
     assert('items_comuns_que_o_projeto_nao_possui' in data)
-
-    assert(data[''])
     
     assert(isinstance(data['items_incomuns'], list))
     assert(isinstance(data['items_comuns_que_o_projeto_nao_possui'], list))
