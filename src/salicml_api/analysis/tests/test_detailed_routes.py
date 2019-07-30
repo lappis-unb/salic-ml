@@ -95,27 +95,27 @@ def test_comprovante_cheque(db, api_client):
 
     response = api_client.get(PROJECT_DETAIL_URL_132955)
     json_data = load_json(response)
-    comprovante_saque = json_data['indicadores']['FinancialIndicator']['metricas']['comprovante_cheque']
+    comprovante_cheque = json_data['indicadores']['FinancialIndicator']['metricas']['comprovante_cheque']
 
-    assert(comprovante_saque['valor'] == "0")
-    assert(comprovante_saque['data'] == {'comprovantes': []})
-    assert(comprovante_saque['valor_valido'] == True)
-    assert(comprovante_saque['is_outlier'] == False)
-    assert(comprovante_saque['minimo_esperado'] == 0)
-    assert(comprovante_saque['maximo_esperado'] == 0)
+    assert(comprovante_cheque['valor'] == "0")
+    assert(comprovante_cheque['data'] == {'comprovantes': []})
+    assert(comprovante_cheque['valor_valido'] == True)
+    assert(comprovante_cheque['is_outlier'] == False)
+    assert(comprovante_cheque['minimo_esperado'] == 0)
+    assert(comprovante_cheque['maximo_esperado'] == 0)
 
 
 def test_comprovante_transferencia(db, api_client):
     response = api_client.get(PROJECT_DETAIL_URL_132955)
     json_data = load_json(response)
-    comprovante_saque = json_data['indicadores']['FinancialIndicator']['metricas']['comprovante_transferencia']
+    comprovante_transferencia = json_data['indicadores']['FinancialIndicator']['metricas']['comprovante_transferencia']
 
-    assert(comprovante_saque['valor'] == "0")
-    assert(comprovante_saque['data'] == {'comprovantes': []})
-    assert(comprovante_saque['valor_valido'] == True)
-    assert(comprovante_saque['is_outlier'] == False)
-    assert(comprovante_saque['minimo_esperado'] == 0)
-    assert(comprovante_saque['maximo_esperado'] == 0)
+    assert(comprovante_transferencia['valor'] == "0")
+    assert(comprovante_transferencia['data'] == {'comprovantes': []})
+    assert(comprovante_transferencia['valor_valido'] == True)
+    assert(comprovante_transferencia['is_outlier'] == False)
+    assert(comprovante_transferencia['minimo_esperado'] == 0)
+    assert(comprovante_transferencia['maximo_esperado'] == 0)
 
 def test_comprovante_pagamento(db, api_client):
     pass
