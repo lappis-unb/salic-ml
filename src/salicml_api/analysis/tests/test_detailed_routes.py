@@ -134,7 +134,36 @@ def test_itens_orcamentarios(db, api_client):
     pass
 
 def test_novos_fornecedores(db, api_client):
-    pass
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
+    json_data = load_json(response)
+    novos_fornecedores = json_data['indicadores']['FinancialIndicator']['metricas']['novos_fornecedores']
+    data = novos_fornecedores['data']
+
+    assert(novos_fornecedores['valor'] == "1")
+    assert(novos_fornecedores['valor_valido'] == True)
+    assert(novos_fornecedores['is_outlier'] == True)
+    assert(novos_fornecedores['minimo_esperado'] == 0)
+    assert(novos_fornecedores['maximo_esperado'] == 0)
+
+    assert(data['new_providers_percentage'] == 1.0)
+    assert(data['segment_average_percentage'] == 0.7954545454545454)
+    assert(data['all_projects_average_percentage'] == 0.9161623735741384)
+
+    assert(isinstance(data['lista_de_novos_fornecedores'], list))
+    assert(len(data['lista_de_novos_fornecedores']) == 1)
+    assert('nome' in data['lista_de_novos_fornecedores'][0])
+    assert('cnpj' in data['lista_de_novos_fornecedores'][0])
+    assert('itens' in data['lista_de_novos_fornecedores'][0])
+
+    items_list = data['lista_de_novos_fornecedores'][0]['itens']
+    
+    assert(len(items_list) > 0)
+
+    first_item = list(items_list.keys())[0]
+
+    assert(isinstance(items_list[first_item]['nome'], str))
+    assert(isinstance(items_list[first_item]['tem_comprovante'], bool))
+
 
 def test_comprovantes_acima_50(db, api_client):
     response = api_client.get(PROJECT_DETAIL_URL_132955)
