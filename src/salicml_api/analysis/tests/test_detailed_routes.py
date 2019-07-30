@@ -84,7 +84,16 @@ def test_itens_comuns_e_incomuns_por_segmento(db, api_client):
 
 
 def test_comprovante_saque(db, api_client):
-    pass
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
+    json_data = load_json(response)
+    comprovante_saque = json_data['indicadores']['FinancialIndicator']['metricas']['comprovante_saque']
+
+    assert(comprovante_saque['valor'] == "0")
+    assert(comprovante_saque['data'] == {'comprovantes': []})
+    assert(comprovante_saque['valor_valido'] == True)
+    assert(comprovante_saque['is_outlier'] == False)
+    assert(comprovante_saque['minimo_esperado'] == 0)
+    assert(comprovante_saque['maximo_esperado'] == 0)
 
 def test_comprovante_cheque(db, api_client):
     pass
