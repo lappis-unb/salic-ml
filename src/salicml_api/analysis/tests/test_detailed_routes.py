@@ -127,7 +127,22 @@ def test_novos_fornecedores(db, api_client):
     pass
 
 def test_comprovantes_acima_50(db, api_client):
-    pass
+    response = api_client.get(PROJECT_DETAIL_URL_132955)
+    json_data = load_json(response)
+    comprovantes_acima_50 = json_data['indicadores']['FinancialIndicator']['metricas']['comprovantes_acima_50']
+    data = comprovantes_acima_50['data']
+
+    assert(comprovantes_acima_50['valor'] == '0')
+    assert(comprovantes_acima_50['valor_valido'] == True)
+    assert(comprovantes_acima_50['is_outlier'] == False)
+    assert(comprovantes_acima_50['minimo_esperado'] == 0)
+    assert(comprovantes_acima_50['maximo_esperado'] == 0)
+
+    assert(data['maximo_esperado'] == 0)
+    assert(data['minimo_esperado'] == 0)
+    assert(data['link_da_planilha'] == "http://salic.cultura.gov.br/projeto/#/132955/relacao-de-pagamento")
+    assert(isinstance(data['lista_de_comprovantes'], list))
+    
 
 def test_projetos_mesmo_proponente(db, api_client):
     response = api_client.get(PROJECT_DETAIL_URL_132955)
