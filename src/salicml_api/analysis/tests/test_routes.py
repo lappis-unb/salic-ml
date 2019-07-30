@@ -3,7 +3,6 @@ from .utils import load_json
 
 ROOT_URL = '/'
 PROJECT_LIST_URL = '/v1/projects/'
-PROJECT_DETAIL_URL = '/v1/projects/details'
 
 def test_root_url(db, api_client):
     response = api_client.get(ROOT_URL)
@@ -40,33 +39,27 @@ def test_project_list_object_type(db, api_client):
     assert(details_url in first_project['links']['details'])
     assert(first_project['complexidade'] == 2.3)
 
-def sort_test(api_client, parameter, result):
+def sort_test(api_client, parameter, result, minus_result):
     response = api_client.get(PROJECT_LIST_URL + '?order_by=' + parameter)
+    minus_response = api_client.get(PROJECT_LIST_URL + '?order_by=-' + parameter)
     
     json_data = load_json(response)
+    json_data_minus = load_json(minus_response)
     
     first_project = json_data['data'][0]
+    first_project_minus = json_data_minus['data'][0]
 
     assert(first_project[parameter] == result)
-
+    assert(first_project_minus[parameter] == minus_result)
 
 def test_project_list_sort_by_complexity(db, api_client):
-    sort_test(api_client, 'complexidade', 0.0)
+    sort_test(api_client, 'complexidade', 0.0, 2.3)
 
 def test_project_list_sort_by_nome(db, api_client):
-    sort_test(api_client, 'nome', "\"1\"")
+    sort_test(api_client, 'nome', "\"1\"", 'Zuzu in Progress')
 
 def test_project_list_sort_by_pronac(db, api_client):
-    sort_test(api_client, 'pronac', '000044')
+    sort_test(api_client, 'pronac', '000044', '997603')
 
 def test_project_list_sort_by_responsavel(db, api_client):
-    sort_test(api_client, 'responsavel', ' ')
-    
-# def test_project_detail(api_client):
-#     response = api_client.get(PROJECT_DETAIL_URL)
-#     assert(response.status_code == 200)
-
-# def test_project_detail_result(api_client):
-#     response = api_client.get(PROJECT_DETAIL_URL)
-#     print(response.content)
-#     assert(response.status_code == 200)
+    sort_test(api_client, 'responsavel', ' ', 'xxxxxxxxxxx')
