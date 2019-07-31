@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres
+    env_file:
+      - ../etc/env/postgres.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  django:
+    image: salicml/api:latest
+    build:
+       context: ../
+       dockerfile: ./docker/Dockerfile
+    command: inv make migrate run
+    env_file:
+      - ../etc/env/postgres.env
+      - ../etc/env/django.env
+    volumes:
+      - ../src:/src
+      - ../data:/data
+      - ../logs:/var/log/
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
