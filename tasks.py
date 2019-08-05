@@ -78,16 +78,22 @@ def get_pickles(ctx, f=False):
     save_sql_to_files(f)
 
 
-@task(help={'f': "Default is False, force to update model even if already exists"})
-def update_models(ctx, f=False):
+@task(help={'f': "Default is False, force to update model even if already exists", 'o': "Default is False, avoids query to online database and uses offline csv"})
+def update_models(ctx, f=False, o=False):
     """
     Updates local django db projects models using salic database from
     MinC
     """
+
+    base_cmd = 'create_models_from_sql'
+
     if f:
-        manage(ctx, 'create_models_from_sql --force True', env={})
-    else:
-        manage(ctx, 'create_models_from_sql', env={})
+        base_cmd += ' --force True'
+    
+    if o:
+        base_cmd += ' --offline True'
+
+    manage(ctx, base_cmd)
 
 
 @task
@@ -226,6 +232,18 @@ def set_data(ctx, datatype='dev'):
         pop_raw(dev_dir)
         prepend_raw(raw_dir)
         prepend_raw(dev_dir)
+
+
+@task
+def test(ctx):
+    ctx.run(
+        'pytest src/salicml_api -vv',
+    )
+
+
+@task
+def db_test(ctx):
+    manage(ctx, 'loaddata data/dump/dev_project.json')
 
 
 @task(help={'c': 'command to be run with manage.py'})

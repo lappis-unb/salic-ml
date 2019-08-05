@@ -1,11 +1,21 @@
 image: docker:stable
 
 stages:
+  - tests
   - build-requirements
   - build-api
 
 services:
   - docker:dind
+
+tests:
+  stage: tests
+  before_script:
+    - apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
+    - pip install docker-compose
+  script:
+    - docker-compose -f docker/docker-compose-offline.yml up -d
+    - docker exec -t docker_django_1 inv test
 
 build requirements:
   stage: build-requirements
