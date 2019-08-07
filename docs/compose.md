@@ -8,11 +8,11 @@ Atualmente no projeto, existem quatro diferentes docker-compose. Aqui será docu
 
 ## docker-compose.continuous-deploy.yml
 
-Compose utilizado para o deploy contínuo da aplicação. Nele são utilizados os serviços adicionais do **certbot**, configurando o certificado da api, e o **watchtower**, necessário para o deploy continuo.
+Compose utilizado para o deploy contínuo da aplicação. Nele são utilizados os serviços adicionais do **certbot**, configurando o certificado SSL da aplicação, e o [**watchtower**](https://github.com/containrrr/watchtower), utilizado para o deploy continuo.
 
 ## docker-compose.offline.yml
 
-Compose utilizado quando não é necessária a conexão com o banco de homologação por VPN. Contém somente os serviços **postgres** e **django**
+Compose utilizado quando não há a possibilidade/necessidade de conexão com o banco de homologação via VPN. Contém somente os serviços **postgres** e **django**. Neste caso, não estão definidas as variáveis de conexão com um banco externo. Portanto, os dados utilizados são os contidos nos dataframes de desenvolvimento, commitados na pasta ```data```. A criação deste compose teve como principal motivação a necessidade de se subir um ambiente agnóstico, do ponto de vista de conexão externa, no GitLabCI para a execução dos testes.
 
 ## Comparação
 
