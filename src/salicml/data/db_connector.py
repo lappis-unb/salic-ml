@@ -29,15 +29,16 @@ class DbConnector:
     def execute_query(self, query):
         cursor = self.db.cursor()
         cursor.execute(query)
-        
-        rows = [] 
-        batch = cursor.fetchmany(1000)
+        print(gc.garbage)
+
+        rows = []
+        batch = cursor.fetchmany(10)
         while batch:
             rows += batch
             gc.collect()
             print(gc.garbage)
-            batch = cursor.fetchmany(1000)
-            
+            batch = cursor.fetchmany(10)
+
         #ret = cursor.fetchall()
         cursor.close()
         return rows
