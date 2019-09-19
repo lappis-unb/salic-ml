@@ -1,6 +1,7 @@
 import os
 import pymssql
 import pandas as pd
+import gc
 
 
 class DbConnector:
@@ -28,9 +29,17 @@ class DbConnector:
     def execute_query(self, query):
         cursor = self.db.cursor()
         cursor.execute(query)
-        ret = cursor.fetchall()
+        
+        rows = [] 
+        batch = cursor.fetchmany(3000)
+        while batch:
+            rows += batch
+            gc.collect()
+            batch = cursor.fetchmany(3000)
+            
+        #ret = cursor.fetchall()
         cursor.close()
-        return ret
+        return rows
 
     def execute_pandas_sql_query(self, query, chunksize=None):
         dataframe = pd.read_sql_query(
