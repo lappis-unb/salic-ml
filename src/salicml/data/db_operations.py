@@ -86,7 +86,5 @@ def make_chunk_query(sql_file, path):
         db = db_connector()
         for c in db.execute_pandas_sql_query(query, chunksize=1000):
             chunk_writer(c, path)
-        query_result = pd.concat(chunks, ignore_index=True)
         db.close()
 
-        return query_result
