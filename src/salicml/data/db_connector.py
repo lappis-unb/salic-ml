@@ -31,11 +31,12 @@ class DbConnector:
         cursor.execute(query)
         
         rows = [] 
-        batch = cursor.fetchmany(3000)
+        batch = cursor.fetchmany(1000)
         while batch:
             rows += batch
             gc.collect()
-            batch = cursor.fetchmany(3000)
+            print(gc.garbage)
+            batch = cursor.fetchmany(1000)
             
         #ret = cursor.fetchall()
         cursor.close()
