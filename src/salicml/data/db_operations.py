@@ -8,6 +8,15 @@ SQL_EXTENSION = ".sql"
 DATA_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "data"
 
 
+def chunk_writer(chunk, path):
+    existent_df = pd.DataFrame.empty()
+    if os.path.exists(path):
+        existent_df = pd.read_pickle(path)
+
+    result_df = pd.concat(existent_df, chunk)
+    WRITE_DF(result_df, path, **WRITE_DF_OPTS)
+
+
 def test_connection():
     db = db_connector()
     data = db.execute_query("SELECT * FROM BDCORPORATIVO.scSAC.tbItemCusto")
@@ -51,12 +60,13 @@ def save_sql_to_files(overwrite=False):
 
 
 def save_sql_to_file(sql, dest):
-    query_result = make_query(sql)
+    #query_result = make_query(sql)
     ext_size = len(SQL_EXTENSION)
     file_name = os.path.basename(sql)
     file_path = os.path.join(dest,
                              file_name[:-ext_size] + '.' + FILE_EXTENSION)
-    save_dataframe_as_pickle(query_result, file_path)
+    #save_dataframe_as_pickle(query_result, file_path)
+    make_chunk_query(sql, file_path)
 
 
 def make_query(sql_file):
@@ -65,7 +75,18 @@ def make_query(sql_file):
         sql_filename = os.path.basename(sql_file)
         print('Downloading query [{}]...'.format(sql_filename))
         db = db_connector()
-        chunks = db.execute_pandas_sql_query(query, chunksize=1000)
+        db.close()
+        return query_result
+
+def make_chunk_query(sql_file, path): 
+    with open(sql_file, 'r') as file_content:
+        query = file_content.read()
+        sql_filename = os.path.basename(sql_file)
+        print('Downloading query [{}]...'.format(sql_filename))
+        db = db_connector()
+        for c in db.execute_pandas_sql_query(query, chunksize=1000):
+            chunk_writer(c, path)
         query_result = pd.concat(chunks, ignore_index=True)
         db.close()
+
         return query_result
