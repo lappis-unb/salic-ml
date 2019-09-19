@@ -1,6 +1,7 @@
 import os
 import pathlib
 import pandas as pd
+import gc
 from .db_connector import db_connector
 from .loader import WRITE_DF, WRITE_DF_OPTS, FILE_EXTENSION
 
@@ -87,5 +88,6 @@ def make_chunk_query(sql_file, path):
         db = db_connector()
         for c in db.execute_pandas_sql_query(query, chunksize=1000):
             chunk_writer(c, path)
+            gc.collect()
         db.close()
 
