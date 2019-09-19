@@ -1,5 +1,6 @@
 import os
 import pathlib
+import pandas as pd
 from .db_connector import db_connector
 from .loader import WRITE_DF, WRITE_DF_OPTS, FILE_EXTENSION
 
