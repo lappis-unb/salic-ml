@@ -64,6 +64,6 @@ def make_query(sql_file):
         sql_filename = os.path.basename(sql_file)
         print('Downloading query [{}]...'.format(sql_filename))
         db = db_connector()
-        query_result = db.execute_pandas_sql_query(query)
+        query_result = db.execute_pandas_sql_query(query, chunksize=1000)
         db.close()
         return query_result
